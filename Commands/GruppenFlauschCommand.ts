@@ -1,0 +1,47 @@
+import emitter from "../emitter";
+import * as dotenv from "dotenv";
+import AbstractCommand from "../Abstracts/AbstractCommand";
+import mongoDBClient from "../Clients/mongoDBClient";
+import Fighter from "../Models/Fighter";
+import emoteService from "../Services/EmoteService";
+dotenv.config({ path: __dirname+'/../.env' });
+
+class GruppenFlauschCommand extends AbstractCommand
+{
+    isActive       = true;
+    isModOnly      = false;
+    command        = 'gruppenflausch';
+    description    = 'GRUPPENFLAUSCH!';
+    answerNoTarget = 'emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart' +
+        ' Gruppenflausch! emote_hype' +
+        ' emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart';
+    answerTarget   = '';
+
+    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+        let allUsers = await mongoDBClient
+            .db("flauschipandabot")
+            .collection("fighters")
+            .find();
+
+        while(await allUsers.hasNext()) {
+            const user = await allUsers.next();
+
+            const fighter = new Fighter();
+            await fighter.init(user.name);
+            await fighter.set('curHp', fighter.get('maxHp')).update();
+        }
+
+        emitter.emit(
+            `${origin}.say`,
+            this.answerNoTarget
+                .replace(/emote_([a-zA-Z0-9]+)/g, (match, contents, offset, input_string) => {
+                    return emoteService.getEmote(origin, match);
+                }),
+            channel
+        );
+    }
+}
+
+let gruppenFlauschCommand = new GruppenFlauschCommand();
+
+export default gruppenFlauschCommand;
