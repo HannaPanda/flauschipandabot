@@ -19,15 +19,33 @@ class PflasterCommand extends AbstractCommand
         const target = this.getTarget(origin, parts, messageObject);
 
         if(parts.length > 1 && target !== '') {
-            emitter.emit(
-                `${origin}.say`,
-                `${context['display-name']} pustet auf das Aua von ${targetName} und tut ein Pflaster drauf. ${targetName} ist vollständig geheilt SeemsGood`,
-                channel
-            );
+            let text = `${context['display-name']} pustet auf das Aua von ${targetName} und tut ein Pflaster drauf. ${targetName} ist vollständig geheilt SeemsGood`;
 
-            const user = new Fighter();
-            await user.init(target);
-            await user.set('curHp', user.get('maxHp')).update();
+            const originUser = new Fighter();
+            await originUser.init(context.username.toLowerCase());
+
+            const targetUser = new Fighter();
+            await targetUser.init(target);
+
+            originUser.setOpponent(targetUser);
+
+            if(targetUser.get('curHp') === targetUser.get('maxHp')) {
+                emitter.emit(`${origin}.say`, `${targetName} ist bereits vollständig geheilt`, channel);
+                return Promise.resolve(false);
+            }
+
+            await targetUser.set('curHp', targetUser.get('maxHp')).update();
+            const xpGained = originUser.calculateXPGained() * 4;
+
+            const convertedLevel = originUser.calculateLevel();
+
+            if(await originUser.checkLevelUp()) {
+                text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP | LVL ${convertedLevel}]`;
+            } else {
+                text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP]`;
+            }
+
+            emitter.emit(`${origin}.say`, text, channel);
         } else {
             emitter.emit(
                 `${origin}.say`,
