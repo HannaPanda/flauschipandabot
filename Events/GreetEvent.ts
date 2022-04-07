@@ -9,7 +9,7 @@ class GreetEvent
 {
     isActive = true;
 
-    private streamers: Array<string> = ['misakidestiny', 'murmelmaus_gina', 'teelinchen', 'eulinchen82', 'artimus83'];
+    private streamers: Array<string> = ['misakidestiny', 'murmelmaus_gina', 'teelinchen', 'eulinchen82', 'artimus83', 'serapinlp'];
 
     constructor()
     {

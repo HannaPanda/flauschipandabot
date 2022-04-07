@@ -12,8 +12,6 @@ discordClient.on('ready', () => {
 
 discordClient.login(process.env.BOT_DISCORD_CLIENT_TOKEN);
 
-console.log(process.env.BOT_DISCORD_CLIENT_TOKEN);
-
 discordClient.on('messageCreate', async (message) => {
     /*console.log(await chattersService.getChattersList('discord'));*/
 

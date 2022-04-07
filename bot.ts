@@ -10,6 +10,7 @@ import mongoDBClient from "./Clients/mongoDBClient";
 import discordClient from "./Clients/discordClient";
 import {TextChannel} from "discord.js";
 import streamService from "./Services/StreamService";
+import obsClient from "./Clients/obsClient";
 dotenv.config({ path: __dirname+'/.env' });
 declare var process : {
     env: {
@@ -45,26 +46,10 @@ class FlauschiPandaBot
             client_secret: process.env.CLIENT_SECRET
         });
 
-        this.obs = new OBSWebSocket();
-        this.obs.connect({ address: 'localhost:4444', password: process.env.OBS_WS_PASS })
-            .then(() => {
-                // Partner only?
-                this.obs.on('SwitchScenes', data => {
-                    if(data['scene-name'] === 'Bitte Warten') {
-                        tmiOwnerClient.commercial("hannapanda84", 60)
-                            .then((data) => {
-                                console.log(data);
-                            }).catch((err) => {
-                                console.log(err);
-                            });
+        this.obs = obsClient;
 
-                        emitter.emit('tmi.say', `Werbepause! ヾ(ﾟдﾟ)ﾉ`);
-                    }
-                });
-            })
-            .catch((err) => {
-                console.warn(err);
-            });
+        /*this.obs = new OBSWebSocket();
+        this.connectObs();*/
 
         setInterval(this.getStreamInfo, 30000);
         setInterval(this.mentionModSearch, 3600000*3);
@@ -73,6 +58,36 @@ class FlauschiPandaBot
         this.initializeEvents();
         this.initializeCommands();
     }
+
+    /*private connectObs = () => {
+        this.obs.connect({ address: 'localhost:4444', password: process.env.OBS_WS_PASS })
+            .then(() => {
+                console.log('OBS connected');
+                // Partner only?
+                this.obs.on('SwitchScenes', data => {
+                    if(data['scene-name'] === 'Bitte Warten') {
+                        tmiOwnerClient.commercial("hannapanda84", 60)
+                            .then((data) => {
+                                console.log(data);
+                            }).catch((err) => {
+                            console.log(err);
+                        });
+
+                        emitter.emit('tmi.say', `Werbepause! ヾ(ﾟдﾟ)ﾉ`);
+                    }
+                });
+                this.obs.on('ConnectionClosed', data => {
+                    this.obs.removeAllListeners();
+                    setTimeout(this.connectObs, 1000);
+                });
+            })
+            .catch((err) => {
+                //console.warn(err);
+                //console.warn('OBS not connected');
+                this.obs.removeAllListeners();
+                setTimeout(this.connectObs, 1000);
+            });
+    }*/
 
     private initializeEvents = () => {
         var normalizedPath = require("path").join(__dirname, "Events");
@@ -112,10 +127,9 @@ class FlauschiPandaBot
     }
 
     private mentionTwitchToolkit = async () => {
-        if(streamService.currentStream) {
-            emitter.emit('tmi.say', 'Wir spielen mit TwitchToolkit und ihr könnt mitmachen: Befehle und Items unter https://sourcedog.github.io/item-list/');
-            emitter.emit('tmi.say', '!karmaround');
-        }
+        /*if(streamService.currentStream) {
+            emitter.emit('tmi.say', '!karmaround Wir spielen mit TwitchToolkit und ihr könnt mitmachen: Befehle und Items unter https://hannapanda.github.io/item-list/');
+        }*/
     }
 
 }

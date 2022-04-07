@@ -33,7 +33,7 @@ class LevelCommand extends AbstractCommand
             await fighter.init(username);
         }
 
-        const text = `${name}: LVL ${fighter.get('level')} | XP ${fighter.get('xp')} | HP ${fighter.get('curHp')}/${fighter.get('maxHp')}`;
+        const text = `${name}: LVL ${fighter.get('level')} | XP ${fighter.get('xp').toLocaleString('de-DE')} | HP ${fighter.get('curHp')}/${fighter.get('maxHp')}`;
 
         this.say(origin, '', '', channel, text);
 

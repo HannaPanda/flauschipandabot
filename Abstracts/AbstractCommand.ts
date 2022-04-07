@@ -1,6 +1,7 @@
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import emoteService from "../Services/EmoteService";
+import Fighter from "../Models/Fighter";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractCommand
@@ -37,6 +38,15 @@ abstract class AbstractCommand
         if(this.isModOnly && !context.mod && context.username !== process.env.CHANNEL) {
             emitter.emit(`${origin}.say`, `*bonk* ಠ_ಠ`, channel);
             return Promise.resolve(false);
+        }
+
+        if(!this.isModOnly) {
+            const fighter = new Fighter();
+            await fighter.init(context.username.toLowerCase());
+            if(fighter.get('curHp') <= 0) {
+                emitter.emit(`${origin}.say`, `${context['display-name']}, du bist gerade ohnmächtig und kannst keine Commands ausführen NotLikeThis Erst wenn du geheilt wurdest, geht das wieder.`, channel);
+                return Promise.resolve(false);
+            }
         }
 
         if(this.customHandler) {

@@ -36,7 +36,7 @@ class PflasterCommand extends AbstractCommand
             );
 
             const user = new Fighter();
-            await user.init(context.username);
+            await user.init(context.username.toLowerCase());
             await user.set('curHp', user.get('maxHp')).update();
         }
 

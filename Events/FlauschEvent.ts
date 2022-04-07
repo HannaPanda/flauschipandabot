@@ -19,7 +19,11 @@ class FlauschEvent
         }
 
         if(/flausch/i.test(message)) {
-            let username = (origin === 'tmi') ? context['display-name'] : context.username.username;
+            let username = (origin === 'tmi') ? context['display-name'] : context.username;
+
+            if(username && username.toLowerCase() === 'flauschipandabot') {
+                return Promise.resolve(false);
+            }
 
             const flauschUsers = mongoDBClient.db("flauschipandabot").collection("flausch_users");
             let user = await flauschUsers.findOne({name: username}, {});

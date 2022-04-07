@@ -25,10 +25,7 @@ class GruppenFlauschCommand extends AbstractCommand
 
         while(await allUsers.hasNext()) {
             const user = await allUsers.next();
-
-            const fighter = new Fighter();
-            await fighter.init(user.name);
-            await fighter.set('curHp', fighter.get('maxHp')).update();
+            this.healFighter(user.name);
         }
 
         emitter.emit(
@@ -39,6 +36,14 @@ class GruppenFlauschCommand extends AbstractCommand
                 }),
             channel
         );
+    }
+
+    healFighter = async (username) => {
+        const fighter = new Fighter();
+        await fighter.init(username);
+        await fighter.set('curHp', fighter.get('maxHp')).update();
+
+        return Promise.resolve(true);
     }
 }
 
