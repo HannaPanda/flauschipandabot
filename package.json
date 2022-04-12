@@ -14,13 +14,18 @@
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "eventemitter2": "^6.4.5",
+    "express": "^4.17.3",
     "forever": "^4.0.3",
     "mongodb": "^4.4.0",
     "node-fetch": "^2.6.7",
     "node-twitch": "^0.4.5",
     "nodemon": "^2.0.15",
     "obs-websocket-js": "^4.0.3",
-    "tmi.js": "^1.8.5"
+    "tmi.js": "^1.8.5",
+    "twing": "^5.1.1",
+    "twitch": "^4.6.7",
+    "twitch-auth": "^4.6.7",
+    "twitch-pubsub-client": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^17.0.18",

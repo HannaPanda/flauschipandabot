@@ -10,6 +10,7 @@ class GruppenFlauschCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'gruppenflausch';
     description    = 'GRUPPENFLAUSCH!';
     answerNoTarget = 'emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart' +

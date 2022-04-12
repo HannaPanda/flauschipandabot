@@ -7,21 +7,6 @@ class Fighter {
     private fighter;
     private opponent;
 
-    // 0.0000505178 x + 5.07337
-    /*
-        After lvl 12 it is a bit more structurized
-        12-13. +20k
-        13-14. +20k
-        14-15. +25k
-        15-16. +30k
-        16-17. +30k
-        17-18. +40k
-        18-19. +40k
-        19-20. +50k
-        20-21. +50k
-        21-22. +60k
-        22-23. +60k
-     */
     xpToLevel = {
         0: 1, 300: 2, 900: 3, 2700: 4, 6500: 5, 14000: 6, 23000: 7, 34000: 8, 48000: 9, 64000: 10, 85000: 11,
         100000: 12, 120000: 13, 140000: 14, 165000: 15, 195000: 16, 225000: 17, 265000: 18, 305000: 19, 355000: 20
@@ -43,7 +28,8 @@ class Fighter {
                     level: 1,
                     xp: 0,
                     maxHp: hp,
-                    curHp: hp
+                    curHp: hp,
+                    immunity: 0
                 });
 
             this.fighter = await mongoDBClient
@@ -77,10 +63,11 @@ class Fighter {
                 {name: this.fighter.name},
                 {
                     $set: {
-                        xp:    this.fighter.xp,
-                        level: this.fighter.level,
-                        curHp: this.fighter.curHp,
-                        maxHp: this.fighter.maxHp
+                        xp:       this.fighter.xp,
+                        level:    this.fighter.level,
+                        curHp:    this.fighter.curHp,
+                        maxHp:    this.fighter.maxHp,
+                        immunity: this.fighter.immunity
                     }
                 }
             );
@@ -138,6 +125,10 @@ class Fighter {
                 .update();
         }
         return Promise.resolve(levelUp);
+    }
+
+    isImmune = () => {
+        return this.get('immunity') > this.randomInt(0, 100);
     }
 }
 

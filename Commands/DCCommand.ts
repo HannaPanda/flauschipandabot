@@ -1,19 +1,21 @@
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
+import DiscordCommand from "./DiscordCommand";
 dotenv.config({ path: __dirname+'/../.env' });
 
-class UnlurkCommand extends AbstractCommand
+class DCCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
-    command        = 'unlurk';
-    description    = 'Bin wieder da';
-    answerNoTarget = '###DISPLAYNAME### ist wieder da! emote_hype';
+    command        = 'dc';
+    description    = 'Discord';
+    answerNoTarget = '###DISPLAYNAME###: https://discord.link/flauschecke';
     answerTarget   = '';
 }
 
-let unlurkCommand = new UnlurkCommand();
 
-export default unlurkCommand;
+let dcCommand = new DCCommand();
+
+export default dcCommand;

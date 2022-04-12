@@ -10,6 +10,7 @@ class KrankheitCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'krankheit';
     description    = 'Verhexe jemanden mit einer Krankheit';
     answerNoTarget = '';
@@ -39,7 +40,15 @@ class KrankheitCommand extends AbstractCommand
 
         const randomNumber = this.randomInt(1, 100);
 
-        if(randomNumber >= 1 && randomNumber <= 20) {
+        if(targetUser.isImmune()) {
+            // Immunität ausgelöst
+
+            emitter.emit(
+                `${origin}.say`,
+                `${context['display-name']} fuchtelt theatralisch in der Luft herum aber ${targetName} ist immun! LUL`,
+                channel
+            );
+        } else if(randomNumber >= 1 && randomNumber <= 20) {
             // Beide getroffen
             await Promise.all([
                 statusService.addKrankheit(originUser, context['display-name'], origin, channel),

@@ -7,6 +7,7 @@ class BlitzdingsCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'blitzdings';
     description    = 'Wenn man mal etwas vergessen muss';
     answerNoTarget = '###DISPLAYNAME### blitzdingst sich mal eben schnell selbst ins Mittelalter';

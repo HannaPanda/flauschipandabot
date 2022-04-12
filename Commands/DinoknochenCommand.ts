@@ -10,6 +10,7 @@ class DinoknochenCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'dinoknochen';
     description    = 'Wirf mit einem Dinoknochen! :O';
     answerNoTarget = '###DISPLAYNAME### wirft mit Dinoknochen um sich 🦴🦴🦴🦴🦴🦴🦴🦴';
@@ -64,8 +65,8 @@ class DinoknochenCommand extends AbstractCommand
 
             const levelDifference = originUser.calculateLevelDifference();
             const hitChance = Math.max(1, 20 + Math.max(0, levelDifference));
-            const hasHit = hitChance > this.randomInt(1, 100);
-            const damage = new DiceRoll(`${Math.floor(originUser.get('level')/2)}d4`).total;
+            const hasHit = hitChance > this.randomInt(1, 100) && !targetUser.isImmune();
+            const damage = new DiceRoll(`${Math.max(1, Math.floor(originUser.get('level')/2))}d4`).total;
             const newHp  = Math.max(0, targetUser.get('curHp') - damage);
 
             if(hasHit) {

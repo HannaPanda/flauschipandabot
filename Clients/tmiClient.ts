@@ -27,6 +27,7 @@ class Initializer
 
         this.tmiClient.on('message', this.onMessageHandler);
         this.tmiClient.on('raided', this.onRaidedHandler);
+        this.tmiClient.on('redeem', this.onRedeemHandler)
 
         this.tmiClient.connect();
     }
@@ -54,6 +55,12 @@ class Initializer
     private onRaidedHandler = (channel: string, username: string, viewers: number) => {
         emitter.emit('tmi.say', `Vielen Dank für den Raid ${username} ヽ(゜∇゜)ノ`);
         emitter.emit('tmi.say', `Hey ihr Flauschis, schaut doch mal bei ${username} rein! https://twitch.tv/${username}`);
+    }
+
+    private onRedeemHandler = (channel: string, username: string, rewardType: 'highlighted-message' | 'skip-subs-mode-message' | string, tags: ChatUserstate) => {
+        console.log("######################");
+        console.log(username, rewardType, tags, channel);
+        console.log("######################");
     }
 }
 

@@ -7,6 +7,7 @@ class VerflauschtCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'verflauscht';
     description    = 'Wie verflauscht bist du?';
     answerNoTarget = '';

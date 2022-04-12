@@ -9,6 +9,7 @@ class PflasterCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'pflaster';
     description    = 'Macht Aua weg ❤';
     answerNoTarget = '';

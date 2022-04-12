@@ -7,6 +7,7 @@ class LurkCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'lurk';
     description    = 'Bin dann mal weg';
     answerNoTarget = '###DISPLAYNAME### verschwindet im Flausch 🥰';

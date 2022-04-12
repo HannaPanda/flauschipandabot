@@ -7,6 +7,7 @@ class FlauschCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'flausch';
     description    = 'Flausche jemanden durch';
     answerNoTarget = '###DISPLAYNAME### flauscht ins Leere v( ‘.’ )v';

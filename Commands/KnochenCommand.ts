@@ -10,6 +10,7 @@ class KnochenCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'knochen';
     description    = 'Wirf mit einem Knochen!';
     answerNoTarget = '###DISPLAYNAME### wirft mit Knochen um sich 🦴🦴';
@@ -59,8 +60,8 @@ class KnochenCommand extends AbstractCommand
 
             const levelDifference = originUser.calculateLevelDifference();
             const hitChance = 62 + Math.max(0, (levelDifference * 2));
-            const hasHit = hitChance > this.randomInt(1, 100);
-            const damage = new DiceRoll(`${Math.floor(originUser.get('level')/4)}d2`).total;
+            const hasHit = hitChance > this.randomInt(1, 100) && !targetUser.isImmune();
+            const damage = new DiceRoll(`${Math.max(1, Math.floor(originUser.get('level')/4))}d2`).total;
             const newHp  = Math.max(0, targetUser.get('curHp') - damage);
 
             if(hasHit) {

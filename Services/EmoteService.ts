@@ -15,9 +15,8 @@ class EmoteService
     };
 
     twitchEmotes = {
-        //'hype': 'hannap5Hype',
-        'hype': 'hannap5HypeAnim',
-        //'greet': 'hannap5Wave',
+        //'hype': 'hannap5HypeAnim',
+        'hype': 'hannap5Hype',
         'greet': 'hannap5WaveAnim',
         'heart': 'VirtualHug',
         'angry': 'hannap5Angry',

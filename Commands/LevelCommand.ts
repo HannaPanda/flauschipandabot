@@ -9,6 +9,7 @@ class LevelCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'level';
     description    = 'Level, Erfahrung und Lebenspunkte';
     answerNoTarget = '';
@@ -33,7 +34,7 @@ class LevelCommand extends AbstractCommand
             await fighter.init(username);
         }
 
-        const text = `${name}: LVL ${fighter.get('level')} | XP ${fighter.get('xp').toLocaleString('de-DE')} | HP ${fighter.get('curHp')}/${fighter.get('maxHp')}`;
+        const text = `${name}: LVL ${fighter.get('level')} | XP ${fighter.get('xp').toLocaleString('de-DE')} | HP ${fighter.get('curHp')}/${fighter.get('maxHp')} | Immunität ${fighter.get('immunity')}%`;
 
         this.say(origin, '', '', channel, text);
 

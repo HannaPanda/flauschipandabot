@@ -10,6 +10,7 @@ class RuheCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = true;
+    isOwnerOnly    = false;
     command        = 'ruhe';
     description    = 'Umschalten auf Ruhemodus';
     answerNoTarget = '';

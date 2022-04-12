@@ -9,6 +9,7 @@ class FlauschlisteCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'flauschliste';
     description    = 'Zeigt an, wer die meisten Flauschen im Kopf hat';
     answerNoTarget = '';

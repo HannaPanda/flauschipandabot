@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="https://twitch.tv/hannapanda84" target="_blank">
+            <img src="/static/images/HannapandaLoyaltysketch_blanc.png" class="img-fluid rounded-circle" style="max-height: 56px;" />
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item {% if activePage == 'home' %}active{% endif %}">
+                    <a class="nav-link {% if activePage == 'home' %}active{% endif %}" aria-current="page" href="/">Startseite</a>
+                </li>
+                <li class="nav-item {% if activePage == 'commands' %}active{% endif %}">
+                    <a class="nav-link {% if activePage == 'commands' %}active{% endif %}" href="/commands">Commands</a>
+                </li>
+                <li class="nav-item {% if activePage == 'quotes' %}active{% endif %}">
+                    <a class="nav-link {% if activePage == 'quotes' %}active{% endif %}" href="/quotes">Zitate</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

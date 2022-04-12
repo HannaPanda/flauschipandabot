@@ -15,6 +15,7 @@ class DuellCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'duell';
     description    = 'Duelliere dich mit jemandem';
     answerNoTarget = '';

@@ -8,6 +8,7 @@ class TimeoutCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = true;
+    isOwnerOnly    = false;
     command        = 'to';
     description    = 'Sende jemanden in timeout';
     answerNoTarget = '';

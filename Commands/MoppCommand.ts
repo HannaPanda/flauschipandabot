@@ -7,6 +7,7 @@ class MoppCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = 'mopp';
     description    = 'Schleimspur? Kein Problem!';
     answerNoTarget = 'Achtung Schleimspur! Ich wisch hier kurz mal weg!! ヾ(ﾟдﾟ)ﾉ';

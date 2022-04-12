@@ -8,6 +8,7 @@ abstract class AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
+    isOwnerOnly    = false;
     command        = "";
     description    = "";
     answerNoTarget = "";
@@ -26,16 +27,17 @@ abstract class AbstractCommand
 
         parts[0] = parts[0].toLowerCase();
 
-        if(parts[0] === `!commands` && !this.isModOnly) {
-            emitter.emit(`${origin}.say`, `!${this.command}: ${this.description}`, channel);
-            return Promise.resolve(false);
-        }
-
         if(parts[0] !== `!${this.command}`) {
             return Promise.resolve(false);
         }
 
         if(this.isModOnly && !context.mod && context.username !== process.env.CHANNEL) {
+            emitter.emit(`${origin}.say`, `*bonk* ಠ_ಠ`, channel);
+            return Promise.resolve(false);
+        }
+
+        if(this.isOwnerOnly && context.username !== process.env.CHANNEL) {
+            console.log(context);
             emitter.emit(`${origin}.say`, `*bonk* ಠ_ಠ`, channel);
             return Promise.resolve(false);
         }
