@@ -67,7 +67,8 @@ class Fighter {
                         level:    this.fighter.level,
                         curHp:    this.fighter.curHp,
                         maxHp:    this.fighter.maxHp,
-                        immunity: this.fighter.immunity
+                        immunity: this.fighter.immunity,
+                        canUseCommands: this.fighter.canUseCommands
                     }
                 }
             );

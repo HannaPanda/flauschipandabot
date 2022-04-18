@@ -11,7 +11,8 @@ class FlauschCommand extends AbstractCommand
     command        = 'flausch';
     description    = 'Flausche jemanden durch';
     answerNoTarget = '###DISPLAYNAME### flauscht ins Leere v( ‘.’ )v';
-    answerTarget   = '###DISPLAYNAME### flauscht ###TARGET### ( ◕‿◕)/(^•ω•^)';
+    //answerTarget   = '###DISPLAYNAME### flauscht ###TARGET### ( ◕‿◕)/(^•ω•^)';
+    answerTarget   = 'emote_heart emote_heart ###DISPLAYNAME### flauscht ###TARGET### emote_heart emote_heart';
 }
 
 let flauschCommand = new FlauschCommand();

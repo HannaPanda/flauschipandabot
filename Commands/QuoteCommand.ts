@@ -93,7 +93,7 @@ class QuoteCommand extends AbstractCommand
                             {id: id},
                             {
                                 $set: {
-                                    approved: true
+                                    isApproved: true
                                 }
                             }
                         );
@@ -133,7 +133,7 @@ class QuoteCommand extends AbstractCommand
                 .findOne({id: id, isApproved: true}, {});
 
             if(document) {
-                const text = `###ORIGIN### Zitat #${document.id}: ${document.quote}`;
+                const text = `###ORIGIN### Zitat #${document.id}: ${document.quote} [${document.date}]`;
                 sayService.say(origin, context['display-name'], '', channel, text);
             } else if(id === 69) {
                 const text = `###ORIGIN###: Nice!`;

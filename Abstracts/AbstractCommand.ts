@@ -37,7 +37,6 @@ abstract class AbstractCommand
         }
 
         if(this.isOwnerOnly && context.username !== process.env.CHANNEL) {
-            console.log(context);
             emitter.emit(`${origin}.say`, `*bonk* ಠ_ಠ`, channel);
             return Promise.resolve(false);
         }
@@ -47,6 +46,10 @@ abstract class AbstractCommand
             await fighter.init(context.username.toLowerCase());
             if(fighter.get('curHp') <= 0) {
                 emitter.emit(`${origin}.say`, `${context['display-name']}, du bist gerade ohnmächtig und kannst keine Commands ausführen NotLikeThis Erst wenn du geheilt wurdest, geht das wieder.`, channel);
+                return Promise.resolve(false);
+            }
+            if(!fighter.get('canUseCommands')) {
+                emitter.emit(`${origin}.say`, `${context['display-name']}, du hast dich selbst verhext und kannst keine Commands ausführen NotLikeThis Da hilft nur warten.`, channel);
                 return Promise.resolve(false);
             }
         }

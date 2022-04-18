@@ -8,6 +8,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 class Initializer
 {
     public tmiClient: Client;
+    private bots: Array<string> = ['sery_bot', 'nightbot', 'streamelements', 'audioalerts', 'streamcaptainbot'];
 
     constructor()
     {
@@ -45,7 +46,7 @@ class Initializer
     }
 
     private onMessageHandler = async (target: string, context: ChatUserstate, message: string, self: boolean) => {
-        if (self || context.username === 'nightbot'|| context.username === 'streamelements') {
+        if (self || this.bots.includes(context.username)) {
             return;
         }
 
@@ -58,9 +59,9 @@ class Initializer
     }
 
     private onRedeemHandler = (channel: string, username: string, rewardType: 'highlighted-message' | 'skip-subs-mode-message' | string, tags: ChatUserstate) => {
-        console.log("######################");
+        /*console.log("######################");
         console.log(username, rewardType, tags, channel);
-        console.log("######################");
+        console.log("######################");*/
     }
 }
 

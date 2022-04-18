@@ -7,18 +7,18 @@ class EmoteService
     discordEmotes = {
         'hype': 'hype112',
         'greet': 'wave~1',
-        'heart': '❤',
+        'heart': 'Heart112',
         'angry': 'angry~1',
         'stinky': 'skunk',
         'bleed': 'cloud_rain',
-        'unity': 'purple_heart'
+        'unity': 'hannap5Heart'
     };
 
     twitchEmotes = {
         //'hype': 'hannap5HypeAnim',
         'hype': 'hannap5Hype',
         'greet': 'hannap5WaveAnim',
-        'heart': 'VirtualHug',
+        'heart': 'hannap5Heart',
         'angry': 'hannap5Angry',
         'stinky': 'StinkyCheese',
         'bleed': 'bleedPurple',

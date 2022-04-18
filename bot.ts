@@ -10,6 +10,7 @@ import obsClient from "./Clients/obsClient";
 import { ApiClient } from 'twitch';
 import { ClientCredentialsAuthProvider } from 'twitch-auth';
 import {PubSubClient, PubSubRedemptionMessage} from 'twitch-pubsub-client';
+import emitter from "./emitter";
 
 dotenv.config({ path: __dirname+'/.env' });
 
@@ -43,6 +44,8 @@ class FlauschiPandaBot
     private events: Array<any> = [];
     private commands: Array<any> = [];
 
+    private io;
+
     constructor()
     {
         const self = this;
@@ -69,6 +72,11 @@ class FlauschiPandaBot
         const express = require('express');
         const app = express();
         const port = 3000;
+        const server = require("http").createServer(app);
+
+        this.io = require('socket.io')(server);
+
+        emitter.on('hornyLevelChanged', this.handleHornyLevelChanged);
 
         app.use('/static', express.static('public'));
 
@@ -95,9 +103,16 @@ class FlauschiPandaBot
             });
         });
 
-        app.listen(port, () => {
-            console.log(`Example app listening on port ${port}`)
+        app.get('/horny', function (req, res) {
+            twing.render('horny.twig', {}).then((output) => {
+                res.end(output);
+            });
         });
+
+        /*app.listen(port, () => {
+            console.log(`Example app listening on port ${port}`)
+        });*/
+        server.listen(3000);
 
         this.initializeRedeemEvent();
     }
@@ -173,9 +188,13 @@ class FlauschiPandaBot
     }
 
     private mentionTwitchToolkit = async () => {
-        /*if(streamService.currentStream) {
+        if(streamService.currentStream) {
             emitter.emit('tmi.say', '!karmaround Wir spielen mit TwitchToolkit und ihr könnt mitmachen: Befehle und Items unter https://hannapanda.github.io/item-list/');
-        }*/
+        }
+    }
+
+    private handleHornyLevelChanged = async (newLevel) => {
+        this.io.emit('hornyLevelChange', { newLevel: newLevel });
     }
 
 }

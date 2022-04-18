@@ -14,7 +14,7 @@ class GruppenFlauschCommand extends AbstractCommand
     command        = 'gruppenflausch';
     description    = 'GRUPPENFLAUSCH!';
     answerNoTarget = 'emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart' +
-        ' Gruppenflausch! emote_hype' +
+        ' Gruppenflausch!' +
         ' emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart';
     answerTarget   = '';
 

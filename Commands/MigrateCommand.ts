@@ -52,13 +52,13 @@ class MigrateCommand extends AbstractCommand
         sayService.say('tmi', '', '', null, 'Migration fertig');
     }
 
-    updateFighter = async (username) => {
-        /*const fighter = new Fighter();
+    /*updateFighter = async (username) => {
+        const fighter = new Fighter();
         await fighter.init(username);
-        await fighter.set('immunity', fighter.get('immunity') ?? 0).update();*/
+        await fighter.set('canUseCommands', fighter.get('canUseCommands') ?? true).update();
 
         return Promise.resolve(true);
-    }
+    }*/
 }
 
 let migrateCommand = new MigrateCommand();

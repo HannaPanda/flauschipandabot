@@ -21,6 +21,7 @@
     "node-twitch": "^0.4.5",
     "nodemon": "^2.0.15",
     "obs-websocket-js": "^4.0.3",
+    "socket.io": "^4.4.1",
     "tmi.js": "^1.8.5",
     "twing": "^5.1.1",
     "twitch": "^4.6.7",
