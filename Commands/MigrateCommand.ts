@@ -55,7 +55,7 @@ class MigrateCommand extends AbstractCommand
     /*updateFighter = async (username) => {
         const fighter = new Fighter();
         await fighter.init(username);
-        await fighter.set('canUseCommands', fighter.get('canUseCommands') ?? true).update();
+        await fighter.set('disease', fighter.get('disease') ?? false).set('incurableDisease', fighter.get('incurableDisease') ?? false).update();
 
         return Promise.resolve(true);
     }*/

@@ -2,13 +2,11 @@ import * as dotenv from "dotenv";
 import Fighter from "../Models/Fighter";
 import emitter from "../emitter";
 import sayService from "./SayService";
+import mongoDBClient from "../Clients/mongoDBClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class StatusService
 {
-    private krankheiten = {};
-    private unheilbareKrankheit = {};
-
     private interval;
 
     constructor() {
@@ -16,49 +14,31 @@ class StatusService
     }
 
     private intervalFunc = async () => {
-        if(Object.keys(this.krankheiten).length > 0) {
-            const text = `Folgende Chatter nehmen durch Krankheit Schaden: ${Object.keys(this.krankheiten).join(', ')}`;
+        const diseasedFighters = await mongoDBClient
+            .db("flauschipandabot")
+            .collection("fighters")
+            .find({$or: [{disease: true}, {incurableDisease: true}]}, {})
+            .toArray();
+
+        if(diseasedFighters.length > 0) {
+            const text = `Folgende Chatter nehmen durch Krankheit Schaden: ${diseasedFighters.map(elem => { return elem.name }).join(', ')}`;
             sayService.say('tmi', '', '', null, text);
 
             let faintedUsers = [];
 
-            for(let i = 0; i < Object.keys(this.krankheiten).length; i++) {
-                const username = Object.keys(this.krankheiten)[i];
-                const targetUser = this.krankheiten[username];
+            for(let i = 0; i < diseasedFighters.length; i++) {
+                const username = diseasedFighters[i].name;
+                const targetUser = new Fighter();
+                targetUser.initByObject(diseasedFighters[i]);
 
                 const damage = Math.min(targetUser.get('curHp'), Math.max(1, Math.floor(targetUser.get('maxHp') / 10)));
                 const newHp  = Math.max(0, targetUser.get('curHp') - damage);
 
-                await targetUser.set('curHp', newHp).update();
-                if(targetUser.get('curHp') <= 0) {
+                if(newHp <= 0) {
                     faintedUsers.push(username);
-                    delete this.krankheiten[targetUser.get('name')];
-                }
-            }
-
-            if(faintedUsers.length > 0) {
-                const text = `Folgende Chatter sind auf 0HP gefallen und ohnmächtig geworden: ${faintedUsers.join(', ')}`;
-                sayService.say('tmi', '', '', null, text);
-            }
-        }
-
-        if(Object.keys(this.unheilbareKrankheit).length > 0) {
-            const text = `Folgende Chatter nehmen durch Krankheit Schaden: ${Object.keys(this.unheilbareKrankheit).join(', ')}`;
-            sayService.say('tmi', '', '', null, text);
-
-            let faintedUsers = [];
-
-            for(let i = 0; i < Object.keys(this.unheilbareKrankheit).length; i++) {
-                const username = Object.keys(this.unheilbareKrankheit)[i];
-                const targetUser = this.unheilbareKrankheit[username];
-
-                const damage = Math.min(targetUser.get('curHp'), Math.max(1, Math.floor(targetUser.get('maxHp') / 10)));
-                const newHp  = Math.max(0, targetUser.get('curHp') - damage);
-
-                await targetUser.set('curHp', newHp).update();
-                if(targetUser.get('curHp') <= 0) {
-                    faintedUsers.push(username);
-                    delete this.unheilbareKrankheit[targetUser.get('name')];
+                    await targetUser.set('curHp', newHp).set('disease', false).set('incurableDisease', false).update();
+                } else {
+                    await targetUser.set('curHp', newHp).update();
                 }
             }
 
@@ -70,8 +50,8 @@ class StatusService
     }
 
     public addKrankheit = async (targetUser: Fighter, targetName, origin, channel) => {
-        if(!(targetUser.get('name') in this.krankheiten)) {
-            this.krankheiten[targetUser.get('name')] = targetUser;
+        if(!targetUser.get('disease')) {
+            await targetUser.set('disease', true).update();
         } else {
             emitter.emit(
                 `${origin}.say`,
@@ -82,8 +62,8 @@ class StatusService
     }
 
     public addUnheilbareKrankheit = async (targetUser: Fighter, targetName, origin, channel) => {
-        if(!(targetUser.get('name') in this.unheilbareKrankheit)) {
-            this.unheilbareKrankheit[targetUser.get('name')] = targetUser;
+        if(!targetUser.get('incurableDisease')) {
+            await targetUser.set('incurableDisease', true).update();
         } else {
             emitter.emit(
                 `${origin}.say`,
@@ -94,10 +74,9 @@ class StatusService
     }
 
     public heileKrankheit = async (displayName, originUser: Fighter, targetUser: Fighter, targetName, origin, channel) => {
-        if(targetUser.get('name') in this.krankheiten) {
+        if(targetUser.get('disease')) {
             if(originUser.get('xp') >= 10000) {
-                clearInterval(this.krankheiten[targetUser.get('name')]);
-                delete this.krankheiten[targetUser.get('name')];
+                await targetUser.set('disease', false).update();
 
                 emitter.emit(
                     `${origin}.say`,

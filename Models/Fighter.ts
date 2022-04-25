@@ -12,6 +12,10 @@ class Fighter {
         100000: 12, 120000: 13, 140000: 14, 165000: 15, 195000: 16, 225000: 17, 265000: 18, 305000: 19, 355000: 20
     }
 
+    initByObject = (fighter: object) => {
+        this.fighter = fighter;
+    }
+
     init = async (name: string) => {
         this.fighter = await mongoDBClient
             .db("flauschipandabot")
@@ -30,7 +34,9 @@ class Fighter {
                     maxHp: hp,
                     curHp: hp,
                     immunity: 0,
-                    canUseCommands: true
+                    canUseCommands: true,
+                    disease: false,
+                    incurableDisease: true
                 });
 
             this.fighter = await mongoDBClient
@@ -64,12 +70,14 @@ class Fighter {
                 {name: this.fighter.name},
                 {
                     $set: {
-                        xp:       this.fighter.xp,
-                        level:    this.fighter.level,
-                        curHp:    this.fighter.curHp,
-                        maxHp:    this.fighter.maxHp,
-                        immunity: this.fighter.immunity,
-                        canUseCommands: this.fighter.canUseCommands
+                        xp:               this.fighter.xp,
+                        level:            this.fighter.level,
+                        curHp:            this.fighter.curHp,
+                        maxHp:            this.fighter.maxHp,
+                        immunity:         this.fighter.immunity,
+                        canUseCommands:   this.fighter.canUseCommands,
+                        disease:          this.fighter.disease,
+                        incurableDisease: this.fighter.incurableDisease
                     }
                 }
             );
