@@ -179,7 +179,15 @@ class FlauschiPandaBot
             streamService.currentStream = streams.data[0];
         } else {
             streamService.currentStream = null;
-            mongoDBClient.db('flauschipandabot').collection('greeted_users').deleteMany({}, {}, () => {});
+            mongoDBClient
+                .db('flauschipandabot')
+                .collection('greeted_users')
+                .deleteMany({}, {}, () => {});
+
+            mongoDBClient
+                .db("flauschipandabot")
+                .collection("fighters")
+                .updateMany({}, {$set: {canUseCommands: true}});
         }
     }
 
@@ -188,9 +196,9 @@ class FlauschiPandaBot
     }
 
     private mentionTwitchToolkit = async () => {
-        if(streamService.currentStream) {
+        /*if(streamService.currentStream) {
             emitter.emit('tmi.say', '!karmaround Wir spielen mit TwitchToolkit und ihr könnt mitmachen: Befehle und Items unter https://hannapanda.github.io/item-list/');
-        }
+        }*/
     }
 
     private handleHornyLevelChanged = async (newLevel) => {

@@ -7,12 +7,15 @@ dotenv.config({ path: __dirname+'/../.env' });
 class DiscordTimer extends AbstractTimer
 {
     isActive  = true;
-    minutes   = 30;
+    minutes   = 35;
     chatLines = 5;
 
     handler = () => {
-        const text = `Besucht die flauschigste Community auf Discord: https://discord.link/flauschecke ❤ hannap5Need`;
-        sayService.say('tmi', '', '', null, text);
+        const text1 = `Besucht die flauschigste Community auf Discord: https://discord.link/flauschecke emote_heart hannap5Need`;
+        sayService.say('tmi', '', '', null, text1);
+
+        const text2 = `Quatscht live zusammen mit mir im "On Stream" Voice Channel. Meldet euch mit eurem Discord Nick bei mir und ich lade euch ein emote_heart`;
+        sayService.say('tmi', '', '', null, text2);
     }
 }
 

@@ -29,7 +29,8 @@ class Fighter {
                     xp: 0,
                     maxHp: hp,
                     curHp: hp,
-                    immunity: 0
+                    immunity: 0,
+                    canUseCommands: true
                 });
 
             this.fighter = await mongoDBClient

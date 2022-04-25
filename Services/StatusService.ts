@@ -12,7 +12,7 @@ class StatusService
     private interval;
 
     constructor() {
-        this.interval = setInterval(this.intervalFunc, /*300000*/3000);
+        this.interval = setInterval(this.intervalFunc, 300000);
     }
 
     private intervalFunc = async () => {
@@ -67,10 +67,6 @@ class StatusService
                 sayService.say('tmi', '', '', null, text);
             }
         }
-    }
-
-    private krankheitLoop = (krankheiten) => {
-
     }
 
     public addKrankheit = async (targetUser: Fighter, targetName, origin, channel) => {

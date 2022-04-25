@@ -11,7 +11,7 @@ class DCCommand extends AbstractCommand
     isOwnerOnly    = false;
     command        = 'dc';
     description    = 'Discord';
-    answerNoTarget = '###DISPLAYNAME###: https://discord.link/flauschecke';
+    answerNoTarget = '###DISPLAYNAME###: https://discord.link/flauschecke Quatscht live zusammen mit mir im "On Stream" Voice Channel. Meldet euch mit eurem Discord Nick bei mir und ich lade euch ein emote_heart';
     answerTarget   = '';
 }
 
