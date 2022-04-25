@@ -103,8 +103,13 @@ class FlauschiPandaBot
             });
         });
 
-        app.get('/horny', function (req, res) {
-            twing.render('horny.twig', {}).then((output) => {
+        app.get('/horny', async (req, res) => {
+            const document = await mongoDBClient
+                .db("flauschipandabot")
+                .collection("misc")
+                .findOne( {identifier: 'hornyLevel'}, {});
+
+            twing.render('horny.twig', {hornyLevel: (document && document.value) ? document.value : 0}).then((output) => {
                 res.end(output);
             });
         });

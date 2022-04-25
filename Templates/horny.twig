@@ -15,8 +15,8 @@
 <section class="m-5">
     <div class="container">
         <div class="col text-center">
-            <p style="font-family: 'Luckiest Guy'; color: #FFA7F6; text-shadow: 4px 4px 8px #0e0e10; font-size: 6rem" id="horniness-level-wrapper" class="d-none">
-                Horny Level: <span id="horniness-level">0</span>%
+            <p style="font-family: 'Luckiest Guy'; color: #FFA7F6; text-shadow: 4px 4px 8px #0e0e10; font-size: 6rem" id="horniness-level-wrapper" {% if hornyLevel == 0 %}class="d-none"{% endif %}>
+                Horny Level: <span id="horniness-level">{{ hornyLevel }}</span>%
             </p>
         </div>
     </div>

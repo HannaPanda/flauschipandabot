@@ -6,38 +6,15 @@ import Fighter from "../Models/Fighter";
 import mongoDBClient from "../Clients/mongoDBClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
-class HornyCommand extends AbstractCommand
+class DuscheCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
-    command        = 'horny';
-    description    = 'Horny Bonk';
+    command        = 'dusche';
+    description    = 'Kalte Dusche bei zu hitzigen Gedanken';
     answerNoTarget = '';
     answerTarget   = '';
-
-    constructor() {
-        super();
-
-        setInterval(async () => {
-            const document = await mongoDBClient
-                .db("flauschipandabot")
-                .collection("misc")
-                .findOne( {identifier: 'hornyLevel'}, {});
-
-            let curHornyLevel = Math.max(0, ((document && document.value) ? document.value : 0) - 1);
-
-            await mongoDBClient
-                .db("flauschipandabot")
-                .collection("misc")
-                .updateOne(
-                    {identifier: 'hornyLevel'},
-                    {$set: {value: curHornyLevel}},
-                    {upsert: true}
-                )
-            emitter.emit('hornyLevelChanged', curHornyLevel);
-        }, 300000);
-    }
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const document = await mongoDBClient
@@ -45,7 +22,7 @@ class HornyCommand extends AbstractCommand
             .collection("misc")
             .findOne( {identifier: 'hornyLevel'}, {});
 
-        let curHornyLevel = Math.min(100, ((document && document.value) ? document.value : 0) + 10);
+        let curHornyLevel = Math.max(0, ((document && document.value) ? document.value : 0) - 5);
 
         await mongoDBClient
             .db("flauschipandabot")
@@ -61,6 +38,6 @@ class HornyCommand extends AbstractCommand
     }
 }
 
-let hornyCommand = new HornyCommand();
+let duscheCommand = new DuscheCommand();
 
-export default hornyCommand;
+export default duscheCommand;
