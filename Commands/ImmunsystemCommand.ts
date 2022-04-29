@@ -13,10 +13,12 @@ class HealCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'immunsystem';
     description    = 'Hol dir 5% Immunität für 500.000XP';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const username = context.username.toLowerCase();

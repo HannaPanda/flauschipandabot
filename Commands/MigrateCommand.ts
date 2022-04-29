@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import sayService from "../Services/SayService";
+import moment from "moment";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class MigrateCommand extends AbstractCommand
@@ -11,10 +12,12 @@ class MigrateCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = true;
+    isAggressive   = false;
     command        = 'migrate';
     description    = 'Datenbank migrieren';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         /*let allUsers = await mongoDBClient
@@ -55,7 +58,8 @@ class MigrateCommand extends AbstractCommand
     /*updateFighter = async (username) => {
         const fighter = new Fighter();
         await fighter.init(username);
-        await fighter.set('disease', fighter.get('disease') ?? false).set('incurableDisease', fighter.get('incurableDisease') ?? false).update();
+        //await fighter.set('disease', fighter.get('disease') ?? false).set('incurableDisease', fighter.get('incurableDisease') ?? false).update();
+        await fighter.set('isAsleepUntil', moment().subtract(1, 'year').format()).update();
 
         return Promise.resolve(true);
     }*/

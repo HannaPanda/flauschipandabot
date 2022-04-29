@@ -2,6 +2,9 @@ import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import emoteService from "../Services/EmoteService";
 import Fighter from "../Models/Fighter";
+import moment from "moment";
+import sayService from "../Services/SayService";
+import mongoDBClient from "../Clients/mongoDBClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractCommand
@@ -9,11 +12,14 @@ abstract class AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = "";
+    aliases        = [];
     description    = "";
     answerNoTarget = "";
     answerTarget   = "";
     customHandler  = null;
+    globalCooldown = 0;
 
     constructor()
     {
@@ -27,7 +33,7 @@ abstract class AbstractCommand
 
         parts[0] = parts[0].toLowerCase();
 
-        if(parts[0] !== `!${this.command}`) {
+        if(parts[0] !== `!${this.command}` && !this.aliases.includes(parts[0].replace('!', ''))) {
             return Promise.resolve(false);
         }
 
@@ -52,6 +58,74 @@ abstract class AbstractCommand
                 emitter.emit(`${origin}.say`, `${context['display-name']}, du hast dich selbst verhext und kannst keine Commands ausführen NotLikeThis Da hilft nur warten.`, channel);
                 return Promise.resolve(false);
             }
+
+            if(this.isAggressive) {
+                const liebesritual = await mongoDBClient
+                    .db("flauschipandabot")
+                    .collection("misc")
+                    .findOne( {identifier: 'liebesritualUntil'}, {});
+
+                if(liebesritual && liebesritual.value && moment().isBefore(moment(liebesritual.value)) ) {
+                    const text = `###ORIGIN###: Die Flauschis erholen sich noch für ${Math.round(moment.duration(moment(liebesritual.value).diff(moment())).asMinutes())} Minuten vom letzten Liebesritual.`;
+                    sayService.say(origin, context['display-name'], '', channel, text);
+                    return Promise.resolve(false);
+                }
+
+                if(moment().isBefore(fighter.get('isAsleepUntil'))) {
+                    const text = `###ORIGIN###: Du schläfst gerade und kannst nicht angreifen emote_sleep emote_sleep`;
+                    sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, text);
+                    return Promise.resolve(false);
+                }
+
+                const target = this.getTarget(origin, parts, messageObject);
+                const inLoveWith = fighter.get('inLoveWith');
+                const newInLoveWith = [];
+                let refuses = false;
+                for(let i = 0; i < inLoveWith.length; i++) {
+                    const element = inLoveWith[i];
+                    if(moment().isBefore(moment(element.until))) {
+                        newInLoveWith.push(element);
+
+                        if(element.name === target) {
+                            refuses = true;
+                        }
+                    }
+                }
+                await fighter.set('inLoveWith', newInLoveWith).update();
+                if(refuses) {
+                    const text = `###ORIGIN### ist in ###TARGET### ganz doll verflauscht und weigert sich ###TARGET### anzugreifen emote_woah emote_heart`;
+                    sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, text);
+                    return Promise.resolve(false);
+                }
+            }
+        }
+
+        const document = await mongoDBClient
+            .db("flauschipandabot")
+            .collection("misc")
+            .findOne( {identifier: `globalCooldown${this.command}`}, {});
+
+        if(document && document.value) {
+            if(moment().isBefore(moment(document.value))) {
+                const text = `###ORIGIN###: Der Command !${this.command} ist noch im Cooldown NotLikeThis`;
+                sayService.say(origin, context['display-name'], '', channel, text);
+                return Promise.resolve(false);
+            } else {
+                await mongoDBClient
+                    .db("flauschipandabot")
+                    .collection("misc")
+                    .deleteOne(document);
+            }
+        }
+
+        if(this.globalCooldown > 0) {
+            await mongoDBClient
+                .db("flauschipandabot")
+                .collection("misc")
+                .insertOne({
+                    identifier: `globalCooldown${this.command}`,
+                    value: moment().add(this.globalCooldown, 'seconds').format()
+                });
         }
 
         if(this.customHandler) {

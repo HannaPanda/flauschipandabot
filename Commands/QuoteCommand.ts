@@ -13,10 +13,12 @@ class QuoteCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'quote';
     description    = 'Zitate ausgeben und speichern. !quote [ add | replace | approve | delete ] ID ';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const isMod = context.mod || context.username === process.env.CHANNEL;

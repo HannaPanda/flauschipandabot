@@ -39,3 +39,9 @@ dist/**/*
 
 # ignore yarn.lock
 yarn.lock
+
+# Binär-Dateien
+*.mp4
+*.mp3
+*.wav
+*.webm

@@ -11,12 +11,14 @@ class GruppenFlauschCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'gruppenflausch';
     description    = 'GRUPPENFLAUSCH!';
     answerNoTarget = 'emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart' +
         ' Gruppenflausch!' +
         ' emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart emote_heart';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         let allUsers = await mongoDBClient

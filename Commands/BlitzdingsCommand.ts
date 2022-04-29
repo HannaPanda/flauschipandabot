@@ -8,10 +8,12 @@ class BlitzdingsCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'blitzdings';
     description    = 'Wenn man mal etwas vergessen muss';
     answerNoTarget = '###DISPLAYNAME### blitzdingst sich mal eben schnell selbst ins Mittelalter';
     answerTarget   = '###DISPLAYNAME### setzt sich lässig eine Sonnenbrille auf und blitzdingst ###TARGET###\'s Verstand in\'s Gestern';
+    globalCooldown = 0;
 }
 
 let blitzdingsCommand = new BlitzdingsCommand();

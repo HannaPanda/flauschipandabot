@@ -11,10 +11,12 @@ class KnochenCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = true;
     command        = 'knochen';
     description    = 'Wirf mit einem Knochen!';
     answerNoTarget = '###DISPLAYNAME### wirft mit Knochen um sich 🦴🦴';
     answerTarget   = '###DISPLAYNAME### wirft einen Knochen auf ###TARGET### 🦴';
+    globalCooldown = 0;
 
     targetAreas = [
         'am Kopf, das gibt \'ne Beule', 'ins Auge, AUA', 'am Bauch, boing', 'an der Hand', 'am Arm', 'am Fuß',

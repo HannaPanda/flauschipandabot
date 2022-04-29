@@ -9,10 +9,12 @@ class TimeoutCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = true;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'to';
     description    = 'Sende jemanden in timeout';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         if(!this.isActive) {

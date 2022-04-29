@@ -11,10 +11,12 @@ class DuscheCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'dusche';
     description    = 'Kalte Dusche bei zu hitzigen Gedanken';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const document = await mongoDBClient

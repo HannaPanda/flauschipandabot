@@ -8,10 +8,12 @@ class LurkCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'lurk';
     description    = 'Bin dann mal weg';
     answerNoTarget = '###DISPLAYNAME### verschwindet im Flausch 🥰';
     answerTarget   = '';
+    globalCooldown = 0;
 }
 
 let lurkCommand = new LurkCommand();

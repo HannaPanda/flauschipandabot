@@ -10,10 +10,12 @@ class FlauschlisteCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'flauschliste';
     description    = 'Zeigt an, wer die meisten Flauschen im Kopf hat';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const userList = await mongoDBClient

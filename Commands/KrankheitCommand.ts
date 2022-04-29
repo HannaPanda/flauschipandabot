@@ -11,10 +11,12 @@ class KrankheitCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = true;
     command        = 'krankheit';
     description    = 'Verhexe jemanden mit einer Krankheit';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const target = this.getTarget(origin, parts, messageObject);

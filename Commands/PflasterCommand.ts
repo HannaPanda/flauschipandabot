@@ -10,10 +10,12 @@ class PflasterCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'pflaster';
     description    = 'Macht Aua weg ❤';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const targetName = parts.slice(1).join(' ');

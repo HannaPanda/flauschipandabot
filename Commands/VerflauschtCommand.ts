@@ -8,10 +8,12 @@ class VerflauschtCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'verflauscht';
     description    = 'Wie verflauscht bist du?';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const targetName = parts.slice(1).join(' ');

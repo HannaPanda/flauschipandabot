@@ -11,10 +11,12 @@ class RuheCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = true;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'ruhe';
     description    = 'Umschalten auf Ruhemodus';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         if(origin !== 'tmi') {

@@ -11,10 +11,12 @@ class DinoknochenCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = true;
     command        = 'dinoknochen';
     description    = 'Wirf mit einem Dinoknochen! :O';
     answerNoTarget = '###DISPLAYNAME### wirft mit Dinoknochen um sich 🦴🦴🦴🦴🦴🦴🦴🦴';
     answerTarget   = '###DISPLAYNAME### wirft einen Dinoknochen auf ###TARGET### 🦴🦴';
+    globalCooldown = 0;
 
     targetAreas = [
         'am Kopf, das gibt \'ne Beule', 'ins Auge, AUA', 'am Bauch, boing', 'an der Hand', 'am Arm', 'am Fuß',

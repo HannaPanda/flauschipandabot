@@ -11,10 +11,12 @@ class PizzaCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = false;
     command        = 'pizza';
     description    = 'Spendiere jemandem eine Pizza';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     pizzaSorten = [
         'Salami', 'Speciale', 'Hawaii', 'Thunfisch', 'Spinaci', 'Funghi',

@@ -61,12 +61,12 @@ class FlauschiPandaBot
         this.obs = obsClient;
 
         setInterval(this.getStreamInfo, 30000);
-        setInterval(this.mentionModSearch, 3600000*3);
         setInterval(this.mentionTwitchToolkit, 1800000);
 
         this.getStreamInfo();
         this.initializeEvents();
         this.initializeCommands();
+        this.initializeOverlayCommands();
         this.initializeTimers();
 
         const express = require('express');
@@ -77,6 +77,9 @@ class FlauschiPandaBot
         this.io = require('socket.io')(server);
 
         emitter.on('hornyLevelChanged', this.handleHornyLevelChanged);
+        emitter.on('playVideo', this.handlePlayVideo);
+        emitter.on('playAudio', this.handlePlayAudio);
+        emitter.on('showImage', this.handleShowImage);
 
         app.use('/static', express.static('public'));
 
@@ -110,6 +113,12 @@ class FlauschiPandaBot
                 .findOne( {identifier: 'hornyLevel'}, {});
 
             twing.render('horny.twig', {hornyLevel: (document && document.value) ? document.value : 0}).then((output) => {
+                res.end(output);
+            });
+        });
+
+        app.get('/overlay', (req, res) => {
+            twing.render('overlay.twig', {}).then((output) => {
                 res.end(output);
             });
         });
@@ -150,9 +159,21 @@ class FlauschiPandaBot
     private initializeCommands = () => {
         var normalizedPath = require("path").join(__dirname, "Commands");
         const self = this;
-        require("fs").readdirSync(normalizedPath).forEach(function(file) {
+        require("fs").readdirSync(normalizedPath).forEach(function (file) {
             try {
                 self.commands.push(require("./Commands/" + file));
+            } catch (err) {
+                console.log(err);
+            }
+        });
+    }
+
+    private initializeOverlayCommands = () => {
+        var normalizedPath = require("path").join(__dirname, "OverlayCommands");
+        const self = this;
+        require("fs").readdirSync(normalizedPath).forEach(function(file) {
+            try {
+                self.commands.push(require("./OverlayCommands/" + file));
             } catch(err) {
                 console.log(err);
             }
@@ -196,18 +217,33 @@ class FlauschiPandaBot
         }
     }
 
-    private mentionModSearch = async () => {
-        //emitter.emit('tmi.say', 'Ich suche aktuell 1-2 aktive Mods. Mehr Infos im Discord unter https://bit.ly/3HDDuWw');
-    }
-
     private mentionTwitchToolkit = async () => {
-        /*if(streamService.currentStream) {
+        if(streamService.currentStream) {
             emitter.emit('tmi.say', '!karmaround Wir spielen mit TwitchToolkit und ihr könnt mitmachen: Befehle und Items unter https://hannapanda.github.io/item-list/');
-        }*/
+        }
     }
 
     private handleHornyLevelChanged = async (newLevel) => {
+        if(newLevel === 69) {
+            emitter.emit('playVideo', {file: 'noice.mp4', mediaType: 'video', volume: 0.5});
+        } else if (newLevel === 100) {
+            setTimeout(() => {
+                emitter.emit('playAudio', {file: 'love_moment.mp3', mediaType: 'audio', volume: 0.1});
+            }, 5000);
+        }
         this.io.emit('hornyLevelChange', { newLevel: newLevel });
+    }
+
+    private handlePlayVideo = async (data) => {
+        this.io.emit('playVideo', data);
+    }
+
+    private handlePlayAudio = async (data) => {
+        this.io.emit('playAudio', data);
+    }
+
+    private handleShowImage = async (data) => {
+        this.io.emit('showImage', data);
     }
 
 }

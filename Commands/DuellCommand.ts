@@ -16,10 +16,12 @@ class DuellCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = true;
     command        = 'duell';
     description    = 'Duelliere dich mit jemandem';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     weapons = [
         bunnyWeapon, staticElectricityWeapon, tongueWeapon, tickleWeapon

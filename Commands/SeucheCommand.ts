@@ -13,10 +13,12 @@ class SeucheCommand extends AbstractCommand
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
+    isAggressive   = true;
     command        = 'seuche';
     description    = 'Verhexe den ganzen Chat';
     answerNoTarget = '';
     answerTarget   = '';
+    globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const username = context.username.toLowerCase();

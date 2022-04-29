@@ -9,9 +9,11 @@ class CommandsCommand extends AbstractCommand
     isModOnly      = false;
     isOwnerOnly    = false;
     command        = 'commands';
+    isAggressive   = false;
     description    = 'Zeige alle Commands';
     answerNoTarget = '###DISPLAYNAME###: Du findest eine Liste aller Commands hier: http://www.hannapanda.de/commands';
     answerTarget   = '';
+    globalCooldown = 0;
 }
 
 let commandsCommand = new CommandsCommand();

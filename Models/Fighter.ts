@@ -1,5 +1,6 @@
 import mongoDBClient from "../Clients/mongoDBClient";
 import * as dotenv from "dotenv";
+import moment from "moment";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class Fighter {
@@ -36,7 +37,9 @@ class Fighter {
                     immunity: 0,
                     canUseCommands: true,
                     disease: false,
-                    incurableDisease: true
+                    incurableDisease: false,
+                    inLoveWith: [],
+                    isAsleepUntil: moment().subtract(1, 'year').format()
                 });
 
             this.fighter = await mongoDBClient
@@ -77,7 +80,9 @@ class Fighter {
                         immunity:         this.fighter.immunity,
                         canUseCommands:   this.fighter.canUseCommands,
                         disease:          this.fighter.disease,
-                        incurableDisease: this.fighter.incurableDisease
+                        incurableDisease: this.fighter.incurableDisease,
+                        inLoveWith:       this.fighter.inLoveWith,
+                        isAsleepUntil:    this.fighter.isAsleepUntil
                     }
                 }
             );
