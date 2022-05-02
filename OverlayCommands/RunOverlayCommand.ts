@@ -9,20 +9,20 @@ import sayService from "../Services/SayService";
 import AbstractOverlayCommand from "../Abstracts/AbstractOverlayCommand";
 dotenv.config({ path: __dirname+'/../.env' });
 
-class MoanOverlayCommand extends AbstractOverlayCommand
+class RunOverlayCommand extends AbstractOverlayCommand
 {
-    isActive       = false;
+    isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
-    command        = "moan";
-    aliases        = ["!stöhn", "!stöhnen"];
-    description    = ";)";
-    mediaFile      = "";//"moan.mp3";
+    command        = "run";
+    aliases        = [];
+    description    = "RUN!!!!";
+    mediaFile      = "run.mp3";
     mediaType      = "audio";
-    volume         = 0.25;
+    volume         = 0.1;
     customHandler  = null;
 }
 
-let moanOverlayCommand = new MoanOverlayCommand();
+let runOverlayCommand = new RunOverlayCommand();
 
-export default moanOverlayCommand;
+export default runOverlayCommand;

@@ -15,7 +15,7 @@ class FlipOverlayCommand extends AbstractOverlayCommand
     isModOnly      = false;
     isOwnerOnly    = false;
     command        = "flip";
-    aliases        = ["tableflip"];
+    aliases        = ["!tableflip"];
     description    = "Table Flip";
     mediaFile      = "flip.mp4";
     mediaType      = "video";

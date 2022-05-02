@@ -13,7 +13,7 @@ class HornyCommand extends AbstractCommand
     isOwnerOnly    = false;
     isAggressive   = false;
     command        = 'horny';
-    aliases        = ['bonk'];
+    aliases        = ['!bonk'];
     description    = 'Horny Bonk';
     answerNoTarget = '';
     answerTarget   = '';
@@ -48,7 +48,7 @@ class HornyCommand extends AbstractCommand
             .collection("misc")
             .findOne( {identifier: 'hornyLevel'}, {});
 
-        emitter.emit('showImage', {file: 'horny.png', mediaType: 'image'});
+        emitter.emit('showImage', {file: 'horny.png', mediaType: 'image', duration: 5000});
         emitter.emit('playAudio', {file: 'bonk.mp3', mediaType: 'audio', volume: 0.2});
 
         const curHornyLevel = (document && document.value) ? document.value : 0;

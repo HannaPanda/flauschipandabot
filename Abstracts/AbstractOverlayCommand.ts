@@ -15,6 +15,7 @@ abstract class AbstractOverlayCommand
     mediaFile      = "";
     mediaType      = "";
     volume         = 1;
+    duration       = 5000;
     fullscreen     = false;
     customHandler  = null;
 
@@ -30,7 +31,7 @@ abstract class AbstractOverlayCommand
 
         parts[0] = parts[0].toLowerCase();
 
-        if(parts[0] !== `!${this.command}` && !this.aliases.includes(parts[0].replace('!', ''))) {
+        if(parts[0] !== `!${this.command}` && !this.aliases.includes(parts[0])) {
             return Promise.resolve(false);
         }
 
@@ -69,7 +70,7 @@ abstract class AbstractOverlayCommand
                     emitter.emit('playAudio', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume, fullscreen: this.fullscreen});
                     break;
                 case 'image':
-                    emitter.emit('showImage', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume});
+                    emitter.emit('showImage', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume, duration: this.duration});
                     break;
             }
 

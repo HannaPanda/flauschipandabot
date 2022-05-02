@@ -33,7 +33,7 @@ abstract class AbstractCommand
 
         parts[0] = parts[0].toLowerCase();
 
-        if(parts[0] !== `!${this.command}` && !this.aliases.includes(parts[0].replace('!', ''))) {
+        if(parts[0] !== `!${this.command}` && !this.aliases.includes(parts[0])) {
             return Promise.resolve(false);
         }
 

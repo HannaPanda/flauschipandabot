@@ -11,13 +11,13 @@ dotenv.config({ path: __dirname+'/../.env' });
 
 class KlatschOverlayCommand extends AbstractOverlayCommand
 {
-    isActive       = true;
+    isActive       = false;
     isModOnly      = false;
     isOwnerOnly    = false;
     command        = "klatsch";
-    aliases        = ["klatschen"];
+    aliases        = ["!klatschen"];
     description    = "( ͡° ͜ʖ ͡°)";
-    mediaFile      = "fap.mp3";
+    mediaFile      = "";//"fap.mp3";
     mediaType      = "audio";
     volume         = 0.25;
     customHandler  = null;

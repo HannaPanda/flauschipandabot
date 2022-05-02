@@ -62,14 +62,14 @@
         document.getElementById("root").appendChild(audio);
     }
 
-    function showImage(imageUrl) {
+    function showImage(imageUrl, duration) {
         let image = new Image();
         image.src = imageUrl;
         $(image).width('50%');
         $(image).hide();
         $('#root').append(image);
 
-        $(image).fadeIn(500).delay(5000).fadeOut(500, () => {
+        $(image).fadeIn(200).delay(duration).fadeOut(200, () => {
             $(image).delete();
         });
     }
@@ -82,7 +82,7 @@
         playVideo('/static/audio/'+msg.file, msg.volume);
     });
     socket.on('showImage', function(msg) {
-        showImage('/static/images/'+msg.file);
+        showImage('/static/images/'+msg.file, msg.duration);
     });
 </script>
 

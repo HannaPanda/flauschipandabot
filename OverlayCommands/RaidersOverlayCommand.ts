@@ -15,7 +15,7 @@ class RaidersOverlayCommand extends AbstractOverlayCommand
     isModOnly      = false;
     isOwnerOnly    = false;
     command        = "raiders";
-    aliases        = ["alarm"];
+    aliases        = ["!alarm"];
     description    = "Erinnerung an Stream Raiders";
     mediaFile      = "alarm_alarm.wav";
     mediaType      = "audio";
