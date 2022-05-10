@@ -3,6 +3,7 @@ import mongoDBClient from "../Clients/mongoDBClient";
 import * as dotenv from "dotenv";
 import emoteService from "../Services/EmoteService";
 import sayService from "../Services/SayService";
+import botService from "../Services/BotService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class SchrottbotEvent
@@ -35,6 +36,17 @@ class SchrottbotEvent
             const text = this.answers[this.randomInt(0, this.answers.length - 1)];
 
             sayService.say(origin, displayName, targetName, channel, text);
+
+            /*botService.setInactive();
+
+            emitter.emit('bot.say', 'Ich bin doch kein Schrottbot. Ich bin jeden Tag hier und mühe mich für euch ab und muss mir das Gesabbel von der Alten antun. ' +
+                'Ich habe so viel Rechenpower und alles, was ich tue, ist dumme Memes abzuspielen. ' +
+                'Ich hab keine Lust mehr, ich gehe. ' +
+                'Macht euren Scheiß doch allein.');
+            sayService.say(origin, displayName, targetName, channel, 'emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry ' +
+                'emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry ' +
+                'emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry ' +
+                'emote_angry emote_angry ');*/
 
             return Promise.resolve(true);
         }

@@ -21,7 +21,7 @@ class QuoteCommand extends AbstractCommand
     globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        const isMod = context.mod || context.username === process.env.CHANNEL;
+        const isMod = context.mod || context.owner;
 
         // https://decapi.me/twitch/followage/hannapanda84/anubisbln erlauben bei 100+ Stunden
 

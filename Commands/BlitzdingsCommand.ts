@@ -11,8 +11,8 @@ class BlitzdingsCommand extends AbstractCommand
     isAggressive   = false;
     command        = 'blitzdings';
     description    = 'Wenn man mal etwas vergessen muss';
-    answerNoTarget = '###DISPLAYNAME### blitzdingst sich mal eben schnell selbst ins Mittelalter';
-    answerTarget   = '###DISPLAYNAME### setzt sich lässig eine Sonnenbrille auf und blitzdingst ###TARGET###\'s Verstand in\'s Gestern';
+    answerNoTarget = '###ORIGIN### blitzdingst sich mal eben schnell selbst ins Mittelalter';
+    answerTarget   = '###ORIGIN### setzt sich lässig eine Sonnenbrille auf und blitzdingst ###TARGET###\'s Verstand in\'s Gestern';
     globalCooldown = 0;
 }
 

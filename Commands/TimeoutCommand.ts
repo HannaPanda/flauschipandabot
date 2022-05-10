@@ -2,6 +2,7 @@ import emitter from "../emitter";
 import tmiClient from "../Clients/tmiClient";
 import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class TimeoutCommand extends AbstractCommand
@@ -25,18 +26,18 @@ class TimeoutCommand extends AbstractCommand
             return Promise.resolve(false);
         }
 
-        if(!context.mod && context.username !== process.env.CHANNEL) {
-            emitter.emit('tmi.say', `*bonk* ಠ_ಠ`);
+        if(!context.mod && !context.owner) {
+            sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
             return Promise.resolve(false);
         }
 
         if(parts.length > 1) {
             tmiClient.timeout(process.env.CHANNEL, parts[1], 300, parts[1]+' war unartig! ┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻').catch((err) => {console.warn(err)});
         } else {
-            emitter.emit('tmi.say', `Wen bitte? ಠ_ಠ`);
+            sayService.say(origin, '', '', channel, `Wen bitte? ಠ_ಠ`);
         }
 
-        return Promise.resolve(true)
+        return Promise.resolve(true);
     }
 }
 

@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import knochenCommand from "./KnochenCommand";
 import Fighter from "../Models/Fighter";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class PflasterCommand extends AbstractCommand
@@ -33,7 +34,7 @@ class PflasterCommand extends AbstractCommand
             originUser.setOpponent(targetUser);
 
             if(targetUser.get('curHp') === targetUser.get('maxHp')) {
-                emitter.emit(`${origin}.say`, `${targetName} ist bereits vollständig geheilt`, channel);
+                sayService.say(origin, context['display-name'], targetName, channel, `###TARGET### ist bereits vollständig geheilt`);
                 return Promise.resolve(false);
             }
 
@@ -48,13 +49,9 @@ class PflasterCommand extends AbstractCommand
                 text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP]`;
             }
 
-            emitter.emit(`${origin}.say`, text, channel);
+            sayService.say(origin, context['display-name'], targetName, channel, text);
         } else {
-            emitter.emit(
-                `${origin}.say`,
-                `${context['display-name']} bappt sich selbst ein Pflaster auf die Stirn LUL`,
-                channel
-            );
+            sayService.say(origin, context['display-name'], targetName, channel, `###ORIGIN### bappt sich selbst ein Pflaster auf die Stirn LUL`);
 
             const user = new Fighter();
             await user.init(context.username.toLowerCase());

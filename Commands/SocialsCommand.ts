@@ -11,7 +11,7 @@ class SocialsCommand extends AbstractCommand
     isAggressive   = false;
     command        = 'socials';
     description    = 'Socials';
-    answerNoTarget = '###DISPLAYNAME###: https://discord.link/flauschecke | https://twitter.com/HannaPanda84 | https://www.instagram.com/hannapanda84/ | https://vm.tiktok.com/ZMLFUQ9mr/';
+    answerNoTarget = '###ORIGIN###: https://discord.link/flauschecke | https://twitter.com/HannaPanda84 | https://www.instagram.com/hannapanda84/ | https://vm.tiktok.com/ZMLFUQ9mr/';
     answerTarget   = '';
     globalCooldown = 0;
 }

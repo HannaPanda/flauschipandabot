@@ -5,6 +5,7 @@ import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import statusService from "../Services/StatusService";
 import StatusService from "../Services/StatusService";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class HealCommand extends AbstractCommand
@@ -28,11 +29,7 @@ class HealCommand extends AbstractCommand
         await originUser.init(username);
 
         if(target.trim() === '') {
-            emitter.emit(
-                `${origin}.say`,
-                `${context['display-name']} versucht jemanden von einer Krankheit zu heilen aber... DA IST NICHTS LUL`,
-                channel
-            );
+            sayService.say(origin, context['display-name'], '', channel, `###ORIGIN### versucht jemanden von einer Krankheit zu heilen aber... DA IST NICHTS LUL`)
             return Promise.resolve(false);
         }
 

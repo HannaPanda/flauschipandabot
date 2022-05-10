@@ -10,8 +10,9 @@ class DiscordCommand extends AbstractCommand
     isOwnerOnly    = false;
     isAggressive   = false;
     command        = 'discord';
+    aliases        = ['!dc'];
     description    = 'Discord';
-    answerNoTarget = '###DISPLAYNAME###: https://discord.link/flauschecke Quatscht live zusammen mit mir im "On Stream" Voice Channel. Meldet euch mit eurem Discord Nick bei mir und ich lade euch ein emote_heart';
+    answerNoTarget = '###ORIGIN###: https://discord.link/flauschecke Quatscht live zusammen mit mir im "On Stream" Voice Channel. Meldet euch mit eurem Discord Nick bei mir und ich lade euch ein emote_heart';
     answerTarget   = '';
     globalCooldown = 0;
 }

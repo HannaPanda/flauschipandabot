@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import emoteService from "../Services/EmoteService";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class GruppenFlauschCommand extends AbstractCommand
@@ -31,14 +32,7 @@ class GruppenFlauschCommand extends AbstractCommand
             this.healFighter(user.name);
         }
 
-        emitter.emit(
-            `${origin}.say`,
-            this.answerNoTarget
-                .replace(/emote_([a-zA-Z0-9]+)/g, (match, contents, offset, input_string) => {
-                    return emoteService.getEmote(origin, match);
-                }),
-            channel
-        );
+        sayService.say(origin, '', '', channel, this.answerNoTarget);
     }
 
     healFighter = async (username) => {

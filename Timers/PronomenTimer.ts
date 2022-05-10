@@ -13,7 +13,7 @@ class DiscordTimer extends AbstractTimer
     handler = () => {
         const text = `Eure Pronomen im Chat? Geht einfach auf https://pronouns.alejo.io/ und meldet euch über Twitch dort an. 
         Dort könnt ihr eure Pronomen auswählen. 
-        Dazu noch die Browserextension für Chrome: https://pronouns.alejo.io/chrome oder Firefox: https://pronouns.alejo.io/firefox ❤❤❤`;
+        Dazu noch die Browserextension für Chrome: https://pronouns.alejo.io/chrome oder Firefox: https://pronouns.alejo.io/firefox emote_heart emote_heart emote_heart`;
 
         sayService.say('tmi', '', '', null, text);
     }

@@ -7,6 +7,7 @@ class Fighter {
 
     private fighter;
     private opponent;
+    private dirty = [];
 
     xpToLevel = {
         0: 1, 300: 2, 900: 3, 2700: 4, 6500: 5, 14000: 6, 23000: 7, 34000: 8, 48000: 9, 64000: 10, 85000: 11,
@@ -56,6 +57,7 @@ class Fighter {
     }
 
     set = (stat: string, value: any) => {
+        this.dirty.push(stat);
         this.fighter[stat] = value;
 
         return this;
@@ -66,25 +68,21 @@ class Fighter {
     }
 
     update = async () => {
+        if(this.dirty.length === 0) {
+            return Promise.resolve(false);
+        }
+
+        let updateObject = {};
+        for(let i = 0; i < this.dirty.length; i++) {
+            updateObject[this.dirty[i]] = this.fighter[this.dirty[i]];
+        }
+
         await mongoDBClient
             .db("flauschipandabot")
             .collection("fighters")
             .updateOne(
                 {name: this.fighter.name},
-                {
-                    $set: {
-                        xp:               this.fighter.xp,
-                        level:            this.fighter.level,
-                        curHp:            this.fighter.curHp,
-                        maxHp:            this.fighter.maxHp,
-                        immunity:         this.fighter.immunity,
-                        canUseCommands:   this.fighter.canUseCommands,
-                        disease:          this.fighter.disease,
-                        incurableDisease: this.fighter.incurableDisease,
-                        inLoveWith:       this.fighter.inLoveWith,
-                        isAsleepUntil:    this.fighter.isAsleepUntil
-                    }
-                }
+                {$set: updateObject}
             );
     }
 

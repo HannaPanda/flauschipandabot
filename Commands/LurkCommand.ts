@@ -11,7 +11,7 @@ class LurkCommand extends AbstractCommand
     isAggressive   = false;
     command        = 'lurk';
     description    = 'Bin dann mal weg';
-    answerNoTarget = '###DISPLAYNAME### verschwindet im Flausch 🥰';
+    answerNoTarget = '###ORIGIN### verschwindet im Flausch 🥰';
     answerTarget   = '';
     globalCooldown = 0;
 }

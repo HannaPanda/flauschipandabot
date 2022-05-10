@@ -51,8 +51,8 @@ class MigrateCommand extends AbstractCommand
                     }
                 );
         }*/
-
-        sayService.say('tmi', '', '', null, 'Migration fertig');
+        emitter.emit('playClip', 'ToughYawningWatermelonBabyRage-anZ2kAwvZqEMW_U-');
+        //sayService.say('tmi', '', '', null, 'Migration fertig');
     }
 
     /*updateFighter = async (username) => {

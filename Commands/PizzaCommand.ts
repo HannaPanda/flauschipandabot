@@ -20,7 +20,7 @@ class PizzaCommand extends AbstractCommand
 
     pizzaSorten = [
         'Salami', 'Speciale', 'Hawaii', 'Thunfisch', 'Spinaci', 'Funghi',
-        'Margherita', 'Prosciutto', 'Schinke', 'Vegetarisch', 'Vier Käse'
+        'Margherita', 'Prosciutto', 'Schinken', 'Vegetarisch', 'Vier Käse'
     ];
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {

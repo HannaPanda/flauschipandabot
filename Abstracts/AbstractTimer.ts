@@ -10,6 +10,7 @@ abstract class AbstractTimer
     isActive     = true;
     minutes      = 30;
     chatLines    = 5;
+    gameName     = "";
 
     curChatLines = 0;
 
@@ -28,7 +29,7 @@ abstract class AbstractTimer
     }
 
     internalHandler = () => {
-        if(streamService.currentStream && this.curChatLines >= this.chatLines) {
+        if(streamService.currentStream && this.curChatLines >= this.chatLines && (this.gameName === "" || this.gameName === streamService.currentStream?.game_name)) {
             this.curChatLines = 0;
             this.handler();
         }

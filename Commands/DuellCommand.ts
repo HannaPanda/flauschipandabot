@@ -9,6 +9,7 @@ import staticElectricityWeapon from "../Weapons/StaticElectricity";
 import tongueWeapon from "../Weapons/Tongue";
 import tickle from "../Weapons/Tickle";
 import tickleWeapon from "../Weapons/Tickle";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class DuellCommand extends AbstractCommand
@@ -36,7 +37,7 @@ class DuellCommand extends AbstractCommand
         const chosenWeapon = this.weapons[this.randomInt(0, this.weapons.length - 1)];
 
         if(target === '') {
-            this.say(origin, displayName, targetName, channel, '###ORIGIN### möchte sich duellieren! ');
+            sayService.say(origin, displayName, targetName, channel, '###ORIGIN### möchte sich duellieren! ');
 
             return Promise.resolve(true);
         }
@@ -57,7 +58,7 @@ class DuellCommand extends AbstractCommand
         let text = '###ORIGIN### fordert ###TARGET### zu einem Duell heraus! ' +
             'Die Waffen? '+chosenWeapon.name+'! '+chosenWeapon.getRandomAttack()+hitMessage;
 
-        this.say(origin, displayName, targetName, channel, text);
+        sayService.say(origin, displayName, targetName, channel, text);
 
         return Promise.resolve(true);
     }

@@ -1,18 +1,10 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "layout.twig" %}
 
-    <!-- Bootstrap CSS -->
-    <link href="http://www.hannapanda.de/static/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link href="http://www.hannapanda.de/static/css/hanna.css" rel="stylesheet" crossorigin="anonymous">
+{% set showMenu = true %}
 
-    <title>Zitate aus Hanna's Chat</title>
-</head>
-<body>
-{{ include('menu.html') }}
+{% block title %}Zitate aus Hanna's Chat{% endblock %}
+
+{% block content %}
 <section class="m-5">
     <div class="container">
         <div class="col">
@@ -50,8 +42,4 @@
         </div>
     </div>
 </section>
-
-<script src="http://www.hannapanda.de/static/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-
-</body>
-</html>
+{% endblock %}

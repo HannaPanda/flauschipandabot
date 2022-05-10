@@ -5,6 +5,7 @@ import Fighter from "../Models/Fighter";
 import moment from "moment";
 import sayService from "../Services/SayService";
 import mongoDBClient from "../Clients/mongoDBClient";
+import botService from "../Services/BotService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractCommand
@@ -37,13 +38,13 @@ abstract class AbstractCommand
             return Promise.resolve(false);
         }
 
-        if(this.isModOnly && !context.mod && context.username !== process.env.CHANNEL) {
-            emitter.emit(`${origin}.say`, `*bonk* ಠ_ಠ`, channel);
+        if(this.isModOnly && !context.mod && !context.owner) {
+            sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
             return Promise.resolve(false);
         }
 
-        if(this.isOwnerOnly && context.username !== process.env.CHANNEL) {
-            emitter.emit(`${origin}.say`, `*bonk* ಠ_ಠ`, channel);
+        if(this.isOwnerOnly && !context.owner) {
+            sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
             return Promise.resolve(false);
         }
 
@@ -51,11 +52,13 @@ abstract class AbstractCommand
             const fighter = new Fighter();
             await fighter.init(context.username.toLowerCase());
             if(fighter.get('curHp') <= 0) {
-                emitter.emit(`${origin}.say`, `${context['display-name']}, du bist gerade ohnmächtig und kannst keine Commands ausführen NotLikeThis Erst wenn du geheilt wurdest, geht das wieder.`, channel);
+                const text = `###ORIGIN###, du bist gerade ohnmächtig und kannst keine Commands ausführen NotLikeThis Erst wenn du geheilt wurdest, geht das wieder.`;
+                sayService.say(origin, context['display-name'], '', channel, text);
                 return Promise.resolve(false);
             }
             if(!fighter.get('canUseCommands')) {
-                emitter.emit(`${origin}.say`, `${context['display-name']}, du hast dich selbst verhext und kannst keine Commands ausführen NotLikeThis Da hilft nur warten.`, channel);
+                const text = `###ORIGIN###, du hast dich selbst verhext und kannst keine Commands ausführen NotLikeThis Da hilft nur warten.`;
+                sayService.say(origin, context['display-name'], '', channel, text);
                 return Promise.resolve(false);
             }
 
@@ -65,10 +68,17 @@ abstract class AbstractCommand
                     .collection("misc")
                     .findOne( {identifier: 'liebesritualUntil'}, {});
 
-                if(liebesritual && liebesritual.value && moment().isBefore(moment(liebesritual.value)) ) {
-                    const text = `###ORIGIN###: Die Flauschis erholen sich noch für ${Math.round(moment.duration(moment(liebesritual.value).diff(moment())).asMinutes())} Minuten vom letzten Liebesritual.`;
-                    sayService.say(origin, context['display-name'], '', channel, text);
-                    return Promise.resolve(false);
+                if(liebesritual) {
+                    if(liebesritual.value && moment().isBefore(moment(liebesritual.value))) {
+                        const text = `###ORIGIN###: Die Flauschis erholen sich noch für ${Math.round(moment.duration(moment(liebesritual.value).diff(moment())).asMinutes())} Minuten vom letzten Liebesritual.`;
+                        sayService.say(origin, context['display-name'], '', channel, text);
+                        return Promise.resolve(false);
+                    } else {
+                        await mongoDBClient
+                            .db("flauschipandabot")
+                            .collection("misc")
+                            .deleteOne( {identifier: 'liebesritualUntil'}, {});
+                    }
                 }
 
                 if(moment().isBefore(fighter.get('isAsleepUntil'))) {
@@ -118,6 +128,11 @@ abstract class AbstractCommand
             }
         }
 
+        if(!botService.botActive) {
+            emitter.emit('bot.say', 'Ich habe keine Lust. Ich schmolle jetzt.');
+            return Promise.resolve(false);
+        }
+
         if(this.globalCooldown > 0) {
             await mongoDBClient
                 .db("flauschipandabot")
@@ -133,27 +148,9 @@ abstract class AbstractCommand
             return Promise.resolve(true);
         } else {
             if(parts.length > 1 && this.answerTarget !== '') {
-                emitter.emit(
-                    `${origin}.say`,
-                    this.answerTarget
-                        .split('###DISPLAYNAME###').join(context['display-name'])
-                        .split('###TARGET###').join(parts.slice(1).join(' '))
-                        .replace(/emote_([a-zA-Z0-9]+)/g, (match, contents, offset, input_string) => {
-                            return emoteService.getEmote(origin, match);
-                        }),
-                    channel
-                );
+                sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerTarget);
             } else {
-                emitter.emit(
-                    `${origin}.say`,
-                    this.answerNoTarget
-                        .split('###DISPLAYNAME###').join(context['display-name'])
-                        .split('###TARGET###').join(parts.slice(1).join(' '))
-                        .replace(/emote_([a-zA-Z0-9]+)/g, (match, contents, offset, input_string) => {
-                            return emoteService.getEmote(origin, match);
-                        }),
-                    channel
-                );
+                sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerNoTarget);
             }
 
             return Promise.resolve(true);
@@ -175,19 +172,6 @@ abstract class AbstractCommand
 
     protected randomInt = (min, max) => {
         return Math.floor(Math.random() * (max - min + 1) + min)
-    }
-
-    protected say = (origin, displayName, targetName, channel, message) => {
-        emitter.emit(
-            `${origin}.say`,
-            message
-                .split('###ORIGIN###').join(displayName)
-                .split('###TARGET###').join(targetName)
-                .replace(/emote_([a-zA-Z0-9]+)/g, (match, contents, offset, input_string) => {
-                    return emoteService.getEmote(origin, match);
-                }),
-            channel
-        );
     }
 }
 

@@ -11,7 +11,7 @@ class KnochenmoppCommand extends AbstractCommand
     isAggressive   = false;
     command        = 'knochenmopp';
     description    = 'Hanna beim Aufräumen helfen';
-    answerNoTarget = '###DISPLAYNAME### schnappt sich den Knochenmopp und hilft Hanna beim Aufräumen. Dank ###DISPLAYNAME### kann Hanna nun Panda-Dinge machen.';
+    answerNoTarget = '###ORIGIN### schnappt sich den Knochenmopp und hilft Hanna beim Aufräumen. Dank ###ORIGIN### kann Hanna nun Panda-Dinge machen.';
     answerTarget   = '';
     globalCooldown = 0;
 }

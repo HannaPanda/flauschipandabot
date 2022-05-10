@@ -11,8 +11,8 @@ class FlauschCommand extends AbstractCommand
     isAggressive   = false;
     command        = 'flausch';
     description    = 'Flausche jemanden durch';
-    answerNoTarget = '###DISPLAYNAME### flauscht ins Leere v( ‘.’ )v';
-    answerTarget   = 'emote_heart emote_heart ###DISPLAYNAME### flauscht ###TARGET### emote_heart emote_heart';
+    answerNoTarget = '###ORIGIN### flauscht ins Leere v( ‘.’ )v';
+    answerTarget   = 'emote_heart emote_heart ###ORIGIN### flauscht ###TARGET### emote_heart emote_heart';
     globalCooldown = 0;
 }
 

@@ -11,7 +11,7 @@ class UnlurkCommand extends AbstractCommand
     isAggressive   = false;
     command        = 'unlurk';
     description    = 'Bin wieder da';
-    answerNoTarget = '###DISPLAYNAME### ist wieder da! emote_hype';
+    answerNoTarget = '###ORIGIN### ist wieder da! emote_hype';
     answerTarget   = '';
     globalCooldown = 0;
 }

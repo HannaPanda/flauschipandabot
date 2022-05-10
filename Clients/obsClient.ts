@@ -3,6 +3,8 @@ import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import OBSWebSocket from "obs-websocket-js";
 import tmiOwnerClient from "./tmiOwnerClient";
+import sayService from "../Services/SayService";
+import twitchClient from "./twitchClient";
 
 const tmi = require('tmi.js');
 dotenv.config({ path: __dirname+'/../.env' });
@@ -24,14 +26,9 @@ class Initializer
                 // Partner only?
                 this.obs.on('SwitchScenes', data => {
                     if(data['scene-name'] === 'Bitte Warten') {
-                        tmiOwnerClient.commercial("hannapanda84", 60)
-                            .then((data) => {
-                                console.log(data);
-                            }).catch((err) => {
-                            console.log(err);
-                        });
+                        twitchClient.startCommercial(120)
 
-                        emitter.emit('tmi.say', `Werbepause! ヾ(ﾟдﾟ)ﾉ`);
+                        sayService.say('tmi', '', '', null, `Werbepause! ヾ(ﾟдﾟ)ﾉ`);
                     }
                 });
                 this.obs.on('ConnectionClosed', data => {

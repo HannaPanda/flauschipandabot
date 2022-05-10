@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import statusService from "../Services/StatusService";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class KrankheitCommand extends AbstractCommand
@@ -27,11 +28,8 @@ class KrankheitCommand extends AbstractCommand
         await originUser.init(username);
 
         if(target.trim() === '') {
-            emitter.emit(
-                `${origin}.say`,
-                `${context['display-name']} fuchtelt theatralisch in der Luft herum und... es passiert nichts LUL`,
-                channel
-            );
+            const text = `${context['display-name']} fuchtelt theatralisch in der Luft herum und... es passiert nichts LUL`;
+            sayService.say(origin, context['display-name'], '', channel, text);
             return Promise.resolve(false);
         }
 
@@ -44,12 +42,8 @@ class KrankheitCommand extends AbstractCommand
 
         if(targetUser.isImmune()) {
             // Immunität ausgelöst
-
-            emitter.emit(
-                `${origin}.say`,
-                `${context['display-name']} fuchtelt theatralisch in der Luft herum aber ${targetName} ist immun! LUL`,
-                channel
-            );
+            const text = `${context['display-name']} fuchtelt theatralisch in der Luft herum aber ${targetName} ist immun! LUL`;
+            sayService.say(origin, context['display-name'], '', channel, text);
         } else if(randomNumber >= 1 && randomNumber <= 20) {
             // Beide getroffen
             await Promise.all([
@@ -57,29 +51,20 @@ class KrankheitCommand extends AbstractCommand
                 statusService.addKrankheit(targetUser, targetName, origin, channel)
             ]);
 
-            emitter.emit(
-                `${origin}.say`,
-                `${context['display-name']} verhext ${targetName} mit einer Krankheit. Dabei ist aber etwas schief gegangen und ${context['display-name']} erwischt es auch! NotLikeThis`,
-                channel
-            );
+            const text = `${context['display-name']} verhext ${targetName} mit einer Krankheit. Dabei ist aber etwas schief gegangen und ${context['display-name']} erwischt es auch! NotLikeThis`;
+            sayService.say(origin, context['display-name'], '', channel, text);
 
         } else if(randomNumber >= 21 && randomNumber <= 40) {
             // Nur origin getroffen
             await statusService.addKrankheit(originUser, context['display-name'], origin, channel);
 
-            emitter.emit(
-                `${origin}.say`,
-                `${context['display-name']} verhext sich selbst beim Versuch, ${targetName} mit einer Krankheit zu verhexen! NotLikeThis`,
-                channel
-            );
+            const text = `${context['display-name']} verhext sich selbst beim Versuch, ${targetName} mit einer Krankheit zu verhexen! NotLikeThis`;
+            sayService.say(origin, context['display-name'], '', channel, text);
         } else if(randomNumber >= 41 && randomNumber <= 45) {
             // Nichts passiert
 
-            emitter.emit(
-                `${origin}.say`,
-                `${context['display-name']} fuchtelt theatralisch in der Luft herum und... es passiert nichts LUL`,
-                channel
-            );
+            const text = `${context['display-name']} fuchtelt theatralisch in der Luft herum und... es passiert nichts LUL`;
+            sayService.say(origin, context['display-name'], '', channel, text);
         } else {
             // Target getroffen
             await statusService.addKrankheit(targetUser, targetName, origin, channel);
@@ -94,7 +79,7 @@ class KrankheitCommand extends AbstractCommand
                 text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP]`;
             }
 
-            emitter.emit(`${origin}.say`, text, channel);
+            sayService.say(origin, context['display-name'], '', channel, text);
         }
 
         return Promise.resolve(true);

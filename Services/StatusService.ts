@@ -53,11 +53,7 @@ class StatusService
         if(!targetUser.get('disease')) {
             await targetUser.set('disease', true).update();
         } else {
-            emitter.emit(
-                `${origin}.say`,
-                `${targetName} ist bereits von einer Krankheit betroffen.`,
-                channel
-            );
+            sayService.say(origin, '', '', channel, `${targetName} ist bereits von einer Krankheit betroffen.`);
         }
     }
 
@@ -65,11 +61,7 @@ class StatusService
         if(!targetUser.get('incurableDisease')) {
             await targetUser.set('incurableDisease', true).update();
         } else {
-            emitter.emit(
-                `${origin}.say`,
-                `${targetName} ist bereits von einer Krankheit betroffen.`,
-                channel
-            );
+            sayService.say(origin, '', '', channel, `${targetName} ist bereits von einer Krankheit betroffen.`);
         }
     }
 
@@ -78,26 +70,14 @@ class StatusService
             if(originUser.get('xp') >= 10000) {
                 await targetUser.set('disease', false).update();
 
-                emitter.emit(
-                    `${origin}.say`,
-                    `${displayName} verbraucht 10.000XP und heilt ${targetName} von einer Krankheit SeemsGood`,
-                    channel
-                );
+                sayService.say(origin, '', '', channel, `${displayName} verbraucht 10.000XP und heilt ${targetName} von einer Krankheit SeemsGood`);
 
                 await originUser.set('xp', originUser.get('xp') - 10000).update();
             } else {
-                emitter.emit(
-                    `${origin}.say`,
-                    `${displayName} versucht ${targetName} zu heilen, hat aber nicht die benötigten 10.000XP übrig!`,
-                    channel
-                );
+                sayService.say(origin, '', '', channel, `${displayName} versucht ${targetName} zu heilen, hat aber nicht die benötigten 10.000XP übrig!`);
             }
         } else {
-            emitter.emit(
-                `${origin}.say`,
-                `${displayName} versucht ${targetName} zu heilen, aber ${targetName} ist gar nicht krank!`,
-                channel
-            );
+            sayService.say(origin, '', '', channel, `${displayName} versucht ${targetName} zu heilen, aber ${targetName} ist gar nicht krank!`);
         }
     }
 }

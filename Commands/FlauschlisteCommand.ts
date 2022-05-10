@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import mongoDBClient from "../Clients/mongoDBClient";
 import tmiClient from "../Clients/tmiClient";
 import AbstractCommand from "../Abstracts/AbstractCommand";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class FlauschlisteCommand extends AbstractCommand
@@ -24,10 +25,10 @@ class FlauschlisteCommand extends AbstractCommand
             .find({}, {sort: {times: "desc"}})
             .limit(5);
 
-        emitter.emit(`${origin}.say`, `Wer hat die meisten Flauschen im Kopf? ヽ(゜∇゜)ノ`, channel);
+        sayService.say(origin, '', '', channel, `Wer hat die meisten Flauschen im Kopf? ヽ(゜∇゜)ノ`);
         let platz = 1;
         await userList.forEach((document) => {
-            emitter.emit(`${origin}.say`, `Platz ${platz++}: ${document.name} mit ${document.times} Flauschen`, channel);
+            sayService.say(origin, '', '', channel, `Platz ${platz++}: ${document.name} mit ${document.times} Flauschen`);
         });
 
         return Promise.resolve(true)

@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import {DiceRoll} from "@dice-roller/rpg-dice-roller";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class DinoknochenCommand extends AbstractCommand
@@ -14,8 +15,8 @@ class DinoknochenCommand extends AbstractCommand
     isAggressive   = true;
     command        = 'dinoknochen';
     description    = 'Wirf mit einem Dinoknochen! :O';
-    answerNoTarget = '###DISPLAYNAME### wirft mit Dinoknochen um sich 🦴🦴🦴🦴🦴🦴🦴🦴';
-    answerTarget   = '###DISPLAYNAME### wirft einen Dinoknochen auf ###TARGET### 🦴🦴';
+    answerNoTarget = '###ORIGIN### wirft mit Dinoknochen um sich 🦴🦴🦴🦴🦴🦴🦴🦴';
+    answerTarget   = '###ORIGIN### wirft einen Dinoknochen auf ###TARGET### 🦴🦴';
     globalCooldown = 0;
 
     targetAreas = [
@@ -44,11 +45,7 @@ class DinoknochenCommand extends AbstractCommand
             const targetName = parts.slice(1).join(' ');
 
             if(target === 'flauschipandabot') {
-                emitter.emit(
-                    `${origin}.say`,
-                    `Öi! ಠ_ಠ`,
-                    channel
-                );
+                sayService.say(origin, '', '', channel, `Öi! ಠ_ಠ`);
                 return Promise.resolve(true);
             }
 
@@ -61,7 +58,7 @@ class DinoknochenCommand extends AbstractCommand
             originUser.setOpponent(targetUser);
 
             if(targetUser.get('curHp') <= 0) {
-                emitter.emit(`${origin}.say`, `${targetName} ist doch schon ohnmächtig!`, channel);
+                sayService.say(origin, '', targetName, channel, `###TARGET### ist doch schon ohnmächtig!`);
                 return Promise.resolve(false);
             }
 
@@ -86,9 +83,9 @@ class DinoknochenCommand extends AbstractCommand
 
                 text = text + ` [${targetName}: ${damage} DMG | HP ${newHp}/${targetUser.get('maxHp')}]`;
 
-                emitter.emit(`${origin}.say`, text, channel);
+                sayService.say(origin, '', '', channel, text);
                 if(newHp <= 0) {
-                    emitter.emit(`${origin}.say`, `${targetName} ist auf 0HP und fällt ohnmächtig um.`, channel);
+                    sayService.say(origin, '', targetName, channel, `###TARGET### ist auf 0HP und fällt ohnmächtig um.`);
                 }
 
                 await targetUser.set('curHp', newHp).update();
@@ -96,28 +93,17 @@ class DinoknochenCommand extends AbstractCommand
                 const missedMessage = this.missedMessages[this.randomInt(0, this.missedMessages.length - 1)];
                 const text = `${context['display-name']} wirft einen riesigen Dinoknochen mit viel Wucht ${missedMessage}`
 
-                this.say(origin, context['display-name'], parts.slice(1).join(' '), channel, text);
+                sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, text);
+
             }
 
             return Promise.resolve(true);
         }
 
         if(parts.length > 1 && this.answerTarget !== '') {
-            emitter.emit(
-                `${origin}.say`,
-                this.answerTarget
-                    .split('###DISPLAYNAME###').join(context['display-name'])
-                    .split('###TARGET###').join(parts.slice(1).join(' ')),
-                channel
-            );
+            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerTarget);
         } else {
-            emitter.emit(
-                `${origin}.say`,
-                this.answerNoTarget
-                    .split('###DISPLAYNAME###').join(context['display-name'])
-                    .split('###TARGET###').join(parts.slice(1).join(' ')),
-                channel
-            );
+            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerNoTarget);
         }
 
         return Promise.resolve(true);

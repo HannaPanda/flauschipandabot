@@ -11,7 +11,7 @@ class CommandsCommand extends AbstractCommand
     command        = 'commands';
     isAggressive   = false;
     description    = 'Zeige alle Commands';
-    answerNoTarget = '###DISPLAYNAME###: Du findest eine Liste aller Commands hier: http://www.hannapanda.de/commands';
+    answerNoTarget = '###ORIGIN###: Du findest eine Liste aller Commands hier: https://www.hannapanda.de/commands';
     answerTarget   = '';
     globalCooldown = 0;
 }

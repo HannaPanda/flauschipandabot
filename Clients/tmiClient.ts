@@ -1,6 +1,7 @@
 import {ChatUserstate, Client} from "tmi.js";
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
+import sayService from "../Services/SayService";
 
 const tmi = require('tmi.js');
 dotenv.config({ path: __dirname+'/../.env' });
@@ -50,12 +51,15 @@ class Initializer
             return;
         }
 
+        context.owner = (context.username === process.env.CHANNEL);
+
         emitter.emit('chat.message', message, message.split(' '), context);
     }
 
     private onRaidedHandler = (channel: string, username: string, viewers: number) => {
-        emitter.emit('tmi.say', `Vielen Dank für den Raid ${username} ヽ(゜∇゜)ノ`);
-        emitter.emit('tmi.say', `Hey ihr Flauschis, schaut doch mal bei ${username} rein! https://twitch.tv/${username}`);
+        sayService.say('tmi', '', '', null, `Vielen Dank für den Raid ${username} ヽ(゜∇゜)ノ`)
+        sayService.say('tmi', '', '', null, `Hey ihr Flauschis, schaut doch mal bei ${username} rein! https://twitch.tv/${username}`)
+        emitter.emit('bot.say', 'Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
     }
 
     private onRedeemHandler = (channel: string, username: string, rewardType: 'highlighted-message' | 'skip-subs-mode-message' | string, tags: ChatUserstate) => {

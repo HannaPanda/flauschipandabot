@@ -46,7 +46,7 @@ class LiebesPfeilCommand extends AbstractCommand
             'wonnigen Küssen und wildem Gefummel! Nun brauchen die Flauschis erst mal 20 Minuten Pause, um wieder zu ' +
             'Kräften zu kommen und diverse verknotete Körperteile zu entwirren. Liebe ist toll!';
 
-        this.say(origin, '', '', channel, text);
+        sayService.say(origin, '', '', channel, text);
 
         return Promise.resolve(true);
     }

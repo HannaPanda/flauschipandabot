@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import {DiceRoll} from "@dice-roller/rpg-dice-roller";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class KnochenCommand extends AbstractCommand
@@ -14,8 +15,8 @@ class KnochenCommand extends AbstractCommand
     isAggressive   = true;
     command        = 'knochen';
     description    = 'Wirf mit einem Knochen!';
-    answerNoTarget = '###DISPLAYNAME### wirft mit Knochen um sich 🦴🦴';
-    answerTarget   = '###DISPLAYNAME### wirft einen Knochen auf ###TARGET### 🦴';
+    answerNoTarget = '###ORIGIN### wirft mit Knochen um sich 🦴🦴';
+    answerTarget   = '###ORIGIN### wirft einen Knochen auf ###TARGET### 🦴';
     globalCooldown = 0;
 
     targetAreas = [
@@ -39,11 +40,7 @@ class KnochenCommand extends AbstractCommand
             const targetName = parts.slice(1).join(' ');
 
             if(target === 'flauschipandabot') {
-                emitter.emit(
-                    `${origin}.say`,
-                    `Öi! ಠ_ಠ`,
-                    channel
-                );
+                sayService.say(origin, '', '', channel, `Öi! ಠ_ಠ`);
                 return Promise.resolve(true);
             }
 
@@ -56,7 +53,7 @@ class KnochenCommand extends AbstractCommand
             originUser.setOpponent(targetUser);
 
             if(targetUser.get('curHp') <= 0) {
-                emitter.emit(`${origin}.say`, `${targetName} ist doch schon ohnmächtig!`, channel);
+                sayService.say(origin, '', targetName, channel, `###TARGET### ist doch schon ohnmächtig!`);
                 return Promise.resolve(false);
             }
 
@@ -81,9 +78,9 @@ class KnochenCommand extends AbstractCommand
 
                 text = text + ` [${targetName}: ${damage} DMG | HP ${newHp}/${targetUser.get('maxHp')}]`;
 
-                emitter.emit(`${origin}.say`, text, channel);
+                sayService.say(origin, '', '', channel, text);
                 if(newHp <= 0) {
-                    emitter.emit(`${origin}.say`, `${targetName} ist auf 0HP und fällt ohnmächtig um.`, channel);
+                    sayService.say(origin, '', targetName, channel, `###TARGET### ist auf 0HP und fällt ohnmächtig um.`);
                 }
 
                 await targetUser.set('curHp', newHp).update();
@@ -97,30 +94,18 @@ class KnochenCommand extends AbstractCommand
                         .next();
 
                     if(accidentalTargetUser.name === username) {
-                        emitter.emit(
-                            `${origin}.say`,
-                            `${context['display-name']} wirft einen Knochen, verfehlt ${targetName} spektakulär und trifft sich stattdessen selber NotLikeThis NotLikeThis NotLikeThis LUL LUL LUL`,
-                            channel
-                        );
+                        const text = `${context['display-name']} wirft einen Knochen, verfehlt ${targetName} spektakulär und trifft sich stattdessen selber NotLikeThis NotLikeThis NotLikeThis LUL LUL LUL`;
+                        sayService.say(origin, '', '', channel, text);
                     } else if(accidentalTargetUser) {
-                        emitter.emit(
-                            `${origin}.say`,
-                            `${context['display-name']} wirft einen Knochen, verfehlt ${targetName} spektakulär und trifft stattdessen ${accidentalTargetUser.name} NotLikeThis`,
-                            channel
-                        );
+                        const text = `${context['display-name']} wirft einen Knochen, verfehlt ${targetName} spektakulär und trifft stattdessen ${accidentalTargetUser.name} NotLikeThis`;
+                        sayService.say(origin, '', '', channel, text);
                     } else {
-                        emitter.emit(
-                            `${origin}.say`,
-                            `${context['display-name']} wirft einen Knochen und verfehlt ${targetName} spektakulär LUL`,
-                            channel
-                        );
+                        const text = `${context['display-name']} wirft einen Knochen und verfehlt ${targetName} spektakulär LUL`;
+                        sayService.say(origin, '', '', channel, text);
                     }
                 } else {
-                    emitter.emit(
-                        `${origin}.say`,
-                        `${context['display-name']} wirft einen Knochen und verfehlt ${targetName} LUL`,
-                        channel
-                    );
+                    const text = `${context['display-name']} wirft einen Knochen und verfehlt ${targetName} LUL`;
+                    sayService.say(origin, '', '', channel, text);
                 }
             }
 
@@ -128,21 +113,9 @@ class KnochenCommand extends AbstractCommand
         }
 
         if(parts.length > 1 && this.answerTarget !== '') {
-            emitter.emit(
-                `${origin}.say`,
-                this.answerTarget
-                    .split('###DISPLAYNAME###').join(context['display-name'])
-                    .split('###TARGET###').join(parts.slice(1).join(' ')),
-                channel
-            );
+            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerTarget);
         } else {
-            emitter.emit(
-                `${origin}.say`,
-                this.answerNoTarget
-                    .split('###DISPLAYNAME###').join(context['display-name'])
-                    .split('###TARGET###').join(parts.slice(1).join(' ')),
-                channel
-            );
+            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerNoTarget);
         }
 
         return Promise.resolve(true);
