@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://www.hannapanda.de/static/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://www.hannapanda.de/static/css/hanna.css" rel="stylesheet" crossorigin="anonymous">
+
+    <script src="https://www.hannapanda.de/static/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+{% if showMenu %}
+    {{ include('menu.html') }}
+{% endif %}
+{% block content %}{% endblock %}
+
+</body>
+</html>

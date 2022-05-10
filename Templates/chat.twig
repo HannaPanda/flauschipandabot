@@ -1,0 +1,44 @@
+{% extends "layout.twig" %}
+
+{% set showMenu = false %}
+
+{% block title %}Chat{% endblock %}
+{% block bodyClass %}transparent{% endblock %}
+
+{% block content %}
+<section class="m-5">
+    <div class="container">
+        <div class="col" id="chat-wrapper">
+
+        </div>
+    </div>
+</section>
+<script>
+    let messageQueue = [];
+    let isShowing = false;
+
+    var socket = io();
+    socket.on('bot.say', function(msg) {
+        messageQueue.push(msg);
+    });
+
+    window.setInterval(() => {
+        if(!isShowing && messageQueue.length > 0) {
+            isShowing = true;
+            let $text = $('<p></p>');
+            let text = messageQueue.pop();
+            $text.text(text);
+            $text.hide();
+            $('#chat-wrapper').append($text);
+            $text.fadeIn(200).delay(Math.max(3000, text.split(' ').length/130*60000)).fadeOut(200, () => {
+                $text.remove();
+                isShowing = false;
+            });
+        }
+    }, 500)
+
+    socket.on('reload', function(msg) {
+        location.reload();
+    });
+</script>
+{% endblock %}
