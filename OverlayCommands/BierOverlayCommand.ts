@@ -21,7 +21,7 @@ class RunOverlayCommand extends AbstractOverlayCommand
     mediaType      = "audio";
     volume         = 0.25;
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        if(message.startsWith("!bier ") || message.startsWith("!buy bier ") || message.startsWith("!buy use bier ")) {
+        if(message.startsWith("!bier") || message.startsWith("!buy bier ") || message.startsWith("!buy use bier ")) {
             emitter.emit('playAudio', {file: this.mediaFile, mediaType: 'audio', volume: this.volume});
         }
     };

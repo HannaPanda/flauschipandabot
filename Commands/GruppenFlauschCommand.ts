@@ -33,12 +33,16 @@ class GruppenFlauschCommand extends AbstractCommand
         }
 
         sayService.say(origin, '', '', channel, this.answerNoTarget);
+        emitter.emit('showImage', {file: 'panda_heart.png', mediaType: 'image', duration: 5000});
+        emitter.emit('playAudio', {file: 'yoba.wav', mediaType: 'audio', volume: 0.5});
     }
 
     healFighter = async (username) => {
         const fighter = new Fighter();
         await fighter.init(username);
-        await fighter.set('curHp', fighter.get('maxHp')).update();
+        if(!fighter.get('disease') && !fighter.get('incurableDisease')) {
+            await fighter.set('curHp', fighter.get('maxHp')).update();
+        }
 
         return Promise.resolve(true);
     }

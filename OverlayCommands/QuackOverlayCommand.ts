@@ -20,16 +20,21 @@ class QuackOverlayCommand extends AbstractOverlayCommand
     mediaFile      = "quack.mp3";
     mediaType      = "audio";
     volume         = 0.25;
-    customHandler  = null/*async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const numberPattern = /\d+/g;
         const numbers = parts.slice(1).join(' ').match( numberPattern );
         const number = (numbers) ? numbers.join('') : '';
-        const numberOfPlays = (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1;
+        const numberOfPlays = Math.min(50, (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1);
 
         for(let i = 0; i < numberOfPlays; i++) {
+            await this.delay(50);
             emitter.emit('playAudio', {file: this.mediaFile, mediaType: 'audio', volume: (numberOfPlays > 1) ? 0.05 : this.volume});
         }
-    }*/;
+    };
+
+    delay = async (ms: number) => {
+        return new Promise( resolve => setTimeout(resolve, ms) );
+    }
 }
 
 let quackOverlayCommand = new QuackOverlayCommand();

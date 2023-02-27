@@ -18,7 +18,7 @@ class NiceOverlayCommand extends AbstractOverlayCommand
     description    = "Nice";
     mediaFile      = "noice.mp4";
     mediaType      = "video";
-    volume         = 0.1;
+    volume         = 0.5;
     customHandler  = null;
 }
 

@@ -20,15 +20,16 @@ class Initializer
     }
 
     private connectObs = () => {
-        this.obs.connect({ address: 'localhost:4444', password: process.env.OBS_WS_PASS })
+        this.obs.connect('ws://127.0.0.1:4444', process.env.OBS_WS_PASS)
             .then(() => {
                 console.log('OBS connected');
-                // Partner only?
-                this.obs.on('SwitchScenes', data => {
-                    if(data['scene-name'] === 'Bitte Warten') {
-                        twitchClient.startCommercial(120)
+                this.obs.on('CurrentProgramSceneChanged', data => {
+                    console.log(data);
+                    if(data['sceneName'] === 'Bitte Warten') {
+                        //twitchClient.startCommercial(120);
 
                         sayService.say('tmi', '', '', null, `Werbepause! ヾ(ﾟдﾟ)ﾉ`);
+                        emitter.emit('chat.message', '!klo', ['!klo'], {username: '', 'display-name': '', mod: false, owner: false});
                     }
                 });
                 this.obs.on('ConnectionClosed', data => {
@@ -37,8 +38,8 @@ class Initializer
                 });
             })
             .catch((err) => {
-                //console.warn(err);
-                //console.warn('OBS not connected');
+                /*console.warn(err);
+                console.warn('OBS not connected');*/
                 this.obs.removeAllListeners();
                 setTimeout(this.connectObs, 1000);
             });

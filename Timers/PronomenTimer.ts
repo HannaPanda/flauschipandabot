@@ -7,7 +7,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 class DiscordTimer extends AbstractTimer
 {
     isActive  = true;
-    minutes   = 60;
+    minutes   = 65;
     chatLines = 5;
 
     handler = () => {

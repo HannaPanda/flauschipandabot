@@ -29,10 +29,7 @@ class TwitchClient
             this.pubSubClient = new PubSubClient();
             const userId = await this.pubSubClient.registerUserListener(authProvider);
             const listener = await this.pubSubClient.onRedemption(userId, (message) => {
-                //console.log(message.message, message.rewardTitle, message.userName);
-                if(message.rewardTitle === 'Sage etwas') {
-                    emitter.emit('bot.say', message.message);
-                }
+                emitter.emit('chat.redeem', message);
             });
 
             this.apiClient = new ApiClient({ authProvider });

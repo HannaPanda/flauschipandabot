@@ -33,6 +33,11 @@ class PflasterCommand extends AbstractCommand
 
             originUser.setOpponent(targetUser);
 
+            if(targetUser.get('disease') || targetUser.get('incurableDisease')) {
+                sayService.say(origin, context['display-name'], targetName, channel, `###TARGET### leidet unter einer Krankheit und kann nicht so geheilt werden!`);
+                return false;
+            }
+
             if(targetUser.get('curHp') === targetUser.get('maxHp')) {
                 sayService.say(origin, context['display-name'], targetName, channel, `###TARGET### ist bereits vollständig geheilt`);
                 return Promise.resolve(false);

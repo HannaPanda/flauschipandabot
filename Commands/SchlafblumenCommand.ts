@@ -35,6 +35,11 @@ class SchlafblumenCommand extends AbstractCommand
             const targetUser = new Fighter();
             await targetUser.init(target);
 
+            if(targetUser.get('disease') || targetUser.get('incurableDisease')) {
+                sayService.say(origin, context['display-name'], targetName, channel, `###TARGET### leidet unter einer Krankheit und reagiert nicht auf die Schlafblumen!`);
+                return false;
+            }
+
             await targetUser.set('isAsleepUntil', moment().add(5, 'minutes').format()).set('curHp', targetUser.get('maxHp')).update();
 
             const text = `###ORIGIN### streut eine Hand voll Schlafblumen auf ###TARGET###. ###TARGET### fällt für 5 Minuten in einen flauschigen Schlaf und wird dabei voll geheilt. emote_sleep emote_sleep emote_sleep emote_sleep `;

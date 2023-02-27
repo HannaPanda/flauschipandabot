@@ -45,6 +45,11 @@ class LiebesknochenCommand extends AbstractCommand
 
         originUser.setOpponent(targetUser);
 
+        if(targetUser.get('disease') || targetUser.get('incurableDisease')) {
+            sayService.say(origin, context['display-name'], targetName, channel, `###TARGET### leidet unter einer Krankheit und reagiert nicht auf den Liebesknochen!`);
+            return false;
+        }
+
         const damageHealed = new DiceRoll(`${Math.max(1, Math.floor(originUser.get('level')/4))}d2`).total;
         const newHp = Math.min(targetUser.get('maxHp'), targetUser.get('curHp') + damageHealed);
 

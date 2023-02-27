@@ -13,19 +13,21 @@ class EmoteService
         'bleed': 'cloud_rain',
         'unity': 'hannap5Heart',
         'woah': 'Woah112',
-        'sleep': 'zzz~1'
+        'sleep': 'zzz~1',
+        'rave': 'hannap5Rave'
     };
 
     twitchEmotes = {
         'hype': 'hannap5Hype',
-        'greet': 'hannap5WaveAnim',
+        'greet': 'hannap5Wave',
         'heart': 'hannap5Heart',
         'angry': 'hannap5Angry',
         'stinky': 'StinkyCheese',
         'bleed': 'bleedPurple',
         'unity': 'TwitchUnity',
         'woah': 'hannap5PandaWoah',
-        'sleep': 'hannap5Sleep'
+        'sleep': 'hannap5Sleep',
+        'rave': 'hannap5Rave'
     };
 
     getEmote = (origin: string, emote: string) => {

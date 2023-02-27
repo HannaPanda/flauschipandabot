@@ -16,6 +16,10 @@
         video.setAttribute("preload", "auto");
         if(fullscreen) {
             video.setAttribute("class", "fullscreen");
+        } else {
+            $(video).css({
+                maxWidth: '50%'
+            });
         }
         video.volume = volume;
         video.autoplay = true;
@@ -51,7 +55,10 @@
     function showImage(imageUrl, duration) {
         let image = new Image();
         image.src = imageUrl;
-        $(image).width('50%');
+        $(image).css({
+            'maxWidth': '50%',
+            'maxHeight': '50%'
+        });
         $(image).hide();
         $('#root').append(image);
 
@@ -60,22 +67,27 @@
         });
     }
 
-    function showClip(clipId) {
-
-    }
-
     var socket = io();
     socket.on('playVideo', function(msg) {
-        playVideo('/static/video/'+msg.file, msg.volume, msg.fullscreen);
+        if(msg.file.startsWith('http')) {
+            playVideo(msg.file, msg.volume, msg.fullscreen);
+        } else {
+            playVideo('/static/video/'+msg.file, msg.volume, msg.fullscreen);
+        }
     });
     socket.on('playAudio', function(msg) {
-        playVideo('/static/audio/'+msg.file, msg.volume);
+        if(msg.file.startsWith('http')) {
+            playVideo(msg.file, msg.volume);
+        } else {
+            playVideo('/static/audio/'+msg.file, msg.volume);
+        }
     });
     socket.on('showImage', function(msg) {
-        showImage('/static/images/'+msg.file, msg.duration);
-    });
-    socket.on('playClip', function(msg) {
-        showClip(msg);
+        if(msg.file.startsWith('http')) {
+            showImage(msg.file, msg.duration);
+        } else {
+            showImage('/static/images/'+msg.file, msg.duration);
+        }
     });
 </script>
 {% endblock %}

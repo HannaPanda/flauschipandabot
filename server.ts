@@ -27,6 +27,7 @@ class Server
         emitter.on('hornyLevelChanged', this.handleHornyLevelChanged);
         emitter.on('fuckCounterChanged', this.handleFuckCounterChanged);
         emitter.on('verpissdichCounterChanged', this.handleVerpissdichCounterChanged);
+        emitter.on('countdown', this.handleCountdown);
         emitter.on('bot.say', this.handleBotchat);
         emitter.on('playVideo', this.handlePlayVideo);
         emitter.on('playAudio', this.handlePlayAudio);
@@ -88,6 +89,12 @@ class Server
             });
         });
 
+        app.get('/countdown', async (req, res) => {
+            twing.render('countdown.twig', {}).then((output) => {
+                res.end(output);
+            });
+        });
+
         app.get('/overlay', (req, res) => {
             twing.render('overlay.twig', {}).then((output) => {
                 res.end(output);
@@ -124,7 +131,7 @@ class Server
 
         setTimeout(() => {
             this.io.emit('reload');
-        }, 2000);
+        }, 10000);
     }
 
     public setCommands = (commands) => {
@@ -166,6 +173,10 @@ class Server
         this.io.emit('verpissdichCounterChanged', { newCounter: newCounter });
     }
 
+    private handleCountdown = async () => {
+        this.io.emit('countdown');
+    }
+
     private handlePlayVideo = async (data) => {
         this.io.emit('playVideo', data);
     }
@@ -179,7 +190,6 @@ class Server
     }
 
     private handlePlayClip = async (data) => {
-        console.log("tester");
         this.io.emit('playClip', data);
     }
 

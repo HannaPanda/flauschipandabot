@@ -1,6 +1,7 @@
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
+import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class HypeCommand extends AbstractCommand
@@ -14,6 +15,16 @@ class HypeCommand extends AbstractCommand
     answerNoTarget = 'emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype ';
     answerTarget   = '';
     globalCooldown = 0;
+    customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+        const numberPattern = /\d+/g;
+        const numbers = parts.slice(1).join(' ').match( numberPattern );
+        const number = (numbers) ? numbers.join('') : '';
+        const numberOfPlays = Math.min(5, (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1);
+
+        for(let i = 0; i < numberOfPlays; i++) {
+            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerNoTarget);
+        }
+    };
 }
 
 let hypeCommand = new HypeCommand();

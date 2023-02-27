@@ -62,6 +62,7 @@ class FlauschiPandaBot
         this.initializeEvents();
         this.initializeCommands();
         this.initializeOverlayCommands();
+        this.initializeRedeemCommands();
         this.initializeTimers();
 
         this.server = server;
@@ -103,6 +104,18 @@ class FlauschiPandaBot
         });
     }
 
+    private initializeRedeemCommands = () => {
+        var normalizedPath = require("path").join(__dirname, "RedeemCommands");
+        const self = this;
+        require("fs").readdirSync(normalizedPath).forEach(function(file) {
+            try {
+                self.commands.push(require("./RedeemCommands/" + file));
+            } catch(err) {
+                console.log(err);
+            }
+        });
+    }
+
     private initializeTimers = () => {
         var normalizedPath = require("path").join(__dirname, "Timers");
         const self = this;
@@ -116,24 +129,28 @@ class FlauschiPandaBot
     }
 
     private getStreamInfo = async () => {
-        const streams = await this.twitchApi.getStreams({ channel: process.env.CHANNEL });
+        try {
+            const streams = await this.twitchApi.getStreams({ channel: process.env.CHANNEL });
 
-        /*const test = await twitchClient.apiClient?.streams.getStreams({ userName: process.env.CHANNEL });
-        console.log(test);*/
+            /*const test = await twitchClient.apiClient?.streams.getStreams({ userName: process.env.CHANNEL });
+             console.log(test);*/
 
-        if(streams && streams.data.length > 0) {
-            streamService.currentStream = streams.data[0];
-        } else {
-            streamService.currentStream = null;
-            mongoDBClient
-                .db('flauschipandabot')
-                .collection('greeted_users')
-                .deleteMany({}, {}, () => {});
+            if(streams && streams.data.length > 0) {
+                streamService.currentStream = streams.data[0];
+            } else {
+                streamService.currentStream = null;
+                mongoDBClient
+                    .db('flauschipandabot')
+                    .collection('greeted_users')
+                    .deleteMany({}, {}, () => {});
 
-            mongoDBClient
-                .db("flauschipandabot")
-                .collection("fighters")
-                .updateMany({}, {$set: {canUseCommands: true}});
+                mongoDBClient
+                    .db("flauschipandabot")
+                    .collection("fighters")
+                    .updateMany({}, {$set: {canUseCommands: true}});
+            }
+        } catch(err) {
+            console.log('abgesoffen');
         }
     }
 

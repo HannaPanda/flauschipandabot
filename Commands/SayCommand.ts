@@ -6,7 +6,8 @@ dotenv.config({ path: __dirname+'/../.env' });
 class HypeCommand extends AbstractCommand
 {
     isActive       = true;
-    isModOnly      = true;
+    isModOnly      = false;
+    isVipOnly      = true;
     isOwnerOnly    = false;
     isAggressive   = false;
     command        = 'say';

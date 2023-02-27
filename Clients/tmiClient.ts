@@ -2,6 +2,7 @@ import {ChatUserstate, Client} from "tmi.js";
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import sayService from "../Services/SayService";
+import twitchClient from "./twitchClient";
 
 const tmi = require('tmi.js');
 dotenv.config({ path: __dirname+'/../.env' });
@@ -9,7 +10,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 class Initializer
 {
     public tmiClient: Client;
-    private bots: Array<string> = ['sery_bot', 'nightbot', 'streamelements', 'audioalerts', 'streamcaptainbot'];
+    private bots: Array<string> = ['sery_bot', 'nightbot', 'streamelements', 'audioalerts', 'streamcaptainbot', 'soundalerts'];
 
     constructor()
     {
@@ -52,6 +53,7 @@ class Initializer
         }
 
         context.owner = (context.username === process.env.CHANNEL);
+        context.vip = (context?.badges?.vip === '1');
 
         emitter.emit('chat.message', message, message.split(' '), context);
     }
@@ -59,8 +61,11 @@ class Initializer
     private onRaidedHandler = (channel: string, username: string, viewers: number) => {
         sayService.say('tmi', '', '', null, `Vielen Dank für den Raid ${username} ヽ(゜∇゜)ノ`)
         sayService.say('tmi', '', '', null, `Hey ihr Flauschis, schaut doch mal bei ${username} rein! https://twitch.tv/${username}`)
+        sayService.say('tmi', '', '', null, `/shoutout ${username}`);
+        //twitchClient.shoutout()
+        emitter.emit('playAudio', {file: 'skibidi.mp3', mediaType: 'audio', volume: 0.25});
         emitter.emit('bot.say', 'Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
-    }
+    };
 
     private onRedeemHandler = (channel: string, username: string, rewardType: 'highlighted-message' | 'skip-subs-mode-message' | string, tags: ChatUserstate) => {
         /*console.log("######################");

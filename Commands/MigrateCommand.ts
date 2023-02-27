@@ -5,6 +5,7 @@ import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import sayService from "../Services/SayService";
 import moment from "moment";
+import twitchClient from "../Clients/twitchClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class MigrateCommand extends AbstractCommand
@@ -51,7 +52,7 @@ class MigrateCommand extends AbstractCommand
                     }
                 );
         }*/
-        emitter.emit('playClip', 'ToughYawningWatermelonBabyRage-anZ2kAwvZqEMW_U-');
+
         //sayService.say('tmi', '', '', null, 'Migration fertig');
     }
 

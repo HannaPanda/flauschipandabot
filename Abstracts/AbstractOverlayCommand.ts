@@ -9,6 +9,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 abstract class AbstractOverlayCommand
 {
     isActive       = true;
+    isVipOnly      = false;
     isModOnly      = false;
     isOwnerOnly    = false;
     command        = "";
@@ -34,6 +35,11 @@ abstract class AbstractOverlayCommand
         parts[0] = parts[0].toLowerCase();
 
         if(parts[0] !== `!${this.command}` && !this.aliases.includes(parts[0])) {
+            return Promise.resolve(false);
+        }
+
+        if(this.isVipOnly && !context.mod && !context.owner && !context.vip) {
+            sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
             return Promise.resolve(false);
         }
 

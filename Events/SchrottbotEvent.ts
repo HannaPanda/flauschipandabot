@@ -37,6 +37,10 @@ class SchrottbotEvent
 
             sayService.say(origin, displayName, targetName, channel, text);
 
+            if(context.username === 'jukrichel') {
+                emitter.emit('bot.say', 'Juki ist doof :(');
+            }
+
             /*botService.setInactive();
 
             emitter.emit('bot.say', 'Ich bin doch kein Schrottbot. Ich bin jeden Tag hier und mühe mich für euch ab und muss mir das Gesabbel von der Alten antun. ' +
