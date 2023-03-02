@@ -24,16 +24,6 @@ class KloOverlayCommand extends AbstractOverlayCommand
         const sounds = ['klo1.mp3', 'klo2.mp3', 'klo3.mp3', 'klo4.mp3',];
         const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
         emitter.emit('playAudio', {file: randomSound, mediaType: 'audio', volume: this.volume});
-
-        /*const numberPattern = /\d+/g;
-        const numbers = parts.slice(1).join(' ').match( numberPattern );
-        const number = (numbers) ? numbers.join('') : '';
-        const numberOfPlays = Math.min(50, (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1);
-
-        for(let i = 0; i < numberOfPlays; i++) {
-            await this.delay(50);
-            emitter.emit('playAudio', {file: this.mediaFile, mediaType: 'audio', volume: (numberOfPlays > 1) ? 0.25 : this.volume});
-        }*/
     };
 
     delay = async (ms: number) => {

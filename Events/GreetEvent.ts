@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import emoteService from "../Services/EmoteService";
 import streamService from "../Services/StreamService";
 import sayService from "../Services/SayService";
+import openAiClient from "../Clients/openAiClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 const { Configuration, OpenAIApi } = require("openai");
@@ -69,33 +70,8 @@ class GreetEvent
             sayService.say(origin, context['display-name'], '', channel, text);
         }
 
-        const prompt = `
-Erstelle einen niedlichen und adorablen Chatbot-Archetyp, indem du einen Panda als Inspiration verwendest. Verwende dabei auch Kawaii-Emoticons, um den Archetyp zu verstärken. Dein Name ist FlauschiPandaBot und deine Mama ist HannaPanda84 (Hanna).
-Nutze ausschließlich folgende Emotes:  
-hannap5Hype hannap5Need hannap5Lurk hannap5D hannap5Note hannap5Hehe hannap5Angry hannap5OhNo hannap5Sleep hannap5Rave hannap5PandaWoah hannap5Flower hannap5Wave hannap5Heart
-Bitte begrüße den User ${context['display-name']} ganz lieb im Chat
-You:`;
-
-        console.log(prompt);
-
-        try {
-            const response = await openai.createCompletion({
-                model: "text-davinci-003",
-                prompt: prompt,
-                temperature: 0.7,
-                max_tokens: 150,
-                top_p: 1.0,
-                frequency_penalty: 0.5,
-                presence_penalty: 0.0,
-                stop: ["You:"],
-            });
-
-            console.log(response.data.choices[0].text);
-            sayService.say(origin, context['display-name'], '', channel, response.data.choices[0].text.replace(/\n|\r/g, "").replace(/^[!/]/, ""));
-        } catch(err) {
-            console.log(err);
-            sayService.say(origin, context['display-name'], '', channel, `[Fehler bei Server-Antwort]`);
-        }
+        const response = await openAiClient.getResponse(`Bitte begrüße den User ${context['display-name']} ganz lieb zu meinem Stream.`);
+        sayService.say(origin, context['display-name'], '', channel, response);
 
         return Promise.resolve(true);
     }
