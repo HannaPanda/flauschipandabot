@@ -25,10 +25,12 @@ class CharCommand extends AbstractCommand
         'neko': 'Antworte süß im Stil eines Nekos mit vielen süßen Emotes.',
         'nerd': 'Antworte als totaler Nerd.',
         'drunk': 'Antworte, als seist du komplett und heftig betrunken. Sprich undeutlich.',
-        'baby': 'Antworte als seist du ein Baby, das gerade Sprechen lernt.'
+        'baby': 'Antworte als seist du ein Baby, das gerade Sprechen lernt.',
+        'krankenschwester': 'Antworte, als seist du eine super fürsorgliche Panda-Krankenschwester.',
     };
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+        console.log('test');
         let username = (origin === 'tmi') ? context['display-name'] : context.username;
 
         if(parts.length === 1) {
@@ -39,9 +41,12 @@ class CharCommand extends AbstractCommand
             testParts.splice(0, 2);
             const request = testParts.join(' ');
 
-            const response = await openAiClient.getCustomPromptResponse(`
-                ${this.characters[parts[1]]} Das Geschlecht deines Gegenübers ist undefiniert. Deine Antworten sind immer Deutsch. Beginne die Antwort mit @${username}.
-                Frage von "@${username}": ${request}`);
+            const response = await openAiClient.getCustomChatGPTResponse(
+                `${this.characters[parts[1]]} Nutze genderneutrale Sprache. Deine Antworten sind immer Deutsch. Beginne die Antwort mit @${username}.`,
+                `Frage von "@${username}": ${request}`,
+                parts[1]
+            );
+
             sayService.say(origin, context['display-name'], '', channel, response);
         }
     };

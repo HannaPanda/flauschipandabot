@@ -1,6 +1,5 @@
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
-import emoteService from "../Services/EmoteService";
 import Fighter from "../Models/Fighter";
 import botService from "../Services/BotService";
 import sayService from "../Services/SayService";

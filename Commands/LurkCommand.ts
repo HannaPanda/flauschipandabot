@@ -2,6 +2,8 @@ import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
+import openAiClient from "../Clients/openAiClient";
+import emoteService from "../Services/EmoteService";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class LurkCommand extends AbstractCommand
@@ -16,8 +18,21 @@ class LurkCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
     customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        sayService.say(origin, context['display-name'], '', channel, this.answerNoTarget);
+        //sayService.say(origin, context['display-name'], '', channel, this.answerNoTarget);
         emitter.emit('playAudio', {file: 'weird_reverse.mp3', mediaType: 'audio', volume: 0.5});
+
+        const response = await openAiClient.getCustomChatGPTResponse(
+            `Antworte als niedlicher Panda mit vielen süßen Emotes. Dein Name ist FlauschiPandaBot und deine Mama ist HannaPanda84 (Hanna). Nutze "Ich", um auf dich zu referenzieren.
+             Nutze genderneutrale Sprache.
+             Nutze ausschließlich folgende Emotes:  
+             ${emoteService.getBotTwitchEmotes()}
+             Nutze das Wort "Flausch" für das Wort Lurk. Schreibe dazu eine witzige Nachricht.`,
+            `@${context['display-name']} verschwindet im Lurk aus folgendem Grund: ${parts.slice(1).join(' ')}`,
+            null,
+            false
+        );
+
+        sayService.say(origin, context['display-name'], '', channel, response);
     };
 }
 

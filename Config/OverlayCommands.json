@@ -570,8 +570,136 @@
     "mediaType": "audio",
     "volume": 0.5,
     "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "unweird",
+    "aliases": [],
+    "description": "Unweird!",
+    "mediaFile": "weird_reverse.mp3",
+    "mediaType": "audio",
+    "volume": 0.5,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "vodka",
+    "aliases": [],
+    "description": "Two shots of vodka",
+    "mediaFile": "vodka.mp4",
+    "mediaType": "video",
+    "volume": 0.25,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "weirdbatman",
+    "aliases": ["!weirdman"],
+    "description": "Ich bin WLÜWLÜWLÜWLÜ!",
+    "mediaFile": "weirdbatman.mp3",
+    "mediaType": "audio",
+    "volume": 0.5,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "weird",
+    "aliases": [],
+    "description": "Weird!",
+    "mediaFile": "weird.wav",
+    "mediaType": "audio",
+    "volume": 0.5,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "whoop",
+    "aliases": [],
+    "description": "Whoop Whoop Whoop",
+    "mediaFile": "whoop.mp3",
+    "mediaType": "audio",
+    "volume": 0.25,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "wow",
+    "aliases": [],
+    "description": "Wow...",
+    "mediaFile": "wow.mp3",
+    "mediaType": "audio",
+    "volume": 0.5,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "ziege",
+    "aliases": [],
+    "description": "BleBleBleBleBleBleBleBleBle",
+    "mediaFile": "ziege.mp4",
+    "mediaType": "video",
+    "volume": 0.5,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "zug",
+    "aliases": [],
+    "description": "Ich mag Züge",
+    "mediaFile": "zug.mp4",
+    "mediaType": "video",
+    "volume": 0.1,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "versenkt",
+    "aliases": [],
+    "description": "Ich hab den total versenkt",
+    "mediaFile": "versenkt.mp3",
+    "mediaType": "audio",
+    "volume": 0.5,
+    "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "wah",
+    "aliases": [],
+    "description": "Sad Trombone",
+    "mediaFile": "sadtrombone.mp3",
+    "mediaType": "audio",
+    "volume": 0.5,
+    "fullscreen": false
   }
-
-
 ]
 

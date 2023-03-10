@@ -3,6 +3,7 @@ import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import sayService from "../Services/SayService";
 import twitchClient from "./twitchClient";
+import streamService from "../Services/StreamService";
 
 const tmi = require('tmi.js');
 dotenv.config({ path: __dirname+'/../.env' });
@@ -30,7 +31,6 @@ class Initializer
 
         this.tmiClient.on('message', this.onMessageHandler);
         this.tmiClient.on('raided', this.onRaidedHandler);
-        this.tmiClient.on('redeem', this.onRedeemHandler)
 
         this.tmiClient.connect();
     }
@@ -55,6 +55,10 @@ class Initializer
         context.owner = (context.username === process.env.CHANNEL);
         context.vip = (context?.badges?.vip === '1');
 
+        if(!context.owner && !streamService.currentStream) {
+            return;
+        }
+
         emitter.emit('chat.message', message, message.split(' '), context);
     }
 
@@ -66,12 +70,6 @@ class Initializer
         emitter.emit('playAudio', {file: 'skibidi.mp3', mediaType: 'audio', volume: 0.25});
         emitter.emit('bot.say', 'Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
     };
-
-    private onRedeemHandler = (channel: string, username: string, rewardType: 'highlighted-message' | 'skip-subs-mode-message' | string, tags: ChatUserstate) => {
-        /*console.log("######################");
-        console.log(username, rewardType, tags, channel);
-        console.log("######################");*/
-    }
 }
 
 let initializer = new Initializer();

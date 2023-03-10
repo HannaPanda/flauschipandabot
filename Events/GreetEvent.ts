@@ -70,7 +70,7 @@ class GreetEvent
             sayService.say(origin, context['display-name'], '', channel, text);
         }
 
-        const response = await openAiClient.getResponse(`Bitte begrüße den User ${context['display-name']} ganz lieb zu meinem Stream.`);
+        const response = await openAiClient.getChatGPTResponse(`Bitte begrüße den User ${context['display-name']} ganz lieb zu meinem Stream. Nutze genderneutrale Sprache.`, false);
         sayService.say(origin, context['display-name'], '', channel, response);
 
         return Promise.resolve(true);

@@ -41,10 +41,11 @@ class AntwortEvent
             if(username && username.toLowerCase() === 'flauschipandabot') {
                 return Promise.resolve(false);
             }
-            
+
             //const gameName = streamService.currentStream?.game_name ? `Wir streamen "${streamService.currentStream?.game_name}"` : 'Wir spielen gerade nichts';
 
-            const response = await openAiClient.getResponse(`Frage von "@${username}": ${message}`);
+            //const response = await openAiClient.getResponse(`Frage von "@${username}": ${message}`);
+            const response = await openAiClient.getChatGPTResponse(`Frage von "@${username}": ${message}`);
             sayService.say(origin, context['display-name'], '', channel, response);
 
             return Promise.resolve(true);

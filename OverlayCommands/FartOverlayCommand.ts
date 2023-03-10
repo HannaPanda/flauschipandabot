@@ -9,26 +9,30 @@ import sayService from "../Services/SayService";
 import AbstractOverlayCommand from "../Abstracts/AbstractOverlayCommand";
 dotenv.config({ path: __dirname+'/../.env' });
 
-class WowOverlayCommand extends AbstractOverlayCommand
+class FartOverlayCommand extends AbstractOverlayCommand
 {
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
-    command        = "wow";
+    command        = "fart";
     aliases        = [];
-    description    = "Wow...";
-    mediaFile      = "wow.mp3";
+    description    = "Pupsi";
+    mediaFile      = "fart1.mp3";
     mediaType      = "audio";
     volume         = 0.5;
     customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+        const sounds = ['fart1.mp3', 'fart2.mp3', 'fart3.mp3', 'fart4.mp3',];
+
+
         const numberPattern = /\d+/g;
         const numbers = parts.slice(1).join(' ').match( numberPattern );
         const number = (numbers) ? numbers.join('') : '';
-        const numberOfPlays = Math.min(50, (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1);
+        let numberOfPlays = Math.min(50, (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1);
 
         for(let i = 0; i < numberOfPlays; i++) {
-            await this.delay(50);
-            emitter.emit('playAudio', {file: this.mediaFile, mediaType: 'audio', volume: (numberOfPlays > 1) ? 0.5 : this.volume});
+            await this.delay(500);
+            const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+            emitter.emit('playAudio', {file: randomSound, mediaType: 'audio', volume: this.volume});
         }
     };
 
@@ -37,6 +41,6 @@ class WowOverlayCommand extends AbstractOverlayCommand
     }
 }
 
-let wowOverlayCommand = new WowOverlayCommand();
+let fartOverlayCommand = new FartOverlayCommand();
 
-export default wowOverlayCommand;
+export default fartOverlayCommand;

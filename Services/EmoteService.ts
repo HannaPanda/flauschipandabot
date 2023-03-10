@@ -30,6 +30,8 @@ class EmoteService
         'rave': 'hannap5Rave'
     };
 
+    botTwitchEmotes = ['hannap5Hype', 'hannap5Need', 'hannap5Lurk', 'hannap5D', 'hannap5Note', 'hannap5Hehe', 'hannap5Angry', 'hannap5OhNo', 'hannap5Sleep', 'hannap5Rave', 'hannap5PandaWoah', 'hannap5Flower', 'hannap5Wave', 'hannap5Heart'];
+
     getEmote = (origin: string, emote: string) => {
         emote = emote.replace('emote_', '');
 
@@ -40,7 +42,11 @@ class EmoteService
         }
 
         return emote;
-    }
+    };
+
+    getBotTwitchEmotes = () => {
+        return this.botTwitchEmotes.join(' ');
+    };
 }
 
 const emoteService = new EmoteService();
