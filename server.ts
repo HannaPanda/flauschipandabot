@@ -158,6 +158,10 @@ class Server
         return this.app;
     };
 
+    public getIO = () => {
+        return this.io;
+    };
+
     public initializeOverlayCommands = () => {
         try {
             var normalizedPath = require("path").join(__dirname, "Config", "OverlayCommands.json");

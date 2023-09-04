@@ -81,3 +81,12 @@ body {
 body.transparent {
     background: transparent;
 }
+
+#image img {
+    transition: opacity 200ms;
+    opacity: 0;
+}
+
+#image img.showing {
+    opacity: 1;
+}

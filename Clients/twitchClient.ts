@@ -8,6 +8,7 @@ import TwitchApi from "node-twitch";
 import emitter from "../emitter";
 import {EventSubWsListener} from "@twurple/eventsub-ws";
 import sayService from "../Services/SayService";
+import server from '../server';
 
 class TwitchClient
 {
@@ -112,6 +113,31 @@ class TwitchClient
                     emitter.emit('chat.redeem', message);
                 }
             });
+            this.pubSubClient.onSubscription(user.id, async (message) => {
+                const isOffensive = await this.checkIsOffensiveUsername(message.userName);
+
+                if(isOffensive || message.isGift || message.isAnonymous) {
+                    return;
+                }
+
+                let infoMessage = `${message.userDisplayName} hat gerade abonniert, YAY!`;
+                if(message.months > 1) {
+                    infoMessage += `<br>${message.userDisplayName} abonniert bereits seit ${message.months} Monaten!`
+                }
+
+                const alert = {
+                    imageUrl: '/static/images/alerts/subscriber.gif',
+                    soundUrl: '/static/audio/kitty2.mp3',
+                    volume: 0.5,
+                    infomessage: infoMessage,
+                    inputmessage: message.message.message || '',
+                }
+                server.getIO().emit('showAlert', alert);
+
+                if(message.message.message) {
+                    emitter.emit('bot.say.notext', message.message.message);
+                }
+            });
 
             // EventSub
             const listener = new EventSubWsListener({ apiClient: this.apiClient });
@@ -119,30 +145,67 @@ class TwitchClient
 
             listener.onChannelFollow(user, user, async (event) => {
                 const isOffensive = await this.checkIsOffensiveUsername(event.userName);
+                if(!isOffensive) {
+                    const alert = {
+                        imageUrl: '/static/images/alerts/follower.gif',
+                        soundUrl: '/static/audio/cats.mp3',
+                        volume: 0.5,
+                        infomessage: `${event.userDisplayName} schließt sich der Panda-Sippe an, YAY!`,
+                        inputmessage: '',
+                    }
+                    server.getIO().emit('showAlert', alert);
+                }
             });
 
-            listener.onChannelSubscription(user, (event) => {
-
+            listener.onChannelSubscriptionGift(user, async (event) => {
+                const isOffensive = await this.checkIsOffensiveUsername(event.gifterName);
+                if(!isOffensive) {
+                    const alert = {
+                        imageUrl: '/static/images/alerts/subscriber.gif',
+                        soundUrl: '/static/audio/kitty2.mp3',
+                        volume: 0.5,
+                        infomessage: `${event.gifterDisplayName} schenkt der der Panda-Bande<br> ${event.amount} Subs, wie lieb!`,
+                        inputmessage: '',
+                    }
+                    server.getIO().emit('showAlert', alert);
+                }
             });
 
-            listener.onChannelSubscriptionGift(user, (event) => {
+            listener.onChannelCheer(user, async (event) => {
+                const isOffensive = await this.checkIsOffensiveUsername(event.userName);
+                if(!isOffensive) {
+                    const alert = {
+                        imageUrl: '/static/images/alerts/cheer.gif',
+                        soundUrl: '/static/audio/cats.mp3',
+                        volume: 0.5,
+                        infomessage: `${event.userDisplayName} lässt die Bambusmünzen regnen! Danke für die ${event.bits} Bits!`,
+                        inputmessage: event.message || '',
+                    }
+                    server.getIO().emit('showAlert', alert);
 
+                    if(event.message) {
+                        emitter.emit('bot.say.notext', event.message);
+                    }
+                }
             });
 
-            listener.onChannelRaidTo(user, (event) => {
+            listener.onChannelRaidTo (user, async (event) => {
+                const isOffensive = await this.checkIsOffensiveUsername(event.raidingBroadcasterName);
+                if(!isOffensive) {
+                    const alert = {
+                        imageUrl: '/static/images/alerts/raid.gif',
+                        soundUrl: '/static/audio/skibidi.mp3',
+                        volume: 0.25,
+                        infomessage: `${event.raidingBroadcasterDisplayName} stürmt uns mit ${event.viewers} Pandas!`,
+                        inputmessage: '',
+                    }
+                    server.getIO().emit('showAlert', alert);
 
-            });
-
-            listener.onChannelCheer(user, (event) => {
-
-            });
-
-            listener.onChannelRaidTo(user, (event) => {
-                sayService.say('tmi', '', '', null, `Vielen Dank für den Raid ${event.raidingBroadcasterDisplayName} ヽ(゜∇゜)ノ`)
-                sayService.say('tmi', '', '', null, `Hey ihr Flauschis, schaut doch mal bei ${event.raidingBroadcasterDisplayName} rein! https://twitch.tv/${event.raidingBroadcasterName}`)
-                this.apiClient.chat.shoutoutUser(user, event.raidedBroadcasterId);
-                emitter.emit('playAudio', {file: 'skibidi.mp3', mediaType: 'audio', volume: 0.25});
-                emitter.emit('bot.say', 'Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
+                    sayService.say('tmi', '', '', null, `emote_hype emote_hype emote_hype Vielen Dank für den Raid ${event.raidingBroadcasterDisplayName} emote_hype emote_hype emote_hype`)
+                    sayService.say('tmi', '', '', null, `emote_heart emote_heart emote_heart Hey ihr Flauschis, schaut doch mal bei ${event.raidingBroadcasterDisplayName} rein! https://twitch.tv/${event.raidingBroadcasterName} emote_heart emote_heart emote_heart`)
+                    this.apiClient.chat.shoutoutUser(user, event.raidedBroadcasterId);
+                    emitter.emit('bot.say.notext', 'Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
+                }
             });
         } catch(err) {
             console.error(err);

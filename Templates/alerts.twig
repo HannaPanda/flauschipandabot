@@ -25,42 +25,78 @@
                     &nbsp;
                 </div>
                 <div class="text-center height: 450px">
-                    <img src="/static/images/alerts/subscriber.gif" />
+                    <div id="image">
+                        <img src="" />
+                    </div>
+                    {#<img src="/static/images/alerts/subscriber.gif" />#}
                     {#<img src="/static/images/alerts/follower.gif" />#}
                     {#<img src="/static/images/alerts/cheer.gif" />#}
                     {#<img src="/static/images/alerts/raid.gif" />#}
                 </div>
                 <div class="text-center" style="height: 315px">
-                    <p id="infomessage-wrapper" class="panda-text panda-text-small mt-3">
-                        katja_on hat erneut abonniert.<br> katja_on ist nun schon seit 12 Monaten ein besonderer Panda.
-                    </p>
-                    <p id="inputmessage-wrapper" class="panda-text panda-text-small">
-                        Dies ist ein Test 12345
-                    </p>
+                    <p id="infomessage-wrapper" class="panda-text panda-text-small mt-3"></p>
+                    <p id="inputmessage-wrapper" class="panda-text panda-text-small"></p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 <script>
+    var alerts = [];
     var socket = io();
-    /*socket.on('hornyLevelChange', function(msg) {
-        var element = document.getElementById('horniness-level');
-        var wrapper = document.getElementById('horniness-level-wrapper');
+    var silenceDuration = 2000;  // 2 Sekunden Stille
 
-        element.innerHTML = msg.newLevel;
+    function showAlert(alert) {
+        // Elemente auswählen
+        var imageElement = document.querySelector('#image img');
+        var audioElement = new Audio(alert.soundUrl);
+        var inputMessageElement = document.querySelector('#inputmessage-wrapper');
+        var infoMessageElement = document.querySelector('#infomessage-wrapper');
 
-        if(msg.newLevel >= 90) {
-            wrapper.classList.add("blink_me");
-        } else {
-            wrapper.classList.remove("blink_me");
+        // Lautstärke setzen
+        audioElement.volume = alert.volume || 1;  // Standardwert ist 1, falls kein Wert für volume vorhanden ist
+
+        // Nachrichten setzen, falls vorhanden
+        inputMessageElement.innerHTML = alert.inputmessage || "";
+        infoMessageElement.innerHTML = alert.infomessage || "";
+
+        // FadeIn-Effekt für das Bild
+        setTimeout(function() {
+            imageElement.classList.add('showing');
+        }, 0);
+
+        // Bild setzen und Sound abspielen
+        imageElement.src = alert.imageUrl;
+        audioElement.play();
+
+        // Bei Beendigung des Sounds: Bild und Text ausblenden und nach der Ruhephase den nächsten Alert anzeigen
+        audioElement.onended = function() {
+            // FadeOut-Effekt für das Bild
+            imageElement.classList.remove('showing');
+
+            // Text zurücksetzen
+            inputMessageElement.innerHTML = "";
+            infoMessageElement.innerHTML = "";
+
+            setTimeout(function() {
+                if (alerts.length > 0) {
+                    showAlert(alerts.shift());
+                } else {
+                    // Bildquelle löschen nach dem FadeOut
+                    imageElement.src = '';
+                }
+            }, silenceDuration);
+        };
+    }
+
+    socket.on('showAlert', function(alert) {
+        alerts.push(alert);
+
+        // Wenn gerade kein Alert angezeigt wird und keine Warteschlange vorhanden ist, den neuen Alert sofort anzeigen
+        var imageElement = document.querySelector('#image img');
+        if (!imageElement.classList.contains('showing') && alerts.length === 1) {
+            showAlert(alerts.shift());
         }
-
-        if(msg.newLevel <= 0) {
-            wrapper.classList.add("d-none");
-        } else {
-            wrapper.classList.remove("d-none");
-        }
-    });*/
+    });
 </script>
 {% endblock %}
