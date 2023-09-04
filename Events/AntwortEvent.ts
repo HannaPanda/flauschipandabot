@@ -34,9 +34,9 @@ class AntwortEvent
 
         if(/@flauschipandabot/i.test(message) || /@950121475619323924/i.test(message)) {
 
-            message = message.replace('<@950121475619323924>', '@FlauschiPandaBot');
+            message = message.replace('950122590918291469', '@FlauschiPandaBot');
 
-            let username = (origin === 'tmi') ? context['display-name'] : context.username;
+            let username = (origin === 'tmi') ? context.displayName : context.userName;
 
             if(username && username.toLowerCase() === 'flauschipandabot') {
                 return Promise.resolve(false);
@@ -44,9 +44,13 @@ class AntwortEvent
 
             //const gameName = streamService.currentStream?.game_name ? `Wir streamen "${streamService.currentStream?.game_name}"` : 'Wir spielen gerade nichts';
 
-            //const response = await openAiClient.getResponse(`Frage von "@${username}": ${message}`);
-            const response = await openAiClient.getChatGPTResponse(`Frage von "@${username}": ${message}`);
-            sayService.say(origin, context['display-name'], '', channel, response);
+            let response = await openAiClient.getChatGPTResponse(`Frage von "@${username}": ${message}`, username);
+
+            if(origin === 'discord') {
+                response = emoteService.replaceTwitchEmotesWithDiscord(response);
+            }
+
+            sayService.say(origin, context.displayName, '', channel, response);
 
             return Promise.resolve(true);
         }

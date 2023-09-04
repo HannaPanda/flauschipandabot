@@ -50,7 +50,7 @@ class QuoteCommand extends AbstractCommand
                     });
 
                 const text = `###ORIGIN###: Zitat #${curQuoteCount + 1} wurde hinzugefügt`;
-                sayService.say(origin, context['display-name'], '', channel, text);
+                sayService.say(origin, context.displayName, '', channel, text);
             } else if(parts[1] === 'replace' && isMod) {
                 const id = parseInt(parts[2]);
                 const quote = parts.slice(3).join(' ');
@@ -74,10 +74,10 @@ class QuoteCommand extends AbstractCommand
                         );
 
                     const text = `###ORIGIN###: Zitat Nummer #${id} wurde geändert`;
-                    sayService.say(origin, context['display-name'], '', channel, text);
+                    sayService.say(origin, context.displayName, '', channel, text);
                 } else {
                     const text = `###ORIGIN###: Es wurde kein Zitat mit der Nummer #${id} gefunden`;
-                    sayService.say(origin, context['display-name'], '', channel, text);
+                    sayService.say(origin, context.displayName, '', channel, text);
                 }
             } else if(parts[1] === 'approve' && isMod) {
                 const id = parseInt(parts[2]);
@@ -101,10 +101,10 @@ class QuoteCommand extends AbstractCommand
                         );
 
                     const text = `###ORIGIN###: Zitat Nummer #${id} wurde genehmigt`;
-                    sayService.say(origin, context['display-name'], '', channel, text);
+                    sayService.say(origin, context.displayName, '', channel, text);
                 } else {
                     const text = `###ORIGIN###: Es wurde kein Zitat mit der Nummer #${id} gefunden`;
-                    sayService.say(origin, context['display-name'], '', channel, text);
+                    sayService.say(origin, context.displayName, '', channel, text);
                 }
             } else if(parts[1] === 'delete' && isMod) {
                 const id = parseInt(parts[2]);
@@ -121,10 +121,10 @@ class QuoteCommand extends AbstractCommand
                         .deleteOne({id: id}, {});
 
                     const text = `###ORIGIN###: Zitat Nummer #${id} wurde gelöscht`;
-                    sayService.say(origin, context['display-name'], '', channel, text);
+                    sayService.say(origin, context.displayName, '', channel, text);
                 } else {
                     const text = `###ORIGIN###: Es wurde kein Zitat mit der Nummer #${id} gefunden`;
-                    sayService.say(origin, context['display-name'], '', channel, text);
+                    sayService.say(origin, context.displayName, '', channel, text);
                 }
             }
         } else if(parts.length === 2) {
@@ -136,13 +136,13 @@ class QuoteCommand extends AbstractCommand
 
             if(document) {
                 const text = `###ORIGIN### Zitat #${document.id}: ${document.quote} [${document.date}]`;
-                sayService.say(origin, context['display-name'], '', channel, text);
+                sayService.say(origin, context.displayName, '', channel, text);
             } else if(id === 69) {
                 const text = `###ORIGIN###: Nice!`;
-                sayService.say(origin, context['display-name'], '', channel, text);
+                sayService.say(origin, context.displayName, '', channel, text);
             } else {
                 const text = `###ORIGIN###: Es wurde kein Zitat mit der Nummer #${id} gefunden`;
-                sayService.say(origin, context['display-name'], '', channel, text);
+                sayService.say(origin, context.displayName, '', channel, text);
             }
         } else {
             const randomQuote = await mongoDBClient
@@ -153,7 +153,7 @@ class QuoteCommand extends AbstractCommand
 
             if(randomQuote) {
                 const text = `###ORIGIN### Zitat #${randomQuote.id}: ${randomQuote.quote} [${randomQuote.date}]`;
-                sayService.say(origin, context['display-name'], '', channel, text);
+                sayService.say(origin, context.displayName, '', channel, text);
             }
         }
     };

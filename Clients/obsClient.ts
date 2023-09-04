@@ -1,12 +1,8 @@
-import {ChatUserstate, Client} from "tmi.js";
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import OBSWebSocket from "obs-websocket-js";
-import tmiOwnerClient from "./tmiOwnerClient";
 import sayService from "../Services/SayService";
-import twitchClient from "./twitchClient";
 
-const tmi = require('tmi.js');
 dotenv.config({ path: __dirname+'/../.env' });
 
 class Initializer
@@ -38,8 +34,6 @@ class Initializer
                 });
             })
             .catch((err) => {
-                /*console.warn(err);
-                console.warn('OBS not connected');*/
                 this.obs.removeAllListeners();
                 setTimeout(this.connectObs, 1000);
             });

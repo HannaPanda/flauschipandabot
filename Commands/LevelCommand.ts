@@ -20,7 +20,7 @@ class LevelCommand extends AbstractCommand
     globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        const username = context.username.toLowerCase();
+        const username = context.userName;
 
         const target = this.getTarget(origin, parts, messageObject);
         const targetName = parts.slice(1).join(' ');
@@ -32,7 +32,7 @@ class LevelCommand extends AbstractCommand
             fighter = new Fighter();
             await fighter.init(target);
         } else {
-            name = context['display-name'];
+            name = context.displayName;
 
             fighter = new Fighter();
             await fighter.init(username);

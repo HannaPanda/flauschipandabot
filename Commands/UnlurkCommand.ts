@@ -18,7 +18,7 @@ class UnlurkCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
     customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        //sayService.say(origin, context['display-name'], '', channel, this.answerNoTarget);
+        //sayService.say(origin, context.displayName, '', channel, this.answerNoTarget);
         emitter.emit('playAudio', {file: 'weird.wav', mediaType: 'audio', volume: 0.5});
 
         const response = await openAiClient.getCustomChatGPTResponse(
@@ -26,13 +26,17 @@ class UnlurkCommand extends AbstractCommand
              Nutze genderneutrale Sprache.
              Nutze ausschließlich folgende Emotes:  
              ${emoteService.getBotTwitchEmotes()}
+             ###PRONOMEN###
+             ###INFO###
+             Beschränke dich auf maximal 60 Wörter für die Nachricht.
              Nutze das Wort "Flausch" für das Wort Lurk. Schreibe dazu eine witzige Nachricht.`,
-            `@${context['display-name']} ist zurück aus dem Lurk mit folgender Nachricht: ${parts.slice(1).join(' ')}`,
+            `Der User @${context.displayName} ist zurück aus dem Lurk mit folgender Nachricht: ${parts.slice(1).join(' ')}`,
             null,
+            '',
             false
         );
 
-        sayService.say(origin, context['display-name'], '', channel, response);
+        sayService.say(origin, context.displayName, '', channel, response);
     };
 }
 

@@ -41,6 +41,7 @@ class StoryService {
              Nutze das Wort "Flausch" so oft es geht.`,
             this.storySeeds[Math.floor(Math.random() * this.storySeeds.length)].prompt,
             null,
+            '',
             false
         );
 
@@ -65,6 +66,7 @@ class StoryService {
              Nutze das Wort "Flausch" so oft es geht.`,
                 storySeeds[Math.floor(Math.random() * storySeeds.length)].prompt,
                 null,
+                '',
                 false
             );
 
@@ -78,6 +80,7 @@ class StoryService {
              Nutze das Wort "Flausch" so oft es geht.`,
                 `Schreibe eine witzige Geschichte über den User ${user} in 200 Zeichen`,
                 null,
+                '',
                 false
             );
 

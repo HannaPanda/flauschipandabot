@@ -51,6 +51,7 @@ body {
     height: 100vh;
 }
 
+.panda-text,
 #horniness-level-wrapper,
 #fuckCounter-wrapper,
 #verpissdichCounter-wrapper,
@@ -60,6 +61,10 @@ body {
     color: #FFA7F6;
     text-shadow: 4px 4px 8px #0e0e10;
     font-size: 6rem;
+}
+
+.panda-text-small {
+    font-size: 2rem;
 }
 
 #chat-wrapper {

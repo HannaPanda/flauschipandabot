@@ -21,7 +21,7 @@ class AlexaEvent
         }
 
         if(/alexa/i.test(message) || /aiexa/i.test(message)) {
-            if(context.username && context.username.toLowerCase() === 'flauschipandabot') {
+            if(context.userName && context.userName === 'flauschipandabot') {
                 return Promise.resolve(false);
             }
 

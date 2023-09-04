@@ -23,10 +23,10 @@ class PflasterCommand extends AbstractCommand
         const target = this.getTarget(origin, parts, messageObject);
 
         if(parts.length > 1 && target !== '') {
-            let text = `${context['display-name']} pustet auf das Aua von ${targetName} und tut ein Pflaster drauf. ${targetName} ist vollständig geheilt SeemsGood`;
+            let text = `${context.displayName} pustet auf das Aua von ${targetName} und tut ein Pflaster drauf. ${targetName} ist vollständig geheilt SeemsGood`;
 
             const originUser = new Fighter();
-            await originUser.init(context.username.toLowerCase());
+            await originUser.init(context.userName);
 
             const targetUser = new Fighter();
             await targetUser.init(target);
@@ -34,12 +34,12 @@ class PflasterCommand extends AbstractCommand
             originUser.setOpponent(targetUser);
 
             if(targetUser.get('disease') || targetUser.get('incurableDisease')) {
-                sayService.say(origin, context['display-name'], targetName, channel, `###TARGET### leidet unter einer Krankheit und kann nicht so geheilt werden!`);
+                sayService.say(origin, context.displayName, targetName, channel, `###TARGET### leidet unter einer Krankheit und kann nicht so geheilt werden!`);
                 return false;
             }
 
             if(targetUser.get('curHp') === targetUser.get('maxHp')) {
-                sayService.say(origin, context['display-name'], targetName, channel, `###TARGET### ist bereits vollständig geheilt`);
+                sayService.say(origin, context.displayName, targetName, channel, `###TARGET### ist bereits vollständig geheilt`);
                 return Promise.resolve(false);
             }
 
@@ -49,17 +49,17 @@ class PflasterCommand extends AbstractCommand
             const convertedLevel = originUser.calculateLevel();
 
             if(await originUser.checkLevelUp()) {
-                text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP | LVL ${convertedLevel}]`;
+                text = text + ` [${context.displayName}: +${xpGained.toLocaleString('de-DE')} XP | LVL ${convertedLevel}]`;
             } else {
-                text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP]`;
+                text = text + ` [${context.displayName}: +${xpGained.toLocaleString('de-DE')} XP]`;
             }
 
-            sayService.say(origin, context['display-name'], targetName, channel, text);
+            sayService.say(origin, context.displayName, targetName, channel, text);
         } else {
-            sayService.say(origin, context['display-name'], targetName, channel, `###ORIGIN### bappt sich selbst ein Pflaster auf die Stirn LUL`);
+            sayService.say(origin, context.displayName, targetName, channel, `###ORIGIN### bappt sich selbst ein Pflaster auf die Stirn LUL`);
 
             const user = new Fighter();
-            await user.init(context.username.toLowerCase());
+            await user.init(context.userName);
             await user.set('curHp', user.get('maxHp')).update();
         }
 

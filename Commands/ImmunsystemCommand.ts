@@ -21,14 +21,14 @@ class HealCommand extends AbstractCommand
     globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        const username = context.username.toLowerCase();
+        const username = context.userName;
 
         const originUser = new Fighter();
         await originUser.init(username);
 
         if(originUser.get('xp') >= 500000) {
             const text = `###ORIGIN###: Du hast dir erfolgreich 5% Immunität für 500.000XP gekauft. Du bist damit auf ${originUser.get('immunity')+5}% Immunität.`;
-            sayService.say(origin, context['display-name'], '', channel, text);
+            sayService.say(origin, context.displayName, '', channel, text);
 
             await originUser
                 .set('immunity', originUser.get('immunity') + 5)
@@ -37,7 +37,7 @@ class HealCommand extends AbstractCommand
         } else {
             // Nicht genug Erfahrungspunkte
             const text = `###ORIGIN###: Du hast nicht genug Erfahrungspunkte, um 5% Immunität zu kaufen!`
-            sayService.say(origin, context['display-name'], '', channel, text);
+            sayService.say(origin, context.displayName, '', channel, text);
         }
 
         return Promise.resolve(true);

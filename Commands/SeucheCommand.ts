@@ -21,7 +21,7 @@ class SeucheCommand extends AbstractCommand
     globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        const username = context.username.toLowerCase();
+        const username = context.userName;
 
         const originUser = new Fighter();
         await originUser.init(username);
@@ -43,17 +43,17 @@ class SeucheCommand extends AbstractCommand
                     await statusService.addKrankheit(fighter, fighter.get('name'), origin, channel);
                 }            }
             const text = `###ORIGIN### verhext den ganzen Chat mit einer magischen Seuche. Dummerweise hat es ###ORIGIN### mit erwischt. LUL`;
-            sayService.say(origin, context['display-name'], '', channel, text);
+            sayService.say(origin, context.displayName, '', channel, text);
         } else if(randomNumber >= 21 && randomNumber <= 40) {
             // nichts passiert
             const text = `###ORIGIN### versucht den Chat mit einer magischen Seuche zu verhexen aber scheitert und es passiert... nichts LUL`;
-            sayService.say(origin, context['display-name'], '', channel, text);
+            sayService.say(origin, context.displayName, '', channel, text);
         } else if(randomNumber >= 41 && randomNumber <= 60) {
             // unheilbare krankheit
             await statusService.addUnheilbareKrankheit(originUser, username, origin, channel);
 
             const text = `###ORIGIN### versucht den Chat mit einer magischen Seuche zu verhexen aber scheitert und verhext sich selbst mit einer unheilbaren Krankheit LUL`;
-            sayService.say(origin, context['display-name'], '', channel, text);
+            sayService.say(origin, context.displayName, '', channel, text);
         } else if(randomNumber >= 61 && randomNumber <= 80) {
             // keine Befehle
             await originUser.set('canUseCommands', false).update();
@@ -62,7 +62,7 @@ class SeucheCommand extends AbstractCommand
             }, 600000);
 
             const text = `###ORIGIN### versucht den Chat mit einer magischen Seuche zu verhexen aber scheitert und kann eine Weile keine Commands mehr ausführen LUL`;
-            sayService.say(origin, context['display-name'], '', channel, text);
+            sayService.say(origin, context.displayName, '', channel, text);
         } else {
             // klappt
             var filteredChatters = chatters.filter(function(e) { return e !== username });
@@ -74,7 +74,7 @@ class SeucheCommand extends AbstractCommand
                 }
             }
             const text = `###ORIGIN### verhext den ganzen Chat mit einer magischen Seuche.`;
-            sayService.say(origin, context['display-name'], '', channel, text);
+            sayService.say(origin, context.displayName, '', channel, text);
         }
 
         return Promise.resolve(true);

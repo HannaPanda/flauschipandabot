@@ -5,9 +5,9 @@ dotenv.config({ path: __dirname+'/../.env' });
 class EmoteService
 {
     discordEmotes = {
-        'hype': 'hype112',
+        'hype': 'hannap5PandaHype',
         'greet': 'wave~1',
-        'heart': 'Heart112',
+        'heart': 'hannap5Heart',
         'angry': 'angry~1',
         'stinky': 'skunk',
         'bleed': 'cloud_rain',
@@ -18,7 +18,7 @@ class EmoteService
     };
 
     twitchEmotes = {
-        'hype': 'hannap5Hype',
+        'hype': 'hannap5PandaHype',
         'greet': 'hannap5Wave',
         'heart': 'hannap5Heart',
         'angry': 'hannap5Angry',
@@ -30,7 +30,29 @@ class EmoteService
         'rave': 'hannap5Rave'
     };
 
-    botTwitchEmotes = ['hannap5Hype', 'hannap5Need', 'hannap5Lurk', 'hannap5D', 'hannap5Note', 'hannap5Hehe', 'hannap5Angry', 'hannap5OhNo', 'hannap5Sleep', 'hannap5Rave', 'hannap5PandaWoah', 'hannap5Flower', 'hannap5Wave', 'hannap5Heart'];
+    botTwitchEmotes = [
+        'hannap5PandaHype',
+        'hannap5Bongo',
+        'hannap5Need',
+        'hannap5Lurk',
+        'hannap5Pat',
+        'hannap5Coffee',
+        'hannap5Hehe',
+        'hannap5Angry',
+        'hannap5OhNo',
+        'hannap5Sleep',
+        'hannap5Rave',
+        'hannap5PandaWoah',
+        'hannap5Wave',
+        'hannap5Heart',
+        'hannap5Giggle',
+        'hannap5Blanket',
+        'hannap5Fire',
+        'hannap5Knife',
+        'hannap5Goofy',
+        'hannap5Shy',
+        'hannap5Facepalm',
+    ];
 
     getEmote = (origin: string, emote: string) => {
         emote = emote.replace('emote_', '');
@@ -46,6 +68,14 @@ class EmoteService
 
     getBotTwitchEmotes = () => {
         return this.botTwitchEmotes.join(' ');
+    };
+
+    replaceTwitchEmotesWithDiscord = (text) => {
+        const regex = new RegExp(this.botTwitchEmotes.join('|'), 'gi');
+        return text.replace(
+            regex,
+            (emote) => { return discordClient.emojis.cache.find(emoji => emoji.name === emote) ?? emote; }
+        );
     };
 }
 

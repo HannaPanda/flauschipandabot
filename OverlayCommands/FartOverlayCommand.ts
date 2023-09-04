@@ -24,13 +24,20 @@ class FartOverlayCommand extends AbstractOverlayCommand
         const sounds = ['fart1.mp3', 'fart2.mp3', 'fart3.mp3', 'fart4.mp3',];
 
 
+        let numberOfPlays = 1;
+        let maxNumberOfPlays = 10;
+        let delay = 500;
+        let minDelay = 100;
         const numberPattern = /\d+/g;
-        const numbers = parts.slice(1).join(' ').match( numberPattern );
-        const number = (numbers) ? numbers.join('') : '';
-        let numberOfPlays = Math.min(50, (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1);
+
+        const firstNumber = parts[1]?.match(numberPattern) ?? '1';
+        numberOfPlays = Math.min(maxNumberOfPlays, (firstNumber !== '' && parseInt(firstNumber) > 0) ? parseInt(firstNumber) : 1);
+
+        const secondNumber = parts[2]?.match(numberPattern) ?? '500';
+        delay = Math.max(minDelay, Math.min(1000, (secondNumber !== '' && parseInt(secondNumber) > 0) ? parseInt(secondNumber) : 500));
 
         for(let i = 0; i < numberOfPlays; i++) {
-            await this.delay(500);
+            await this.delay(delay);
             const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
             emitter.emit('playAudio', {file: randomSound, mediaType: 'audio', volume: this.volume});
         }

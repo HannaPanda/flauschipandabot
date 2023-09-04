@@ -19,7 +19,7 @@ class FlauschEvent
         }
 
         if(/flausch/i.test(message)) {
-            let username = (origin === 'tmi') ? context['display-name'] : context.username;
+            let username = (origin === 'tmi') ? context.displayName : context.userName;
 
             if(username && username.toLowerCase() === 'flauschipandabot') {
                 return Promise.resolve(false);

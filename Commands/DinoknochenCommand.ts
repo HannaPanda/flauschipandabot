@@ -39,7 +39,7 @@ class DinoknochenCommand extends AbstractCommand
             .catch(err => {console.log(err)});
 
         const target = this.getTarget(origin, parts, messageObject);
-        const username = context.username.toLowerCase();
+        const username = context.userName;
 
         if(chatterInfo && chatterInfo.chatters && target !== '') {
             const targetName = parts.slice(1).join(' ');
@@ -70,15 +70,15 @@ class DinoknochenCommand extends AbstractCommand
 
             if(hasHit) {
                 const hitArea = this.targetAreas[this.randomInt(0, this.targetAreas.length - 1)];
-                let text = `${context['display-name']} wirft einen riesigen Dinoknochen mit viel Wucht und trifft ${targetName} ${hitArea} 🦴.`;
+                let text = `${context.displayName} wirft einen riesigen Dinoknochen mit viel Wucht und trifft ${targetName} ${hitArea} 🦴.`;
 
                 const xpGained = originUser.calculateXPGained();
                 const convertedLevel = originUser.calculateLevel();
 
                 if(await originUser.checkLevelUp()) {
-                    text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP | LVL ${convertedLevel}]`;
+                    text = text + ` [${context.displayName}: +${xpGained.toLocaleString('de-DE')} XP | LVL ${convertedLevel}]`;
                 } else {
-                    text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP]`;
+                    text = text + ` [${context.displayName}: +${xpGained.toLocaleString('de-DE')} XP]`;
                 }
 
                 text = text + ` [${targetName}: ${damage} DMG | HP ${newHp}/${targetUser.get('maxHp')}]`;
@@ -91,9 +91,9 @@ class DinoknochenCommand extends AbstractCommand
                 await targetUser.set('curHp', newHp).update();
             } else {
                 const missedMessage = this.missedMessages[this.randomInt(0, this.missedMessages.length - 1)];
-                const text = `${context['display-name']} wirft einen riesigen Dinoknochen mit viel Wucht ${missedMessage}`
+                const text = `${context.displayName} wirft einen riesigen Dinoknochen mit viel Wucht ${missedMessage}`
 
-                sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, text);
+                sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, text);
 
             }
 
@@ -101,9 +101,9 @@ class DinoknochenCommand extends AbstractCommand
         }
 
         if(parts.length > 1 && this.answerTarget !== '') {
-            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerTarget);
+            sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerTarget);
         } else {
-            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerNoTarget);
+            sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerNoTarget);
         }
 
         return Promise.resolve(true);

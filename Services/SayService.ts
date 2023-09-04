@@ -14,14 +14,17 @@ class SayService
                 return emoteService.getEmote(origin, match);
             });
 
-        /*const emotesRegex = new RegExp(emoteService.botTwitchEmotes.map(emote => `\\b${emote.toLowerCase()}\\b`).join("|"), "g");
-
-        message = message.replace(emotesRegex, emote => ` ${emote} `);*/
+        const emoteStarRegex = /\*\s*(hannap5[a-zA-Z0-9]+)\s*\*/g;
+        message = message.replace(emoteStarRegex, "$1");
 
         const emoteRegex = new RegExp(`(${emoteService.botTwitchEmotes.join('|')})`, 'gi');
         message = message.replace(emoteRegex, (match) => emoteService.botTwitchEmotes.find(emote => emote.toLowerCase() === match.toLowerCase()));
-        message = message.replace(emoteRegex, ' $1 ');
 
+        if(origin === 'tmi') {
+            message = message.replace(emoteRegex, ' $1 ');
+        } else {
+            message = message.replace(emoteRegex, '$1');
+        }
 
         emitter.emit(`${origin}.say`, message, channel);
     }

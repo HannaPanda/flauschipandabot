@@ -38,31 +38,31 @@ class StandardOverlayCommand
                 }
 
                 if(command.isVipOnly && !context.mod && !context.owner && !context.vip) {
-                    sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
+                    sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für VIPs verfügbar`);
                     return Promise.resolve(false);
                 }
 
                 if(command.isModOnly && !context.mod && !context.owner) {
-                    sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
+                    sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für Mods verfügbar`);
                     return Promise.resolve(false);
                 }
 
                 if(command.isOwnerOnly && !context.owner) {
-                    sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
+                    sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für Hanna verfügbar`);
                     return Promise.resolve(false);
                 }
 
                 if(!command.isModOnly) {
                     const fighter = new Fighter();
-                    await fighter.init(context.username.toLowerCase());
+                    await fighter.init(context.userName);
                     if(fighter.get('curHp') <= 0) {
                         const text = `###ORIGIN###, du bist gerade ohnmächtig und kannst keine Commands ausführen NotLikeThis Erst wenn du geheilt wurdest, geht das wieder.`;
-                        sayService.say(origin, context['display-name'], '', channel, text);
+                        sayService.say(origin, context.displayName, '', channel, text);
                         return Promise.resolve(false);
                     }
                     if(!fighter.get('canUseCommands')) {
                         const text = `###ORIGIN###, du hast dich selbst verhext und kannst keine Commands ausführen NotLikeThis Da hilft nur warten.`;
-                        sayService.say(origin, context['display-name'], '', channel, text);
+                        sayService.say(origin, context.displayName, '', channel, text);
                         return Promise.resolve(false);
                     }
                 }
@@ -73,15 +73,23 @@ class StandardOverlayCommand
                 }
 
                 let numberOfPlays = 1;
+                let maxNumberOfPlays = 10;
+                let delay = 500;
+                let minDelay = 100;
+
+
                 if(command.isRepeatable) {
                     const numberPattern = /\d+/g;
-                    const numbers = parts.slice(1).join(' ').match( numberPattern );
-                    const number = (numbers) ? numbers.join('') : '';
-                    numberOfPlays = Math.min(50, (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1);
+
+                    const firstNumber = parts[1]?.match(numberPattern) ?? '1';
+                    numberOfPlays = Math.min(maxNumberOfPlays, (firstNumber !== '' && parseInt(firstNumber) > 0) ? parseInt(firstNumber) : 1);
+
+                    const secondNumber = parts[2]?.match(numberPattern) ?? '500';
+                    delay = Math.max(minDelay, Math.min(1000, (secondNumber !== '' && parseInt(secondNumber) > 0) ? parseInt(secondNumber) : 500));
                 }
 
                 for(let i = 0; i < numberOfPlays; i++) {
-                    await this.delay(500);
+                    await this.delay(delay);
                     switch(command.mediaType) {
                         case 'video':
                             emitter.emit('playVideo', {file: command.mediaFile, mediaType: command.mediaType, volume: (numberOfPlays > 1) ? 0.25 : command.volume, fullscreen: command.fullscreen});

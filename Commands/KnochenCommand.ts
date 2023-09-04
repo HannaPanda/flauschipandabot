@@ -33,7 +33,7 @@ class KnochenCommand extends AbstractCommand
             .catch(err => {console.log(err)});
 
         const target = this.getTarget(origin, parts, messageObject);
-        const username = context.username.toLowerCase();
+        const username = context.userName;
 
         if(chatterInfo && chatterInfo.chatters && target !== '') {
             const chatters = [].concat(...Object.values(chatterInfo.chatters));
@@ -65,15 +65,15 @@ class KnochenCommand extends AbstractCommand
 
             if(hasHit) {
                 const hitArea = this.targetAreas[this.randomInt(0, this.targetAreas.length - 1)];
-                let text = `${context['display-name']} wirft einen Knochen und trifft ${targetName} ${hitArea} 🦴.`;
+                let text = `${context.displayName} wirft einen Knochen und trifft ${targetName} ${hitArea} 🦴.`;
 
                 const xpGained = originUser.calculateXPGained();
                 const convertedLevel = originUser.calculateLevel();
 
                 if(await originUser.checkLevelUp()) {
-                    text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP | LVL ${convertedLevel}]`;
+                    text = text + ` [${context.displayName}: +${xpGained.toLocaleString('de-DE')} XP | LVL ${convertedLevel}]`;
                 } else {
-                    text = text + ` [${context['display-name']}: +${xpGained.toLocaleString('de-DE')} XP]`;
+                    text = text + ` [${context.displayName}: +${xpGained.toLocaleString('de-DE')} XP]`;
                 }
 
                 text = text + ` [${targetName}: ${damage} DMG | HP ${newHp}/${targetUser.get('maxHp')}]`;
@@ -94,17 +94,17 @@ class KnochenCommand extends AbstractCommand
                         .next();
 
                     if(accidentalTargetUser.name === username) {
-                        const text = `${context['display-name']} wirft einen Knochen, verfehlt ${targetName} spektakulär und trifft sich stattdessen selber NotLikeThis NotLikeThis NotLikeThis LUL LUL LUL`;
+                        const text = `${context.displayName} wirft einen Knochen, verfehlt ${targetName} spektakulär und trifft sich stattdessen selber NotLikeThis NotLikeThis NotLikeThis LUL LUL LUL`;
                         sayService.say(origin, '', '', channel, text);
                     } else if(accidentalTargetUser) {
-                        const text = `${context['display-name']} wirft einen Knochen, verfehlt ${targetName} spektakulär und trifft stattdessen ${accidentalTargetUser.name} NotLikeThis`;
+                        const text = `${context.displayName} wirft einen Knochen, verfehlt ${targetName} spektakulär und trifft stattdessen ${accidentalTargetUser.name} NotLikeThis`;
                         sayService.say(origin, '', '', channel, text);
                     } else {
-                        const text = `${context['display-name']} wirft einen Knochen und verfehlt ${targetName} spektakulär LUL`;
+                        const text = `${context.displayName} wirft einen Knochen und verfehlt ${targetName} spektakulär LUL`;
                         sayService.say(origin, '', '', channel, text);
                     }
                 } else {
-                    const text = `${context['display-name']} wirft einen Knochen und verfehlt ${targetName} LUL`;
+                    const text = `${context.displayName} wirft einen Knochen und verfehlt ${targetName} LUL`;
                     sayService.say(origin, '', '', channel, text);
                 }
             }
@@ -113,9 +113,9 @@ class KnochenCommand extends AbstractCommand
         }
 
         if(parts.length > 1 && this.answerTarget !== '') {
-            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerTarget);
+            sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerTarget);
         } else {
-            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerNoTarget);
+            sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerNoTarget);
         }
 
         return Promise.resolve(true);

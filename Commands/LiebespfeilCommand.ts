@@ -25,7 +25,7 @@ class LiebesPfeilCommand extends AbstractCommand
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
 
         const target = this.getTarget(origin, parts, messageObject);
-        const username = context.username.toLowerCase();
+        const username = context.userName;
         const targetName = parts.slice(1).join(' ');
 
         const fetch = require('node-fetch');
@@ -38,7 +38,7 @@ class LiebesPfeilCommand extends AbstractCommand
 
             if(targetName === '') {
                 const text = `###ORIGIN### schießt mit Liebespfeilen um sich, trifft aber niemanden`;
-                sayService.say(origin, context['display-name'], targetName, channel, text);
+                sayService.say(origin, context.displayName, targetName, channel, text);
             } else {
                 let randomUser = await mongoDBClient
                     .db("flauschipandabot")
@@ -54,11 +54,11 @@ class LiebesPfeilCommand extends AbstractCommand
                 await targetUser.set('inLoveWith', inLoveWith).update();
 
                 const text = `###ORIGIN### trifft ###TARGET### mit einem Liebespfeil. ###TARGET### verliebt sich in ${randomUser.name} emote_woah und weigert sich nun, ${randomUser.name} etwas anzutun emote_heart.`;
-                sayService.say(origin, context['display-name'], targetName, channel, text);
+                sayService.say(origin, context.displayName, targetName, channel, text);
             }
         } else {
             const text = `###ORIGIN### schießt mit Liebespfeilen um sich, trifft aber niemanden`;
-            sayService.say(origin, context['display-name'], targetName, channel, text);
+            sayService.say(origin, context.displayName, targetName, channel, text);
         }
 
         return Promise.resolve(true);

@@ -18,7 +18,7 @@ class VerflauschtCommand extends AbstractCommand
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const targetName = parts.slice(1).join(' ');
-        const displayName = context['display-name'];
+        const displayName = context.displayName;
         const percentage = this.randomInt(0, 100);
 
         let additionalText = '';

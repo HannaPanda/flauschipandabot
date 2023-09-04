@@ -30,7 +30,7 @@ class GreetEvent
             return Promise.resolve(false);
         }
 
-        if(!context.username || context.owner || context.username === 'flauschipandabot') {
+        if(!context.userName || context.owner || context.userName === 'flauschipandabot') {
             return Promise.resolve(false);
         }
 
@@ -38,41 +38,68 @@ class GreetEvent
             return Promise.resolve(false);
         }
 
-        let user = await mongoDBClient
+        let greetedUser = await mongoDBClient
             .db("flauschipandabot")
             .collection("greeted_users")
-            .findOne({name: context.username}, {});
+            .findOne({name: context.userName}, {});
 
-        if(user) {
+        if(greetedUser) {
             return Promise.resolve(false);
         }
 
         await mongoDBClient
             .db("flauschipandabot")
             .collection("greeted_users")
-            .insertOne({name: context.username});
+            .insertOne({name: context.userName});
 
-        switch (context.username) {
+        switch (context.userName) {
             case 'killerpretzel':
                 emitter.emit('chat.message', '!brezel', ['!brezel'], {username: '', 'display-name': '', mod: false, owner: false});
                 break;
             case 'lormos':
                 emitter.emit('playAudio', {file: 'feueball.mp3', mediaType: 'audio', volume: 0.5});
-                sayService.say(origin, context['display-name'], '', channel, `/me überschüttet ###ORIGIN### zur Begrüßung mit einem Haufen flauschiger Herzen emote_heart emote_heart emote_heart`);
+                sayService.say(origin, context.displayName, '', channel, `/me überschüttet ###ORIGIN### zur Begrüßung mit einem Haufen flauschiger Herzen emote_heart emote_heart emote_heart`);
+                break;
+            case 'yoshi_das_flohfell':
+                emitter.emit('playAudio', {file: 'fluffy.mp3', mediaType: 'audio', volume: 0.5});
+                sayService.say(origin, context.displayName, '', channel, `/me schaut doch mal bei http://TheSoftPlanet.etsy.com vorbei. So süße Flauschis emote_heart emote_heart emote_heart`);
                 break;
             default:
-                //sayService.say(origin, context['display-name'], '', channel, `/me flauscht ###ORIGIN### zur Begrüßung richtig durch emote_greet`);
+                //sayService.say(origin, context.displayName, '', channel, `/me flauscht ###ORIGIN### zur Begrüßung richtig durch emote_greet`);
                 emitter.emit('playAudio', {file: 'hello.mp3', mediaType: 'audio', volume: 0.5});
         }
 
-        if(this.streamers.indexOf(context.username) !== -1) {
-            const text = `Schaut doch mal bei ###ORIGIN### vorbei: https://twitch.tv/${context.username.toLowerCase()} emote_hype`;
-            sayService.say(origin, context['display-name'], '', channel, text);
+        if(this.streamers.indexOf(context.userName) !== -1) {
+            const text = `Schaut doch mal bei ###ORIGIN### vorbei: https://twitch.tv/${context.userName} emote_hype`;
+            sayService.say(origin, context.displayName, '', channel, text);
         }
 
-        const response = await openAiClient.getChatGPTResponse(`Bitte begrüße den User ${context['display-name']} ganz lieb zu meinem Stream. Nutze genderneutrale Sprache.`, false);
-        sayService.say(origin, context['display-name'], '', channel, response);
+        let user = await mongoDBClient
+            .db("flauschipandabot")
+            .collection("users")
+            .findOne({name: context.userName}, {});
 
+        if(!user) {
+            const response = await openAiClient.getChatGPTResponse(`
+        Bitte begrüße den User ${context.displayName} ganz lieb zu Hanna's Stream. 
+        Nutze genderneutrale Sprache. 
+        Behandle die Person als sei sie komplett neu im Stream.`, '', false, '60');
+            sayService.say(origin, context.displayName, '', channel, response);
+
+            await mongoDBClient
+                .db("flauschipandabot")
+                .collection("users")
+                .insertOne({name: context.userName});
+        } else {
+            const pronomenText = (user?.pronomen) ? `Die Pronomen der Person sind '${user?.pronomen}'` : 'Nutze genderneutrale Sprache.';
+
+            const response = await openAiClient.getChatGPTResponse(`
+        Bitte begrüße den User ${context.displayName} ganz lieb zu Hanna's Stream. 
+        ${pronomenText} 
+        Behandle die Person wie einen bereits Bekannten Menschen.`, '', false, '60');
+            sayService.say(origin, context.displayName, '', channel, response);
+
+        }
         return Promise.resolve(true);
     }
 }

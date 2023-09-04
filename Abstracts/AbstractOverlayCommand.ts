@@ -38,31 +38,31 @@ abstract class AbstractOverlayCommand
         }
 
         if(this.isVipOnly && !context.mod && !context.owner && !context.vip) {
-            sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
+            sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für VIPs verfügbar`);
             return Promise.resolve(false);
         }
 
         if(this.isModOnly && !context.mod && !context.owner) {
-            sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
+            sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für Mods verfügbar`);
             return Promise.resolve(false);
         }
 
         if(this.isOwnerOnly && !context.owner) {
-            sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
+            sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für Hanna verfügbar`);
             return Promise.resolve(false);
         }
 
         if(!this.isModOnly) {
             const fighter = new Fighter();
-            await fighter.init(context.username.toLowerCase());
+            await fighter.init(context.userName);
             if(fighter.get('curHp') <= 0) {
                 const text = `###ORIGIN###, du bist gerade ohnmächtig und kannst keine Commands ausführen NotLikeThis Erst wenn du geheilt wurdest, geht das wieder.`;
-                sayService.say(origin, context['display-name'], '', channel, text);
+                sayService.say(origin, context.displayName, '', channel, text);
                 return Promise.resolve(false);
             }
             if(!fighter.get('canUseCommands')) {
                 const text = `###ORIGIN###, du hast dich selbst verhext und kannst keine Commands ausführen NotLikeThis Da hilft nur warten.`;
-                sayService.say(origin, context['display-name'], '', channel, text);
+                sayService.say(origin, context.displayName, '', channel, text);
                 return Promise.resolve(false);
             }
         }

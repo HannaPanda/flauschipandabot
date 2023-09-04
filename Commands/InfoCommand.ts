@@ -5,18 +5,16 @@ import sayService from "../Services/SayService";
 import mongoDBClient from "../Clients/mongoDBClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
-class PronomenCommand extends AbstractCommand
+class InfoCommand extends AbstractCommand
 {
     isActive       = true;
     isModOnly      = false;
     isOwnerOnly    = false;
     isAggressive   = false;
-    command        = 'pronomen';
-    aliases        = ['!pronouns'];
-    description    = 'Pronomen im Chat Hinweis';
-    answerNoTarget = `Eure Pronomen im Chat? Geht einfach auf https://pronouns.alejo.io/ und meldet euch über Twitch dort an. 
-        Dort könnt ihr eure Pronomen auswählen. 
-        Dazu noch die Browserextension für Chrome: https://pronouns.alejo.io/chrome oder Firefox: https://pronouns.alejo.io/firefox emote_heart emote_heart emote_heart`;
+    command        = 'info';
+    aliases        = [];
+    description    = 'Hintergrundinfos für den Bot';
+    answerNoTarget = ``;
     answerTarget   = '';
     globalCooldown = 0;
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
@@ -31,7 +29,7 @@ class PronomenCommand extends AbstractCommand
             await mongoDBClient
                 .db("flauschipandabot")
                 .collection("users")
-                .insertOne({name: context.userName, pronomen: ''});
+                .insertOne({name: context.userName, info: ''});
         }
 
         user = await mongoDBClient
@@ -40,7 +38,7 @@ class PronomenCommand extends AbstractCommand
             .findOne({name: context.userName}, {});
 
         if(parts.length <= 1) {
-            sayService.say(origin, '', '', channel, `@${context.userName} Deine Hinterlegten Pronomen sind '${user?.pronomen}'`);
+            sayService.say(origin, '', '', channel, `@${context.userName} Deine hinterlegte Info ist '${user?.info}'`);
         } else {
 
             await mongoDBClient
@@ -48,15 +46,15 @@ class PronomenCommand extends AbstractCommand
                 .collection("users")
                 .updateOne(
                     {name: context.userName},
-                    {$set: {pronomen: parts.slice(1).join(' ')}},
+                    {$set: {info: parts.slice(1).join(' ')}},
                     {upsert: true}
                 );
 
-            sayService.say(origin, '', '', channel, `@${context.userName} Deine Hinterlegten Pronomen sind '${parts.slice(1).join(' ')}'`);
+            sayService.say(origin, '', '', channel, `@${context.userName} Deine hinterlegte Info ist '${parts.slice(1).join(' ')}'`);
         }
     };
 }
 
-let pronomenCommand = new PronomenCommand();
+let infoCommand = new InfoCommand();
 
-export default pronomenCommand;
+export default infoCommand;

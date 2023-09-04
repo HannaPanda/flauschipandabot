@@ -33,7 +33,7 @@ class GruppenFlauschCommand extends AbstractCommand
         }
 
         sayService.say(origin, '', '', channel, this.answerNoTarget);
-        emitter.emit('showImage', {file: 'panda_heart.png', mediaType: 'image', duration: 5000});
+        emitter.emit('showImage', {file: 'alerts/follower.gif', mediaType: 'image', duration: 5000});
         emitter.emit('playAudio', {file: 'yoba.wav', mediaType: 'audio', volume: 0.5});
     }
 

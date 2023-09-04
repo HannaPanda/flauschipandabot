@@ -42,4 +42,34 @@
         </div>
     </div>
 </section>
+<section class="mb-5">
+    <div class="container">
+        <div class="col">
+            <table class="table table-dark table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Sound Effekt</th>
+                    <th>Beschreibung</th>
+                    <th>Nur Moderator</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for command in overlayCommands %}
+                    <tr>
+                        <td>{{command.command}}</td>
+                        <td>{{command.description}}</td>
+                        <td>
+                            {% if command.isModOnly or command.isOwnerOnly %}
+                                Ja
+                            {% else %}
+                                Nein
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 {% endblock %}

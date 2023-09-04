@@ -27,12 +27,13 @@ class EssenCommand extends AbstractCommand
              Nutze ausschließlich folgende Emotes:  
              ${emoteService.getBotTwitchEmotes()}
              Nutze das Wort "Flausch" für das Wort Lurk. Schreibe dazu eine witzige Nachricht.`,
-            `@${context['display-name']} möchte dass du für ${parts.slice(1).join(' ')} etwas leckeres kochst.`,
+            `@${context.displayName} möchte dass du für ${parts.slice(1).join(' ')} etwas leckeres kochst.`,
             null,
+            '',
             false
         );
 
-        sayService.say(origin, context['display-name'], '', channel, response);
+        sayService.say(origin, context.displayName, '', channel, response);
 
         return Promise.resolve(true);
     }

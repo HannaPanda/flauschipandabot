@@ -25,9 +25,9 @@ class BlitzdingsCommand extends AbstractCommand
         }
 
         if(parts.length > 1 && this.answerTarget !== '') {
-            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerTarget);
+            sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerTarget);
         } else {
-            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerNoTarget);
+            sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerNoTarget);
         }
     };
 }

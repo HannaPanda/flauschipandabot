@@ -7,6 +7,7 @@ import mongoDBClient from "./Clients/mongoDBClient";
 import discordClient from "./Clients/discordClient";
 import streamService from "./Services/StreamService";
 import obsClient from "./Clients/obsClient";
+import wss from "./Clients/wssClient";
 import { PubSubClient } from '@twurple/pubsub';
 import { RefreshingAuthProvider } from '@twurple/auth';
 import { ApiClient } from '@twurple/api';
@@ -16,6 +17,7 @@ import server from "./server";
 import twitchClient from "./Clients/twitchClient";
 
 dotenv.config({ path: __dirname+'/.env' });
+var osProcess = require('process');
 
 declare var process : {
     env: {
@@ -29,15 +31,16 @@ declare var process : {
         CHANNEL: string,
         MONGODB_CONNECTION_STRING: string,
         BOT_DISCORD_CLIENT_TOKEN: string,
-        DISCORD_GUILD_ID: string
+        DISCORD_GUILD_ID: string,
+        EVENTSUB_SECRET: string
     }
 }
 
 class FlauschiPandaBot
 {
-    public twitchApi: TwitchApi;
     public obs: OBSWebSocket;
     public twitchClient;
+    public wss;
 
     private commands: Array<any> = [];
 
@@ -47,16 +50,26 @@ class FlauschiPandaBot
     {
         discordClient.eventNames();
 
-        this.twitchApi = new TwitchApi({
-            client_id: process.env.CLIENT_ID,
-            client_secret: process.env.CLIENT_SECRET,
-            scopes: ["channel:edit:commercial", "moderation:read"]
-        });
-
         this.obs = obsClient;
         this.twitchClient = twitchClient;
+        this.wss = wss;
 
         setInterval(this.getStreamInfo, 30000);
+        /*setInterval(() => {
+            const formatMemoryUsage = (data) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
+
+            const memoryData = osProcess.memoryUsage();
+
+            const memoryUsage = {
+                rss: `${formatMemoryUsage(memoryData.rss)} -> Resident Set Size - total memory allocated for the process execution`,
+                heapTotal: `${formatMemoryUsage(memoryData.heapTotal)} -> total size of the allocated heap`,
+                heapUsed: `${formatMemoryUsage(memoryData.heapUsed)} -> actual memory used during the execution`,
+                external: `${formatMemoryUsage(memoryData.external)} -> V8 external memory`,
+            };
+
+            console.log(memoryUsage);
+
+        }, 30000);*/
 
         this.getStreamInfo();
         this.initializeEvents();
@@ -67,6 +80,7 @@ class FlauschiPandaBot
 
         this.server = server;
         this.server.setCommands(this.commands);
+        this.server.initializeOverlayCommands();
     }
 
     private initializeEvents = () => {
@@ -130,10 +144,7 @@ class FlauschiPandaBot
 
     private getStreamInfo = async () => {
         try {
-            const streams = await this.twitchApi.getStreams({ channel: process.env.CHANNEL });
-
-            /*const test = await twitchClient.apiClient?.streams.getStreams({ userName: process.env.CHANNEL });
-             console.log(test);*/
+            const streams = await this.twitchClient.twitchApi.getStreams({ channel: process.env.CHANNEL });
 
             if(streams && streams.data.length > 0) {
                 streamService.currentStream = streams.data[0];
@@ -150,7 +161,7 @@ class FlauschiPandaBot
                     .updateMany({}, {$set: {canUseCommands: true}});
             }
         } catch(err) {
-            console.log('abgesoffen');
+            console.log('Error getting stream info');
         }
     }
 

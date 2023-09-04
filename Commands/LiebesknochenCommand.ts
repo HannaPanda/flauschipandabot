@@ -26,11 +26,11 @@ class LiebesknochenCommand extends AbstractCommand
             .catch(err => {console.log(err)});
 
         const target = this.getTarget(origin, parts, messageObject);
-        const username = context.username.toLowerCase();
+        const username = context.userName;
 
         if(target === '') {
             const text = `###ORIGIN### wirft mit Liebesknochen um sich emote_heart`;
-            sayService.say(origin, context['display-name'], '', channel, text);
+            sayService.say(origin, context.displayName, '', channel, text);
 
             return Promise.resolve(true);
         }
@@ -46,7 +46,7 @@ class LiebesknochenCommand extends AbstractCommand
         originUser.setOpponent(targetUser);
 
         if(targetUser.get('disease') || targetUser.get('incurableDisease')) {
-            sayService.say(origin, context['display-name'], targetName, channel, `###TARGET### leidet unter einer Krankheit und reagiert nicht auf den Liebesknochen!`);
+            sayService.say(origin, context.displayName, targetName, channel, `###TARGET### leidet unter einer Krankheit und reagiert nicht auf den Liebesknochen!`);
             return false;
         }
 
@@ -56,7 +56,7 @@ class LiebesknochenCommand extends AbstractCommand
         await targetUser.set('curHp', newHp).update();
 
         const text = `###ORIGIN### wirft mit Liebesknochen auf ###TARGET### emote_heart ###TARGET### wird um ${damageHealed} HP geheilt und schaut jetzt ###ORIGIN### ganz verliebt an emote_heart emote_woah`;
-        sayService.say(origin, context['display-name'], targetName, channel, text);
+        sayService.say(origin, context.displayName, targetName, channel, text);
 
         return Promise.resolve(true);
     }

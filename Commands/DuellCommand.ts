@@ -31,8 +31,8 @@ class DuellCommand extends AbstractCommand
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const target = this.getTarget(origin, parts, messageObject);
         const targetName = parts.slice(1).join(' ');
-        const username = context.username.toLowerCase();
-        const displayName = context['display-name'];
+        const username = context.userName;
+        const displayName = context.displayName;
 
         const chosenWeapon = this.weapons[this.randomInt(0, this.weapons.length - 1)];
 

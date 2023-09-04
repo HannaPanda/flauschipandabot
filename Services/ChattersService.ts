@@ -7,7 +7,7 @@ class ChattersService
 {
     getChattersList = async (origin = 'tmi') => {
         let chatters: Array<string> = [];
-console.log(origin);
+        console.log(origin);
         if(origin === 'tmi') {
             const fetch = require('node-fetch');
             const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${process.env.CHANNEL}/chatters`, {method: "Get"})

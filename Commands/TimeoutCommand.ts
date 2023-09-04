@@ -1,5 +1,3 @@
-import emitter from "../emitter";
-import tmiClient from "../Clients/tmiClient";
 import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
@@ -7,7 +5,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 
 class TimeoutCommand extends AbstractCommand
 {
-    isActive       = true;
+    isActive       = false;
     isModOnly      = true;
     isOwnerOnly    = false;
     isAggressive   = false;
@@ -27,12 +25,12 @@ class TimeoutCommand extends AbstractCommand
         }
 
         if(!context.mod && !context.owner) {
-            sayService.say(origin, '', '', channel, `*bonk* ಠ_ಠ`);
+            sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für Mods verfügbar`);
             return Promise.resolve(false);
         }
 
         if(parts.length > 1) {
-            tmiClient.timeout(process.env.CHANNEL, parts[1], 300, parts[1]+' war unartig! ┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻').catch((err) => {console.warn(err)});
+            //tmiClient.timeout(process.env.CHANNEL, parts[1], 300, parts[1]+' war unartig! ┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻').catch((err) => {console.warn(err)});
         } else {
             sayService.say(origin, '', '', channel, `Wen bitte? ಠ_ಠ`);
         }

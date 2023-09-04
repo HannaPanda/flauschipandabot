@@ -1,7 +1,4 @@
 import emitter from "../emitter";
-import * as dotenv from "dotenv";
-import {ClientOptions} from "discord.js";
-import chattersService from "../Services/ChattersService";
 
 const Discord = require('discord.js');
 const discordClient = new Discord.Client({intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS']});
@@ -19,8 +16,9 @@ discordClient.on('messageCreate', async (message) => {
         message.content.split(' '),
         {
             username: message.author.username,
-            'display-name': message.author,
+            displayName: message.author,
             mod: (message.member.roles.cache.some(role => role.name === 'Flausch-Polizei')),
+            vip: false,
             owner: (message.member.roles.cache.some(role => role.name === 'Mama Flausch'))
         },
         'discord',

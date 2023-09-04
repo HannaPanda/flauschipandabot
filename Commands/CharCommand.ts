@@ -31,10 +31,10 @@ class CharCommand extends AbstractCommand
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         console.log('test');
-        let username = (origin === 'tmi') ? context['display-name'] : context.username;
+        let username = (origin === 'tmi') ? context.displayName : context.userName;
 
         if(parts.length === 1) {
-            sayService.say(origin, context['display-name'], '', channel, `Folgende Charaktere stehen zur Auswahl: ${Object.keys(this.characters).join(', ')}. Aufruf mit !char CHARAKTERNAME TEXT`);
+            sayService.say(origin, context.displayName, '', channel, `Folgende Charaktere stehen zur Auswahl: ${Object.keys(this.characters).join(', ')}. Aufruf mit !char CHARAKTERNAME TEXT`);
         } else if(this.characters.hasOwnProperty(parts[1])) {
 
             let testParts = parts.slice();
@@ -44,10 +44,11 @@ class CharCommand extends AbstractCommand
             const response = await openAiClient.getCustomChatGPTResponse(
                 `${this.characters[parts[1]]} Nutze genderneutrale Sprache. Deine Antworten sind immer Deutsch. Beginne die Antwort mit @${username}.`,
                 `Frage von "@${username}": ${request}`,
-                parts[1]
+                parts[1],
+                username
             );
 
-            sayService.say(origin, context['display-name'], '', channel, response);
+            sayService.say(origin, context.displayName, '', channel, response);
         }
     };
 }

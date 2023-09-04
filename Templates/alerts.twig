@@ -1,0 +1,66 @@
+{% extends "layout.twig" %}
+
+{% set showMenu = false %}
+
+{% block title %}Alerts{% endblock %}
+{% block bodyClass %}transparent{% endblock %}
+
+{% block content %}
+<section class="">
+    <div class="container">
+        <div class="col">
+            {#<div class="vh-100 d-flex align-items-center justify-content-center">
+                <div class="text-center">
+                    <img src="/static/images/alerts/subscriber.gif" />
+                    <p id="infomessage-wrapper" class="panda-text panda-text-small">
+                        katja_on hat erneut abonniert.<br> katja_on ist nun schon seit 12 Monaten ein besonderer Panda.
+                    </p>
+                    <p id="inputmessage-wrapper" class="panda-text panda-text-small">
+                        Dies ist ein Test 12345
+                    </p>
+                </div>
+            </div>#}
+            <div class="vh-100 d-flex align-items-center justify-content-center flex-column">
+                <div style="height: 315px">
+                    &nbsp;
+                </div>
+                <div class="text-center height: 450px">
+                    <img src="/static/images/alerts/subscriber.gif" />
+                    {#<img src="/static/images/alerts/follower.gif" />#}
+                    {#<img src="/static/images/alerts/cheer.gif" />#}
+                    {#<img src="/static/images/alerts/raid.gif" />#}
+                </div>
+                <div class="text-center" style="height: 315px">
+                    <p id="infomessage-wrapper" class="panda-text panda-text-small mt-3">
+                        katja_on hat erneut abonniert.<br> katja_on ist nun schon seit 12 Monaten ein besonderer Panda.
+                    </p>
+                    <p id="inputmessage-wrapper" class="panda-text panda-text-small">
+                        Dies ist ein Test 12345
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var socket = io();
+    /*socket.on('hornyLevelChange', function(msg) {
+        var element = document.getElementById('horniness-level');
+        var wrapper = document.getElementById('horniness-level-wrapper');
+
+        element.innerHTML = msg.newLevel;
+
+        if(msg.newLevel >= 90) {
+            wrapper.classList.add("blink_me");
+        } else {
+            wrapper.classList.remove("blink_me");
+        }
+
+        if(msg.newLevel <= 0) {
+            wrapper.classList.add("d-none");
+        } else {
+            wrapper.classList.remove("d-none");
+        }
+    });*/
+</script>
+{% endblock %}

@@ -22,14 +22,14 @@ class HealCommand extends AbstractCommand
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const target = this.getTarget(origin, parts, messageObject);
-        const username = context.username.toLowerCase();
+        const username = context.userName;
         const targetName = parts.slice(1).join(' ');
 
         const originUser = new Fighter();
         await originUser.init(username);
 
         if(target.trim() === '') {
-            sayService.say(origin, context['display-name'], '', channel, `###ORIGIN### versucht jemanden von einer Krankheit zu heilen aber... DA IST NICHTS LUL`)
+            sayService.say(origin, context.displayName, '', channel, `###ORIGIN### versucht jemanden von einer Krankheit zu heilen aber... DA IST NICHTS LUL`)
             return Promise.resolve(false);
         }
 
@@ -38,7 +38,7 @@ class HealCommand extends AbstractCommand
 
         originUser.setOpponent(targetUser);
 
-        await StatusService.heileKrankheit(context['display-name'], originUser, targetUser, targetName, origin, channel);
+        await StatusService.heileKrankheit(context.displayName, originUser, targetUser, targetName, origin, channel);
 
         return Promise.resolve(true);
     }

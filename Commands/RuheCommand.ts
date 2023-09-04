@@ -8,7 +8,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 
 class RuheCommand extends AbstractCommand
 {
-    isActive       = true;
+    isActive       = false;
     isModOnly      = true;
     isOwnerOnly    = false;
     isAggressive   = false;
@@ -23,7 +23,7 @@ class RuheCommand extends AbstractCommand
             return Promise.resolve(false);
         }
 
-        obsClient.send('SetCurrentScene', {'scene-name': 'Panik'});
+        //obsClient.send('SetCurrentScene', {'scene-name': 'Panik'});
 
         return Promise.resolve(true);
     }

@@ -1,7 +1,6 @@
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import mongoDBClient from "../Clients/mongoDBClient";
-import tmiClient from "../Clients/tmiClient";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
 dotenv.config({ path: __dirname+'/../.env' });

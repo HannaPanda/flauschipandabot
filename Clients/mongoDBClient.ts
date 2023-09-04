@@ -5,7 +5,10 @@ dotenv.config({ path: __dirname+'/../.env' });
 
 class Initializer
 {
-    public mongoDBClient = new MongoClient(process.env.MONGODB_CONNECTION_STRING);
+    public mongoDBClient = new MongoClient(
+        process.env.MONGODB_CONNECTION_STRING,
+    {}
+    );
 
     constructor()
     {

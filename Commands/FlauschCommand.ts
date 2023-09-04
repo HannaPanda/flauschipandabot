@@ -25,13 +25,14 @@ class FlauschCommand extends AbstractCommand
              Nutze ausschließlich folgende Emotes:  
              ${emoteService.getBotTwitchEmotes()}
              Nutze das Wort "Flauschen" für das Wort Umarmen.
-             Kommentiere mit einer süßen Nachricht, wie die Person @${context['display-name']} die andere Person ${parts.slice(1).join(' ')} ganz lieb flauscht.`,
+             Kommentiere mit einer süßen Nachricht, wie die Person @${context.displayName} die andere Person ${parts.slice(1).join(' ')} ganz lieb flauscht.`,
             ``,
             null,
+            '',
             false
         );
 
-        sayService.say(origin, context['display-name'], '', channel, response);
+        sayService.say(origin, context.displayName, '', channel, response);
     }*/
 }
 

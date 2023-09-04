@@ -24,7 +24,7 @@ class HypeCommand extends AbstractCommand
         const numberOfPlays = Math.min(5, (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1);
 
         for(let i = 0; i < numberOfPlays; i++) {
-            sayService.say(origin, context['display-name'], parts.slice(1).join(' '), channel, this.answerNoTarget);
+            sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerNoTarget);
         }
     };
 }

@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 import emitter from "./emitter";
 import mongoDBClient from "./Clients/mongoDBClient";
 import socketio from "socket.io";
+import * as fs from 'fs';
 
 dotenv.config({ path: __dirname+'/.env' });
 
@@ -13,6 +14,7 @@ class Server
 {
     private io;
     private commands;
+    private overlayCommands;
     private app;
 
     constructor() {
@@ -29,6 +31,7 @@ class Server
         emitter.on('verpissdichCounterChanged', this.handleVerpissdichCounterChanged);
         emitter.on('countdown', this.handleCountdown);
         emitter.on('bot.say', this.handleBotchat);
+        emitter.on('bot.say.notext', this.handleBotchatNoText);
         emitter.on('playVideo', this.handlePlayVideo);
         emitter.on('playAudio', this.handlePlayAudio);
         emitter.on('showImage', this.handleShowImage);
@@ -43,7 +46,7 @@ class Server
         });
 
         app.get('/commands', function (req, res) {
-            twing.render('commands.twig', {'commands': self.commands, activePage: 'commands'}).then((output) => {
+            twing.render('commands.twig', {'commands': self.commands, 'overlayCommands': self.overlayCommands, activePage: 'commands'}).then((output) => {
                 res.end(output);
             });
         });
@@ -59,6 +62,13 @@ class Server
             });
         });
 
+        app.get('/soundboard', async (req, res) => {
+
+            twing.render('soundboard.twig', {activePage: 'soundboard'}).then((output) => {
+                res.end(output);
+            });
+        });
+
         app.get('/horny', async (req, res) => {
             const document = await mongoDBClient
                 .db("flauschipandabot")
@@ -66,6 +76,12 @@ class Server
                 .findOne( {identifier: 'hornyLevel'}, {});
 
             twing.render('horny.twig', {hornyLevel: (document && document.value) ? document.value : 0}).then((output) => {
+                res.end(output);
+            });
+        });
+
+        app.get('/alerts', async (req, res) => {
+            twing.render('alerts.twig', {}).then((output) => {
                 res.end(output);
             });
         });
@@ -136,7 +152,22 @@ class Server
 
     public setCommands = (commands) => {
         this.commands = commands;
-    }
+    };
+
+    public getApp = () => {
+        return this.app;
+    };
+
+    public initializeOverlayCommands = () => {
+        try {
+            var normalizedPath = require("path").join(__dirname, "Config", "OverlayCommands.json");
+            const data = fs.readFileSync(normalizedPath, 'utf-8');
+            const jsonObj = JSON.parse(data);
+
+            this.overlayCommands = jsonObj;
+
+        } catch (err) {};
+    };
 
     httpsWorker = (glx) => {
         // we need the raw https server
@@ -195,6 +226,10 @@ class Server
 
     private handleBotchat = async (data) => {
         this.io.emit('bot.say', data);
+    }
+
+    private handleBotchatNoText = async (data) => {
+        this.io.emit('bot.say.notext', data);
     }
 
 }
