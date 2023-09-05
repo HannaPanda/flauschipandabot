@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import emitter from "../emitter";
+import server from "../server";
 
 dotenv.config({ path: __dirname+'/../.env' });
 
@@ -25,7 +26,7 @@ class Initializer
             console.log('Client connected');
             ws.on('message', (message) => {
                 console.log(`Received message: ${message}`);
-                emitter.emit('bot.say', message.toString());
+                server.getIO().emit('bot.say', message.toString());
             });
 
             ws.on('close', () => {

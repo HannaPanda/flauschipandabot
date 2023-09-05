@@ -7,6 +7,7 @@ import sayService from "../Services/SayService";
 import mongoDBClient from "../Clients/mongoDBClient";
 import botService from "../Services/BotService";
 import AbstractRedeemCommand from "../Abstracts/AbstractRedeemCommand";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class WassermarschRedeemCommand extends AbstractRedeemCommand
@@ -14,8 +15,8 @@ class WassermarschRedeemCommand extends AbstractRedeemCommand
     isActive = true;
     command  = "Wasser Marsch!";
     handler  = (message) => {
-        emitter.emit('showImage', {file: 'wasser_marsch.png', mediaType: 'image', duration: 5000});
-        emitter.emit('playAudio', {file: 'getNewSpecialItem.wav', mediaType: 'audio', volume: 0.5});
+        server.getIO().emit('showImage', {file: 'wasser_marsch.png', mediaType: 'image', duration: 5000});
+        server.getIO().emit('playAudio', {file: 'getNewSpecialItem.wav', mediaType: 'audio', volume: 0.5});
     };
 }
 

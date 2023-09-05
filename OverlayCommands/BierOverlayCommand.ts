@@ -7,6 +7,7 @@ import statusService from "../Services/StatusService";
 import fetch from "node-fetch";
 import sayService from "../Services/SayService";
 import AbstractOverlayCommand from "../Abstracts/AbstractOverlayCommand";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class RunOverlayCommand extends AbstractOverlayCommand
@@ -22,7 +23,7 @@ class RunOverlayCommand extends AbstractOverlayCommand
     volume         = 0.25;
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         if(message.startsWith("!bier") || message.startsWith("!buy bier ") || message.startsWith("!buy use bier ")) {
-            emitter.emit('playAudio', {file: this.mediaFile, mediaType: 'audio', volume: this.volume});
+            server.getIO().emit('playAudio', {file: this.mediaFile, mediaType: 'audio', volume: this.volume});
         }
     };
 }

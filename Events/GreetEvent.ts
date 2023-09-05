@@ -5,6 +5,7 @@ import emoteService from "../Services/EmoteService";
 import streamService from "../Services/StreamService";
 import sayService from "../Services/SayService";
 import openAiClient from "../Clients/openAiClient";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 const { Configuration, OpenAIApi } = require("openai");
@@ -57,16 +58,16 @@ class GreetEvent
                 emitter.emit('chat.message', '!brezel', ['!brezel'], {username: '', 'display-name': '', mod: false, owner: false});
                 break;
             case 'lormos':
-                emitter.emit('playAudio', {file: 'feueball.mp3', mediaType: 'audio', volume: 0.5});
+                server.getIO().emit('playAudio', {file: 'feueball.mp3', mediaType: 'audio', volume: 0.5});
                 sayService.say(origin, context.displayName, '', channel, `/me überschüttet ###ORIGIN### zur Begrüßung mit einem Haufen flauschiger Herzen emote_heart emote_heart emote_heart`);
                 break;
             case 'yoshi_das_flohfell':
-                emitter.emit('playAudio', {file: 'fluffy.mp3', mediaType: 'audio', volume: 0.5});
+                server.getIO().emit('playAudio', {file: 'fluffy.mp3', mediaType: 'audio', volume: 0.5});
                 sayService.say(origin, context.displayName, '', channel, `/me schaut doch mal bei http://TheSoftPlanet.etsy.com vorbei. So süße Flauschis emote_heart emote_heart emote_heart`);
                 break;
             default:
                 //sayService.say(origin, context.displayName, '', channel, `/me flauscht ###ORIGIN### zur Begrüßung richtig durch emote_greet`);
-                emitter.emit('playAudio', {file: 'hello.mp3', mediaType: 'audio', volume: 0.5});
+                server.getIO().emit('playAudio', {file: 'hello.mp3', mediaType: 'audio', volume: 0.5});
         }
 
         if(this.streamers.indexOf(context.userName) !== -1) {

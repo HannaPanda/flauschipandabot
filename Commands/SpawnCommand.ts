@@ -210,13 +210,6 @@ class HypeCommand extends AbstractCommand
     }
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        //emitter.emit('bot.say', parts.slice(1).join(' '));
-
-        /*console.log(message);
-        if(message.startsWith('!spawn cheese')) {
-            emitter.emit('playAudio', {file: 'chäs.mp3', mediaType: 'audio', volume: 0.25});
-        }*/
-
         let amount = this.randomInt(0, 100);
         if(parts.length > 2) {
             amount = Math.min(100, parseInt(parts[2]));

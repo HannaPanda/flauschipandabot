@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import knochenCommand from "./KnochenCommand";
 import Fighter from "../Models/Fighter";
 import mongoDBClient from "../Clients/mongoDBClient";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class HornyCommand extends AbstractCommand
@@ -48,8 +49,8 @@ class HornyCommand extends AbstractCommand
             .collection("misc")
             .findOne( {identifier: 'hornyLevel'}, {});
 
-        emitter.emit('showImage', {file: 'horny.png', mediaType: 'image', duration: 5000});
-        emitter.emit('playAudio', {file: 'bonk.mp3', mediaType: 'audio', volume: 0.2});
+        server.getIO().emit('showImage', {file: 'horny.png', mediaType: 'image', duration: 5000});
+        server.getIO().emit('playAudio', {file: 'bonk.mp3', mediaType: 'audio', volume: 0.2});
 
         const curHornyLevel = (document && document.value) ? document.value : 0;
         if(curHornyLevel >= 100) {

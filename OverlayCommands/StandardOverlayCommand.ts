@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import Fighter from "../Models/Fighter";
 import botService from "../Services/BotService";
 import sayService from "../Services/SayService";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class StandardOverlayCommand
@@ -14,18 +15,13 @@ class StandardOverlayCommand
     }
 
     protected handleEvent = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-
-        console.log(message);
-
-        // Lesen Sie die Datei synchron
         try {
             var normalizedPath = require("path").join(__dirname, "..", "Config", "OverlayCommands.json");
             const data = fs.readFileSync(normalizedPath, 'utf-8');
             const jsonObj = JSON.parse(data);
 
-            jsonObj.forEach(async (command) => {
-
-                //console.log(command);
+            let res;
+            jsonObj.forEach(res = async (command) => {
 
                 if(!command.isActive) {
                     return Promise.resolve(false);
@@ -68,7 +64,7 @@ class StandardOverlayCommand
                 }
 
                 if(!botService.botActive) {
-                    emitter.emit('bot.say', 'Nö. Einfach nur nö.');
+                    server.getIO().emit('bot.say', 'Nö. Einfach nur nö.');
                     return Promise.resolve(false);
                 }
 
@@ -76,7 +72,6 @@ class StandardOverlayCommand
                 let maxNumberOfPlays = 10;
                 let delay = 500;
                 let minDelay = 100;
-
 
                 if(command.isRepeatable) {
                     const numberPattern = /\d+/g;
@@ -92,13 +87,13 @@ class StandardOverlayCommand
                     await this.delay(delay);
                     switch(command.mediaType) {
                         case 'video':
-                            emitter.emit('playVideo', {file: command.mediaFile, mediaType: command.mediaType, volume: (numberOfPlays > 1) ? 0.25 : command.volume, fullscreen: command.fullscreen});
+                            server.getIO().emit('playVideo', {file: command.mediaFile, mediaType: command.mediaType, volume: (numberOfPlays > 1) ? 0.25 : command.volume, fullscreen: command.fullscreen});
                             break;
                         case 'audio':
-                            emitter.emit('playAudio', {file: command.mediaFile, mediaType: command.mediaType, volume: (numberOfPlays > 1) ? 0.25 : command.volume, fullscreen: command.fullscreen});
+                            server.getIO().emit('playAudio', {file: command.mediaFile, mediaType: command.mediaType, volume: (numberOfPlays > 1) ? 0.25 : command.volume, fullscreen: command.fullscreen});
                             break;
                         case 'image':
-                            emitter.emit('showImage', {file: command.mediaFile, mediaType: command.mediaType, volume: (numberOfPlays > 1) ? 0.25 : command.volume, duration: command.duration});
+                            server.getIO().emit('showImage', {file: command.mediaFile, mediaType: command.mediaType, volume: (numberOfPlays > 1) ? 0.25 : command.volume, duration: command.duration});
                             break;
                     }
                 }

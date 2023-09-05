@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
 import openAiClient from "../Clients/openAiClient";
 import emoteService from "../Services/EmoteService";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class LurkCommand extends AbstractCommand
@@ -18,8 +19,7 @@ class LurkCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
     customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        //sayService.say(origin, context.displayName, '', channel, this.answerNoTarget);
-        emitter.emit('playAudio', {file: 'weird_reverse.mp3', mediaType: 'audio', volume: 0.5});
+        server.getIO().emit('playAudio', {file: 'weird_reverse.mp3', mediaType: 'audio', volume: 0.5});
 
         const response = await openAiClient.getCustomChatGPTResponse(
             `Antworte als niedlicher Panda mit vielen süßen Emotes. Dein Name ist FlauschiPandaBot und deine Mama ist HannaPanda84 (Hanna). Nutze "Ich", um auf dich zu referenzieren.

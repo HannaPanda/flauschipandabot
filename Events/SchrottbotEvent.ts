@@ -5,6 +5,7 @@ import emoteService from "../Services/EmoteService";
 import sayService from "../Services/SayService";
 import botService from "../Services/BotService";
 import openAiClient from "../Clients/openAiClient";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class SchrottbotEvent
@@ -42,7 +43,7 @@ class SchrottbotEvent
             sayService.say(origin, context.displayName, '', channel, response);
 
             if(context.userName === 'jukrichel') {
-                emitter.emit('bot.say', 'Juki ist doof :(');
+                server.getIO().emit('bot.say', 'Juki ist doof :(');
             }
 
             return Promise.resolve(true);

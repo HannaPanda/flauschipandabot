@@ -7,6 +7,7 @@ import sayService from "../Services/SayService";
 import mongoDBClient from "../Clients/mongoDBClient";
 import botService from "../Services/BotService";
 import AbstractRedeemCommand from "../Abstracts/AbstractRedeemCommand";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class VipRedeemCommand extends AbstractRedeemCommand
@@ -18,7 +19,7 @@ class VipRedeemCommand extends AbstractRedeemCommand
             'emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype ' +
             'emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype ' +
             'emote_hype emote_hype emote_hype emote_hype emote_hype';
-        emitter.emit('playAudio', {file: 'secret1.wav', mediaType: 'audio', volume: 0.5});
+        server.getIO().emit('playAudio', {file: 'secret1.wav', mediaType: 'audio', volume: 0.5});
         sayService.say('tmi', '', '', null, hype);
         sayService.say('tmi', '', '', null, hype);
     };

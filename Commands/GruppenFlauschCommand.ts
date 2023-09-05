@@ -5,6 +5,7 @@ import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import emoteService from "../Services/EmoteService";
 import sayService from "../Services/SayService";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class GruppenFlauschCommand extends AbstractCommand
@@ -33,8 +34,8 @@ class GruppenFlauschCommand extends AbstractCommand
         }
 
         sayService.say(origin, '', '', channel, this.answerNoTarget);
-        emitter.emit('showImage', {file: 'alerts/follower.gif', mediaType: 'image', duration: 5000});
-        emitter.emit('playAudio', {file: 'yoba.wav', mediaType: 'audio', volume: 0.5});
+        server.getIO().emit('showImage', {file: 'alerts/follower.gif', mediaType: 'image', duration: 5000});
+        server.getIO().emit('playAudio', {file: 'yoba.wav', mediaType: 'audio', volume: 0.5});
     }
 
     healFighter = async (username) => {

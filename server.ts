@@ -27,15 +27,6 @@ class Server
         this.io = require('socket.io')(server);
 
         emitter.on('hornyLevelChanged', this.handleHornyLevelChanged);
-        emitter.on('fuckCounterChanged', this.handleFuckCounterChanged);
-        emitter.on('verpissdichCounterChanged', this.handleVerpissdichCounterChanged);
-        emitter.on('countdown', this.handleCountdown);
-        emitter.on('bot.say', this.handleBotchat);
-        emitter.on('bot.say.notext', this.handleBotchatNoText);
-        emitter.on('playVideo', this.handlePlayVideo);
-        emitter.on('playAudio', this.handlePlayAudio);
-        emitter.on('showImage', this.handleShowImage);
-        emitter.on('playClip', this.handlePlayClip);
 
         app.use('/static', express.static('public'));
 
@@ -191,49 +182,13 @@ class Server
 
     private handleHornyLevelChanged = async (newLevel) => {
         if(newLevel === 69) {
-            emitter.emit('playVideo', {file: 'noice.mp4', mediaType: 'video', volume: 0.5});
+            this.getIO().emit('playVideo', {file: 'noice.mp4', mediaType: 'video', volume: 0.5});
         } else if (newLevel === 100) {
             setTimeout(() => {
-                emitter.emit('playAudio', {file: 'love_moment.mp3', mediaType: 'audio', volume: 0.1});
+                this.getIO().emit('playAudio', {file: 'love_moment.mp3', mediaType: 'audio', volume: 0.1});
             }, 5000);
         }
         this.io.emit('hornyLevelChange', { newLevel: newLevel });
-    }
-
-    private handleFuckCounterChanged = async (newCounter) => {
-        this.io.emit('fuckCounterChanged', { newCounter: newCounter });
-    }
-
-    private handleVerpissdichCounterChanged = async (newCounter) => {
-        this.io.emit('verpissdichCounterChanged', { newCounter: newCounter });
-    }
-
-    private handleCountdown = async () => {
-        this.io.emit('countdown');
-    }
-
-    private handlePlayVideo = async (data) => {
-        this.io.emit('playVideo', data);
-    }
-
-    private handlePlayAudio = async (data) => {
-        this.io.emit('playAudio', data);
-    }
-
-    private handleShowImage = async (data) => {
-        this.io.emit('showImage', data);
-    }
-
-    private handlePlayClip = async (data) => {
-        this.io.emit('playClip', data);
-    }
-
-    private handleBotchat = async (data) => {
-        this.io.emit('bot.say', data);
-    }
-
-    private handleBotchatNoText = async (data) => {
-        this.io.emit('bot.say.notext', data);
     }
 
 }

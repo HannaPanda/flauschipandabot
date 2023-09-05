@@ -7,6 +7,7 @@ import statusService from "../Services/StatusService";
 import fetch from "node-fetch";
 import sayService from "../Services/SayService";
 import AbstractOverlayCommand from "../Abstracts/AbstractOverlayCommand";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class FartOverlayCommand extends AbstractOverlayCommand
@@ -39,7 +40,7 @@ class FartOverlayCommand extends AbstractOverlayCommand
         for(let i = 0; i < numberOfPlays; i++) {
             await this.delay(delay);
             const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-            emitter.emit('playAudio', {file: randomSound, mediaType: 'audio', volume: this.volume});
+            server.getIO().emit('playAudio', {file: randomSound, mediaType: 'audio', volume: this.volume});
         }
     };
 

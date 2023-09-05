@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import knochenCommand from "./KnochenCommand";
 import Fighter from "../Models/Fighter";
 import mongoDBClient from "../Clients/mongoDBClient";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class FuckCommand extends AbstractCommand
@@ -26,7 +27,7 @@ class FuckCommand extends AbstractCommand
 
         const numberOfFucksToAdd = (number !== '' && parseInt(number) > 0) ? parseInt(number) : 1;
 
-        emitter.emit('playAudio', {file: 'quack.mp3', mediaType: 'audio', volume: 0.2});
+        server.getIO().emit('playAudio', {file: 'quack.mp3', mediaType: 'audio', volume: 0.2});
 
         const document = await mongoDBClient
             .db("flauschipandabot")
@@ -44,7 +45,7 @@ class FuckCommand extends AbstractCommand
                 {$set: {value: newFuckCounter}},
                 {upsert: true}
             )
-        emitter.emit('fuckCounterChanged', newFuckCounter);
+        server.getIO().emit('fuckCounterChanged', newFuckCounter);
 
         return Promise.resolve(true);
     }

@@ -1,10 +1,9 @@
 import { PubSubClient } from '@twurple/pubsub';
-import {RefreshingAuthProvider, StaticAuthProvider} from '@twurple/auth';
+import {RefreshingAuthProvider} from '@twurple/auth';
 import {ApiClient, CommercialLength} from '@twurple/api';
 import * as fs from 'fs';
 import {ChatClient} from "@twurple/chat";
 import openAiClient from "./openAiClient";
-import TwitchApi from "node-twitch";
 import emitter from "../emitter";
 import {EventSubWsListener} from "@twurple/eventsub-ws";
 import sayService from "../Services/SayService";
@@ -15,7 +14,6 @@ class TwitchClient
     public pubSubClient: PubSubClient;
     public apiClient: ApiClient;
     public chatClient: ChatClient;
-    public twitchApi: TwitchApi;
 
     private bots: Array<string> = ['sery_bot', 'nightbot', 'streamelements', 'audioalerts', 'streamcaptainbot', 'soundalerts', 'flauschipandabot'];
 
@@ -96,11 +94,6 @@ class TwitchClient
             });
 
             // API
-            this.twitchApi = new TwitchApi({
-                client_id: clientId,
-                client_secret: clientSecret,
-                scopes: ["channel:edit:commercial", "moderation:read"]
-            });
             this.apiClient = new ApiClient({ authProvider });
             const user = await this.apiClient.users.getUserByName('hannapanda84');
 
@@ -120,22 +113,24 @@ class TwitchClient
                     return;
                 }
 
-                let infoMessage = `${message.userDisplayName} hat gerade abonniert, YAY!`;
+                let infoMessage = ``;
                 if(message.months > 1) {
-                    infoMessage += `<br>${message.userDisplayName} abonniert bereits seit ${message.months} Monaten!`
+                    infoMessage += `Willkommen zurück im Bambuswald, ${message.userDisplayName}!<br>Danke für ${message.months} flauschige Monate bei uns!`
+                } else {
+                    infoMessage = `Ein wilder Flauschi taucht auf! Willkommen in der Panda-Bande, ${message.userDisplayName}!<br>Lass uns gemeinsam Bambus knabbern!`;
                 }
 
                 const alert = {
                     imageUrl: '/static/images/alerts/subscriber.gif',
                     soundUrl: '/static/audio/kitty2.mp3',
-                    volume: 0.5,
+                    volume: 0.25,
                     infomessage: infoMessage,
                     inputmessage: message.message.message || '',
                 }
                 server.getIO().emit('showAlert', alert);
 
                 if(message.message.message) {
-                    emitter.emit('bot.say.notext', message.message.message);
+                    server.getIO().emit('bot.say.notext', message.message.message);
                 }
             });
 
@@ -149,8 +144,8 @@ class TwitchClient
                     const alert = {
                         imageUrl: '/static/images/alerts/follower.gif',
                         soundUrl: '/static/audio/cats.mp3',
-                        volume: 0.5,
-                        infomessage: `${event.userDisplayName} schließt sich der Panda-Sippe an, YAY!`,
+                        volume: 0.25,
+                        infomessage: `Ein weiterer Panda ist unserer Panda-Bande beigetreten!<br>Hallo ${event.userDisplayName} und willkommen bei den Flauschis!`,
                         inputmessage: '',
                     }
                     server.getIO().emit('showAlert', alert);
@@ -163,8 +158,8 @@ class TwitchClient
                     const alert = {
                         imageUrl: '/static/images/alerts/subscriber.gif',
                         soundUrl: '/static/audio/kitty2.mp3',
-                        volume: 0.5,
-                        infomessage: `${event.gifterDisplayName} schenkt der der Panda-Bande<br> ${event.amount} Subs, wie lieb!`,
+                        volume: 0.25,
+                        infomessage: `So viel Liebe! ${event.gifterDisplayName} hat ${event.amount} Bambuszweige<br> an unsere Community verteilt! Danke für die Giftsubs!`,
                         inputmessage: '',
                     }
                     server.getIO().emit('showAlert', alert);
@@ -177,14 +172,14 @@ class TwitchClient
                     const alert = {
                         imageUrl: '/static/images/alerts/cheer.gif',
                         soundUrl: '/static/audio/cats.mp3',
-                        volume: 0.5,
+                        volume: 0.25,
                         infomessage: `${event.userDisplayName} lässt die Bambusmünzen regnen! Danke für die ${event.bits} Bits!`,
                         inputmessage: event.message || '',
                     }
                     server.getIO().emit('showAlert', alert);
 
                     if(event.message) {
-                        emitter.emit('bot.say.notext', event.message);
+                        server.getIO().emit('bot.say.notext', event.message);
                     }
                 }
             });
@@ -204,7 +199,7 @@ class TwitchClient
                     sayService.say('tmi', '', '', null, `emote_hype emote_hype emote_hype Vielen Dank für den Raid ${event.raidingBroadcasterDisplayName} emote_hype emote_hype emote_hype`)
                     sayService.say('tmi', '', '', null, `emote_heart emote_heart emote_heart Hey ihr Flauschis, schaut doch mal bei ${event.raidingBroadcasterDisplayName} rein! https://twitch.tv/${event.raidingBroadcasterName} emote_heart emote_heart emote_heart`)
                     this.apiClient.chat.shoutoutUser(user, event.raidedBroadcasterId);
-                    emitter.emit('bot.say.notext', 'Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
+                    server.getIO().emit('bot.say.notext', 'Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
                 }
             });
         } catch(err) {

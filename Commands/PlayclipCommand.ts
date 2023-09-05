@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import twitchClient from "../Clients/twitchClient";
 import sayService from "../Services/SayService";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class PlayclipCommand extends AbstractCommand
@@ -43,7 +44,7 @@ class PlayclipCommand extends AbstractCommand
             const clipInfo = await twitchClient.apiClient.clips.getClipById(clipId);
             if(clipInfo) {
                 const videoUrl = clipInfo.thumbnailUrl.replace('-preview-480x272.jpg', '.mp4');
-                emitter.emit('playVideo', {file: videoUrl, mediaType: 'video', volume: 1});
+                server.getIO().emit('playVideo', {file: videoUrl, mediaType: 'video', volume: 1});
             } else {
                 sayService.say('tmi', '', '', null, 'Clip nicht gefunden');
             }

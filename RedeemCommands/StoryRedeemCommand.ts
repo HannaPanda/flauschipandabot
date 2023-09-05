@@ -8,6 +8,7 @@ import mongoDBClient from "../Clients/mongoDBClient";
 import botService from "../Services/BotService";
 import AbstractRedeemCommand from "../Abstracts/AbstractRedeemCommand";
 import storyService from "../Services/StoryService";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class StoryRedeemCommand extends AbstractRedeemCommand
@@ -17,7 +18,7 @@ class StoryRedeemCommand extends AbstractRedeemCommand
     handler  = async (message) => {
         const story = await storyService.getUserStory(message.userName);
         sayService.say('tmi', '', '', null, story);
-        emitter.emit('playAudio', {file: 'getNewSpecialItem.wav', mediaType: 'audio', volume: 0.5});
+        server.getIO().emit('playAudio', {file: 'getNewSpecialItem.wav', mediaType: 'audio', volume: 0.5});
     };
 }
 

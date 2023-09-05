@@ -1,6 +1,7 @@
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class HypeCommand extends AbstractCommand
@@ -17,7 +18,7 @@ class HypeCommand extends AbstractCommand
     globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        emitter.emit('bot.say', parts.slice(1).join(' '));
+        server.getIO().emit('bot.say', parts.slice(1).join(' '));
     }
 }
 

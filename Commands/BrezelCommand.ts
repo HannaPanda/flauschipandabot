@@ -2,6 +2,7 @@ import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class BrezelCommand extends AbstractCommand
@@ -17,7 +18,7 @@ class BrezelCommand extends AbstractCommand
     globalCooldown = 0;
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         sayService.say(origin, '', '', channel, this.answerNoTarget);
-        emitter.emit('playAudio', {file: 'pretzels.mp3', mediaType: 'audio', volume: 0.5});
+        server.getIO().emit('playAudio', {file: 'pretzels.mp3', mediaType: 'audio', volume: 0.5});
     };
 }
 

@@ -7,6 +7,7 @@ import statusService from "../Services/StatusService";
 import fetch from "node-fetch";
 import sayService from "../Services/SayService";
 import AbstractOverlayCommand from "../Abstracts/AbstractOverlayCommand";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class FrechOverlayCommand extends AbstractOverlayCommand
@@ -21,8 +22,8 @@ class FrechOverlayCommand extends AbstractOverlayCommand
     mediaType      = "image";
     volume         = 1;
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        emitter.emit('showImage', {file: 'frech.png', mediaType: 'image', duration: 2000});
-        emitter.emit('bot.say', 'Frech!');
+        server.getIO().emit('showImage', {file: 'frech.png', mediaType: 'image', duration: 2000});
+        server.getIO().emit('bot.say.notext', 'Frech!');
     };
 }
 

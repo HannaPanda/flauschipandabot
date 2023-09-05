@@ -7,6 +7,7 @@ import statusService from "../Services/StatusService";
 import fetch from "node-fetch";
 import sayService from "../Services/SayService";
 import AbstractOverlayCommand from "../Abstracts/AbstractOverlayCommand";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class HypedOverlayCommand extends AbstractOverlayCommand
@@ -21,8 +22,8 @@ class HypedOverlayCommand extends AbstractOverlayCommand
     mediaType      = "image";
     volume         = 1;
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        emitter.emit('showImage', {file: 'hyper-excited.gif', mediaType: 'image', duration: 2000});
-        emitter.emit('playAudio', {file: 'hyped.mp3', mediaType: 'audio', volume: 0.1});
+        server.getIO().emit('showImage', {file: 'hyper-excited.gif', mediaType: 'image', duration: 2000});
+        server.getIO().emit('playAudio', {file: 'hyped.mp3', mediaType: 'audio', volume: 0.1});
     };
 }
 

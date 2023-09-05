@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import Fighter from "../Models/Fighter";
 import botService from "../Services/BotService";
 import sayService from "../Services/SayService";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractOverlayCommand
@@ -68,7 +69,7 @@ abstract class AbstractOverlayCommand
         }
 
         if(!botService.botActive) {
-            emitter.emit('bot.say', 'Nö. Einfach nur nö.');
+            server.getIO().emit('bot.say', 'Nö. Einfach nur nö.');
             return Promise.resolve(false);
         }
 
@@ -78,13 +79,13 @@ abstract class AbstractOverlayCommand
         } else {
             switch(this.mediaType) {
                 case 'video':
-                    emitter.emit('playVideo', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume, fullscreen: this.fullscreen});
+                    server.getIO().emit('playVideo', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume, fullscreen: this.fullscreen});
                     break;
                 case 'audio':
-                    emitter.emit('playAudio', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume, fullscreen: this.fullscreen});
+                    server.getIO().emit('playAudio', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume, fullscreen: this.fullscreen});
                     break;
                 case 'image':
-                    emitter.emit('showImage', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume, duration: this.duration});
+                    server.getIO().emit('showImage', {file: this.mediaFile, mediaType: this.mediaType, volume: this.volume, duration: this.duration});
                     break;
             }
 

@@ -7,6 +7,7 @@ import statusService from "../Services/StatusService";
 import fetch from "node-fetch";
 import sayService from "../Services/SayService";
 import AbstractOverlayCommand from "../Abstracts/AbstractOverlayCommand";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class KloOverlayCommand extends AbstractOverlayCommand
@@ -23,7 +24,7 @@ class KloOverlayCommand extends AbstractOverlayCommand
     customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const sounds = ['klo1.mp3', 'klo2.mp3', 'klo3.mp3', 'klo4.mp3',];
         const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-        emitter.emit('playAudio', {file: randomSound, mediaType: 'audio', volume: this.volume});
+        server.getIO().emit('playAudio', {file: randomSound, mediaType: 'audio', volume: this.volume});
     };
 
     delay = async (ms: number) => {

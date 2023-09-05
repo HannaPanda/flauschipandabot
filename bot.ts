@@ -1,4 +1,3 @@
-import TwitchApi from "node-twitch";
 //@ts-ignore
 import OBSWebSocket from "obs-websocket-js";
 
@@ -8,11 +7,6 @@ import discordClient from "./Clients/discordClient";
 import streamService from "./Services/StreamService";
 import obsClient from "./Clients/obsClient";
 import wss from "./Clients/wssClient";
-import { PubSubClient } from '@twurple/pubsub';
-import { RefreshingAuthProvider } from '@twurple/auth';
-import { ApiClient } from '@twurple/api';
-import * as fs from 'fs';
-import emitter from "./emitter";
 import server from "./server";
 import twitchClient from "./Clients/twitchClient";
 
@@ -55,21 +49,6 @@ class FlauschiPandaBot
         this.wss = wss;
 
         setInterval(this.getStreamInfo, 30000);
-        /*setInterval(() => {
-            const formatMemoryUsage = (data) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
-
-            const memoryData = osProcess.memoryUsage();
-
-            const memoryUsage = {
-                rss: `${formatMemoryUsage(memoryData.rss)} -> Resident Set Size - total memory allocated for the process execution`,
-                heapTotal: `${formatMemoryUsage(memoryData.heapTotal)} -> total size of the allocated heap`,
-                heapUsed: `${formatMemoryUsage(memoryData.heapUsed)} -> actual memory used during the execution`,
-                external: `${formatMemoryUsage(memoryData.external)} -> V8 external memory`,
-            };
-
-            console.log(memoryUsage);
-
-        }, 30000);*/
 
         this.getStreamInfo();
         this.initializeEvents();
@@ -144,10 +123,10 @@ class FlauschiPandaBot
 
     private getStreamInfo = async () => {
         try {
-            const streams = await this.twitchClient.twitchApi.getStreams({ channel: process.env.CHANNEL });
+            const stream = await this.twitchClient.apiClient.streams.getStreamByUserName(process.env.CHANNEL);
 
-            if(streams && streams.data.length > 0) {
-                streamService.currentStream = streams.data[0];
+            if(stream) {
+                streamService.currentStream = stream;
             } else {
                 streamService.currentStream = null;
                 mongoDBClient

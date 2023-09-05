@@ -4,6 +4,7 @@ import AbstractCommand from "../Abstracts/AbstractCommand";
 import knochenCommand from "./KnochenCommand";
 import Fighter from "../Models/Fighter";
 import mongoDBClient from "../Clients/mongoDBClient";
+import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class GetbackCommand extends AbstractCommand
@@ -42,7 +43,7 @@ class GetbackCommand extends AbstractCommand
                 {$set: {value: newVerpissdichCounter}},
                 {upsert: true}
             )
-        emitter.emit('verpissdichCounterChanged', newVerpissdichCounter);
+        server.getIO().emit('verpissdichCounterChanged', newVerpissdichCounter);
 
         return Promise.resolve(true);
     }
