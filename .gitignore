@@ -12,6 +12,8 @@ pids
 logs
 results
 tmp
+/.cache
+/greenlock.d
 
 # Build
 public/css/main.css
@@ -47,3 +49,4 @@ yarn.lock
 *.mp3
 *.wav
 *.webm
+*.ogg
