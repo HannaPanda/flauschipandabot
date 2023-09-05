@@ -80,7 +80,7 @@ class TwitchClient
                     msg.text,
                     msg.text.split(' '),
                     {
-                        username: msg.userInfo.userName,
+                        userName: msg.userInfo.userName,
                         displayName: msg.userInfo.displayName,
                         mod: msg.userInfo.isMod,
                         vip: msg.userInfo.isVip,

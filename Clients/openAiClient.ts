@@ -172,7 +172,7 @@ class OpenAiClient
 
             return Promise.resolve(response.data.choices[0].message.content.replace(/\n|\r/g, " ").replace(/^[!/]/, ""));
         } catch(err) {
-            console.log(err.response.data);
+            console.log(err);
             return Promise.resolve('Tut mir leid, bin gerade mit Bambus holen beschäftigt hannap5Lurk');
         }
     };
@@ -242,7 +242,7 @@ class OpenAiClient
 
             return Promise.resolve(score);
         } catch(err) {
-            console.log(err.response.data);
+            console.log(err);
             return Promise.resolve(null);
         }
     };
@@ -290,7 +290,7 @@ class OpenAiClient
 
             return Promise.resolve(response.data.choices[0].message.content.replace(/\n|\r/g, " ").replace(/^[!/]/, ""));
         } catch(err) {
-            console.log(err.response.data);
+            console.log(err);
             return Promise.resolve('Tut mir leid, bin gerade mit Bambus holen beschäftigt hannap5Lurk');
         }
     };

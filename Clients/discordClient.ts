@@ -15,7 +15,7 @@ discordClient.on('messageCreate', async (message) => {
         message.content,
         message.content.split(' '),
         {
-            username: message.author.username,
+            userName: message.author.username,
             displayName: message.author,
             mod: (message.member.roles.cache.some(role => role.name === 'Flausch-Polizei')),
             vip: false,
