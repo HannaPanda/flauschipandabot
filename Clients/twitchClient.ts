@@ -145,7 +145,7 @@ class TwitchClient
                         imageUrl: '/static/images/alerts/follower.gif',
                         soundUrl: '/static/audio/cats.mp3',
                         volume: 0.25,
-                        infomessage: `Ein weiterer Panda ist unserer Panda-Bande beigetreten!<br>Hallo ${event.userDisplayName} und willkommen bei den Flauschis!`,
+                        infomessage: `Ein zuckersüßer Flauschball rollt herein!<br>Willkommen im kuscheligen Bambusparadies, ${event.userDisplayName}!`,
                         inputmessage: '',
                     }
                     server.getIO().emit('showAlert', alert);
@@ -159,7 +159,7 @@ class TwitchClient
                         imageUrl: '/static/images/alerts/subscriber.gif',
                         soundUrl: '/static/audio/kitty2.mp3',
                         volume: 0.25,
-                        infomessage: `So viel Liebe! ${event.gifterDisplayName} hat ${event.amount} Bambuszweige<br> an unsere Community verteilt! Danke für die Giftsubs!`,
+                        infomessage: `${event.gifterDisplayName} verteilt Flauschträume!<br>${event.amount} Bambusliebhaber bekommen einen extra kuscheligen Platz bei uns!`,
                         inputmessage: '',
                     }
                     server.getIO().emit('showAlert', alert);
