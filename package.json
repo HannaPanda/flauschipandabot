@@ -28,7 +28,6 @@
     "greenlock-express": "^4.0.3",
     "moment": "^2.29.3",
     "mongodb": "^4.4.0",
-    "node-cmd": "^5.0.0",
     "node-fetch": "^2.6.7",
     "nodemon": "^2.0.16",
     "obs-websocket-js": "^5.0.2",
@@ -36,7 +35,6 @@
     "parcel-bundler": "^1.12.5",
     "react": "^18.1.0",
     "socket.io": "^4.4.1",
-    "speak-tts": "^2.0.8",
     "ts-node": "^10.9.1",
     "twing": "^5.1.1"
   },
