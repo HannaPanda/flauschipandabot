@@ -61,9 +61,12 @@ class TwitchClient
 
                 const tryConnect = () => {
                     try {
-                        self.chatClient.connect();
+                        self.chatClient.reconnect();
                         clearInterval(interval);
                     } catch(err) {
+                        if(err.message === 'Connection already present') {
+                            clearInterval(interval);
+                        }
                         console.log(err);
                     }
                 };
@@ -140,6 +143,7 @@ class TwitchClient
 
             listener.onChannelFollow(user, user, async (event) => {
                 const isOffensive = await this.checkIsOffensiveUsername(event.userName);
+                console.log('FOLLOW: '+ event.userName);
                 if(!isOffensive) {
                     const alert = {
                         imageUrl: '/static/images/alerts/follower.gif',
@@ -217,7 +221,7 @@ class TwitchClient
 
     checkIsOffensiveUsername = async (username: string) => {
         const score = await openAiClient.getUsernameOffenseScore(username);
-        if(score >= 0.5) {
+        if(score >= 0.75) {
             console.log(`Banning user ${username} due to offensive username (Score ${score})`);
             try {
                 const broadcaster = await this.apiClient.users.getUserByName('hannapanda84');

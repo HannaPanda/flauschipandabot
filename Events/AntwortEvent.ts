@@ -5,18 +5,10 @@ import emoteService from "../Services/EmoteService";
 import sayService from "../Services/SayService";
 import streamService from "../Services/StreamService";
 import openAiClient from "../Clients/openAiClient";
-//import { OpenAI } from '@dalenguyen/openai'
-//import { CompletionRequest, EngineName } from '@dalenguyen/openai'
+import server from "../server";
+import obsClient from "../Clients/obsClient";
 
 dotenv.config({ path: __dirname+'/../.env' });
-
-//const openAI = new OpenAI(process.env.OPENAI_API_KEY);
-const { Configuration, OpenAIApi } = require("openai");
-
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
 
 class AntwortEvent
 {
@@ -32,7 +24,19 @@ class AntwortEvent
             return Promise.resolve(false);
         }
 
-        if(/@flauschipandabot/i.test(message) || /@950121475619323924/i.test(message)) {
+        let currentScene;
+        try {
+            currentScene = await obsClient.call('GetCurrentProgramScene');
+        } catch(err) {
+            currentScene = {currentProgramSceneName: ''}
+        }
+
+        if (!message.startsWith("!") &&
+            (/@flauschipandabot/i.test(message) ||
+                /@950121475619323924/i.test(message) ||
+                (origin === 'tmi' &&
+                    (currentScene.currentProgramSceneName === 'PNGTuber' || currentScene.currentProgramSceneName === 'Coworking') &&
+                    !/@/.test(message)))) {
 
             message = message.replace('950122590918291469', '@FlauschiPandaBot');
 
@@ -42,8 +46,6 @@ class AntwortEvent
                 return Promise.resolve(false);
             }
 
-            //const gameName = streamService.currentStream?.game_name ? `Wir streamen "${streamService.currentStream?.game_name}"` : 'Wir spielen gerade nichts';
-
             let response = await openAiClient.getChatGPTResponse(`Frage von "@${username}": ${message}`, username);
 
             if(origin === 'discord') {
@@ -51,6 +53,13 @@ class AntwortEvent
             }
 
             sayService.say(origin, context.displayName, '', channel, response);
+
+            if(origin === 'tmi') {
+                let result = await openAiClient.convertTextToSpeech(response);
+                if(result) {
+                    server.getIO().emit('bot.playAudio', result);
+                }
+            }
 
             return Promise.resolve(true);
         }

@@ -8,13 +8,6 @@ import openAiClient from "../Clients/openAiClient";
 import server from "../server";
 dotenv.config({ path: __dirname+'/../.env' });
 
-const { Configuration, OpenAIApi } = require("openai");
-
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-
 class GreetEvent
 {
     isActive = true;
@@ -57,6 +50,9 @@ class GreetEvent
             case 'killerpretzel':
                 emitter.emit('chat.message', '!brezel', ['!brezel'], {username: '', 'display-name': '', mod: false, owner: false});
                 break;
+            case 'vipera_ivanesca':
+                sayService.say(origin, context.displayName, '', channel, `Sei willkommen Kämpferherz!`);
+                break;
             case 'lormos':
                 server.getIO().emit('playAudio', {file: 'feueball.mp3', mediaType: 'audio', volume: 0.5});
                 sayService.say(origin, context.displayName, '', channel, `/me überschüttet ###ORIGIN### zur Begrüßung mit einem Haufen flauschiger Herzen emote_heart emote_heart emote_heart`);
@@ -66,7 +62,6 @@ class GreetEvent
                 sayService.say(origin, context.displayName, '', channel, `/me schaut doch mal bei http://TheSoftPlanet.etsy.com vorbei. So süße Flauschis emote_heart emote_heart emote_heart`);
                 break;
             default:
-                //sayService.say(origin, context.displayName, '', channel, `/me flauscht ###ORIGIN### zur Begrüßung richtig durch emote_greet`);
                 server.getIO().emit('playAudio', {file: 'hello.mp3', mediaType: 'audio', volume: 0.5});
         }
 
@@ -80,12 +75,13 @@ class GreetEvent
             .collection("users")
             .findOne({name: context.userName}, {});
 
+        let response;
+
         if(!user) {
-            const response = await openAiClient.getChatGPTResponse(`
+            response = await openAiClient.getChatGPTResponse(`
         Bitte begrüße den User ${context.displayName} ganz lieb zu Hanna's Stream. 
         Nutze genderneutrale Sprache. 
-        Behandle die Person als sei sie komplett neu im Stream.`, '', false, '60');
-            sayService.say(origin, context.displayName, '', channel, response);
+        Behandle die Person als sei sie komplett neu im Stream.`, '', true, '60');
 
             await mongoDBClient
                 .db("flauschipandabot")
@@ -94,13 +90,18 @@ class GreetEvent
         } else {
             const pronomenText = (user?.pronomen) ? `Die Pronomen der Person sind '${user?.pronomen}'` : 'Nutze genderneutrale Sprache.';
 
-            const response = await openAiClient.getChatGPTResponse(`
+            response = await openAiClient.getChatGPTResponse(`
         Bitte begrüße den User ${context.displayName} ganz lieb zu Hanna's Stream. 
         ${pronomenText} 
-        Behandle die Person wie einen bereits Bekannten Menschen.`, '', false, '60');
-            sayService.say(origin, context.displayName, '', channel, response);
-
+        Behandle die Person wie einen bereits Bekannten Menschen.`, '', true, '60');
         }
+
+        let result = await openAiClient.convertTextToSpeech(response);
+        if(result) {
+            sayService.say(origin, context.displayName, '', channel, response);
+            server.getIO().emit('bot.playAudio', result);
+        }
+
         return Promise.resolve(true);
     }
 }

@@ -6,7 +6,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 
 class ShadowTimer extends AbstractTimer
 {
-    isActive  = true;
+    isActive  = false;
     minutes   = 125;
     chatLines = 5;
 

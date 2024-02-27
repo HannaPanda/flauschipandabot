@@ -8,7 +8,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 
 class StoryTimer extends AbstractTimer
 {
-    isActive  = true;
+    isActive  = false;
     minutes   = 61;
     chatLines = 5;
 

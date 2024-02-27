@@ -12,7 +12,8 @@ class SayService
             .split('###TARGET###').join(targetName)
             .replace(/emote_([a-zA-Z0-9]+)/g, (match, contents, offset, input_string) => {
                 return emoteService.getEmote(origin, match);
-            });
+            })
+            .replace(/\[?\(?(#\b[A-Z]+\b#)\)?\]?/g, '');
 
         const emoteStarRegex = /\*\s*(hannap5[a-zA-Z0-9]+)\s*\*/g;
         message = message.replace(emoteStarRegex, "$1");

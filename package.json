@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-watch": "nodemon -e ts,js,twig,html,css bot.ts",
+    "start-watch": "nodemon -e ts,js,twig,html,css --ignore public/ --exec \"ts-node bot.ts || copy /b bot.ts +,,\"",
     "build-watch": "parcel watch client/tts.html --out-dir ./public/ --public-url /static/",
-    "dev": "concurrently --kill-others \"npm run start-watch\" \"npm run build-watch\""
+    "dev": "concurrently --kill-others --shell cmd \"npm run start-watch\" \"npm run build-watch\""
   },
   "keywords": [],
   "author": "",
@@ -31,7 +31,7 @@
     "node-fetch": "^2.6.7",
     "nodemon": "^2.0.16",
     "obs-websocket-js": "^5.0.2",
-    "openai": "^3.2.1",
+    "openai": "4.19",
     "parcel-bundler": "^1.12.5",
     "react": "^18.1.0",
     "socket.io": "^4.4.1",

@@ -6,11 +6,12 @@ import Fighter from "../Models/Fighter";
 import statusService from "../Services/StatusService";
 import fetch from "node-fetch";
 import sayService from "../Services/SayService";
+import {constants} from "os";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class SeucheCommand extends AbstractCommand
 {
-    isActive       = true;
+    isActive       = false;
     isModOnly      = false;
     isOwnerOnly    = false;
     isAggressive   = true;
@@ -21,6 +22,7 @@ class SeucheCommand extends AbstractCommand
     globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+        return;
         const username = context.userName;
 
         const originUser = new Fighter();

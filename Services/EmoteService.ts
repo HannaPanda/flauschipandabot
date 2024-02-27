@@ -52,6 +52,12 @@ class EmoteService
         'hannap5Goofy',
         'hannap5Shy',
         'hannap5Facepalm',
+        'hannap5Ded',
+        'hannap5Evil',
+        'hannap5Uh',
+        'hannap5Cry',
+        'hannap5Love',
+        'hannap5Oh',
     ];
 
     getEmote = (origin: string, emote: string) => {

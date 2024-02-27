@@ -804,6 +804,19 @@
     "mediaType": "audio",
     "volume": 0.25,
     "fullscreen": false
+  },
+  {
+    "isActive": true,
+    "isModOnly": false,
+    "isOwnerOnly": false,
+    "isRepeatable": true,
+    "command": "wtf",
+    "aliases": [],
+    "description": "WTF",
+    "mediaFile": "wtf.mp4",
+    "mediaType": "video",
+    "volume": 0.5,
+    "fullscreen": false
   }
 ]
 

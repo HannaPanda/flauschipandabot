@@ -10,10 +10,13 @@ discordClient.on('ready', () => {
 discordClient.login(process.env.BOT_DISCORD_CLIENT_TOKEN);
 
 discordClient.on('messageCreate', async (message) => {
+
+    const cleanedString = message.content.replace(/<:([^:]+):\d+>/g, '$1');
+
     emitter.emit(
         'chat.message',
-        message.content,
-        message.content.split(' '),
+        cleanedString,
+        cleanedString.split(' '),
         {
             userName: message.author.username,
             displayName: message.author,
