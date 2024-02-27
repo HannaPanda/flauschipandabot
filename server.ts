@@ -77,6 +77,12 @@ class Server
             });
         });
 
+        app.get('/tts', async (req, res) => {
+            twing.render('tts.twig', {}).then((output) => {
+                res.end(output);
+            });
+        });
+
         app.get('/counter', async (req, res) => {
             const fuckCounter = await mongoDBClient
                 .db("flauschipandabot")

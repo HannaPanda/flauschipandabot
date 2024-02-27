@@ -1,0 +1,19 @@
+{% extends "layout.twig" %}
+
+{% set showMenu = false %}
+
+{% block title %}TTS{% endblock %}
+{% block bodyClass %}transparent{% endblock %}
+
+{% block content %}
+    <section class="m-5">
+        <div class="container">
+            <div class="col" id="chat-wrapper">
+
+            </div>
+        </div>
+    </section>
+    <div id="root"></div>
+    <img id="character" src="">
+    <script type="text/javascript" src="/static/js/tts.bundle.js"></script>
+{% endblock %}

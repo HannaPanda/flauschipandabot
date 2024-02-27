@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-watch": "nodemon -e ts,js,twig,html,css --ignore public/ --exec \"ts-node bot.ts || copy /b bot.ts +,,\"",
-    "build-watch": "parcel watch client/tts.html --out-dir ./public/ --public-url /static/",
-    "dev": "concurrently --kill-others --shell cmd \"npm run start-watch\" \"npm run build-watch\""
+    "nodemon-watch": "nodemon -e ts,js,twig,html,css --ignore public/ --exec \"ts-node bot.ts || copy /b bot.ts +,,\"",
+    "webpack-watch": "webpack --watch",
+    "dev": "concurrently --kill-others --shell cmd \"npm run nodemon-watch\" \"npm run webpack-watch\""
   },
   "keywords": [],
   "author": "",
@@ -39,6 +39,12 @@
     "twing": "^5.1.1"
   },
   "devDependencies": {
-    "@types/node": "^17.0.18"
+    "@types/jquery": "^3.5.29",
+    "@types/node": "^17.0.18",
+    "@types/socket.io-client": "^3.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   }
 }

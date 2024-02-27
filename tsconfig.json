@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
   },
   "include": ["*.ts"],              // Dateien, die kompiliert werden sollen
   "exclude": ["node_modules"]       // Ausgeschlossene Dateien/Verzeichnisse
