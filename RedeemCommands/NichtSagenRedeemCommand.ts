@@ -8,15 +8,16 @@ import mongoDBClient from "../Clients/mongoDBClient";
 import botService from "../Services/BotService";
 import AbstractRedeemCommand from "../Abstracts/AbstractRedeemCommand";
 import server from "../server";
+import openAiClient from "../Clients/openAiClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class NichtSagenRedeemCommand extends AbstractRedeemCommand
 {
     isActive = true;
     command  = "5 Minuten ein bestimmtes Wort nicht benutzen";
-    handler  = (message) => {
+    handler  = async (message) => {
         console.log(message);
-        server.getIO().emit('bot.say', '5 Minuten das Wort "'+message.message+'" nicht benutzen, sonst gibt es Lakritze!');
+        await openAiClient.botSay( '5 Minuten das Wort "'+message.message+'" nicht benutzen, sonst gibt es Lakritze!');
         server.getIO().emit('playAudio', {file: 'getNewSpecialItem.wav', mediaType: 'audio', volume: 0.5});
         server.getIO().emit('countdown');
     };

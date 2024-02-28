@@ -96,11 +96,8 @@ class GreetEvent
         Behandle die Person wie einen bereits Bekannten Menschen.`, '', true, '60');
         }
 
-        let result = await openAiClient.convertTextToSpeech(response);
-        if(result) {
-            sayService.say(origin, context.displayName, '', channel, response);
-            server.getIO().emit('bot.playAudio', result);
-        }
+        await openAiClient.botSay(response);
+        sayService.say(origin, context.displayName, '', channel, response);
 
         return Promise.resolve(true);
     }

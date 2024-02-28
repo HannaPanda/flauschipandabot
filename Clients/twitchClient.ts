@@ -133,7 +133,7 @@ class TwitchClient
                 server.getIO().emit('showAlert', alert);
 
                 if(message.message.message) {
-                    server.getIO().emit('bot.say.notext', message.message.message);
+                    await openAiClient.botSay(message.message.message);
                 }
             });
 
@@ -183,7 +183,7 @@ class TwitchClient
                     server.getIO().emit('showAlert', alert);
 
                     if(event.message) {
-                        server.getIO().emit('bot.say.notext', event.message);
+                        await openAiClient.botSay(event.message);
                     }
                 }
             });
@@ -203,7 +203,7 @@ class TwitchClient
                     sayService.say('tmi', '', '', null, `emote_hype emote_hype emote_hype Vielen Dank für den Raid ${event.raidingBroadcasterDisplayName} emote_hype emote_hype emote_hype`)
                     sayService.say('tmi', '', '', null, `emote_heart emote_heart emote_heart Hey ihr Flauschis, schaut doch mal bei ${event.raidingBroadcasterDisplayName} rein! https://twitch.tv/${event.raidingBroadcasterName} emote_heart emote_heart emote_heart`)
                     this.apiClient.chat.shoutoutUser(user, event.raidedBroadcasterId);
-                    server.getIO().emit('bot.say.notext', 'Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
+                    await openAiClient.botSay('Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
                 }
             });
         } catch(err) {

@@ -8,14 +8,15 @@ import mongoDBClient from "../Clients/mongoDBClient";
 import botService from "../Services/BotService";
 import AbstractRedeemCommand from "../Abstracts/AbstractRedeemCommand";
 import server from "../server";
+import openAiClient from "../Clients/openAiClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class SayRedeemCommand extends AbstractRedeemCommand
 {
     isActive = true;
     command  = "Sage etwas";
-    handler  = (message) => {
-        server.getIO().emit('bot.say', message.message);
+    handler  = async (message) => {
+        await openAiClient.botSay(message.message);
     };
 }
 

@@ -2,6 +2,7 @@ import emitter from "../emitter";
 import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import server from "../server";
+import openAiClient from "../Clients/openAiClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class HypeCommand extends AbstractCommand
@@ -18,7 +19,7 @@ class HypeCommand extends AbstractCommand
     globalCooldown = 0;
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        server.getIO().emit('bot.say', parts.slice(1).join(' '));
+        await openAiClient.botSay(parts.slice(1).join(' '));
     }
 }
 

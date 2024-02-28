@@ -55,10 +55,7 @@ class AntwortEvent
             sayService.say(origin, context.displayName, '', channel, response);
 
             if(origin === 'tmi') {
-                let result = await openAiClient.convertTextToSpeech(response);
-                if(result) {
-                    server.getIO().emit('bot.playAudio', result);
-                }
+                await openAiClient.botSay(response);
             }
 
             return Promise.resolve(true);

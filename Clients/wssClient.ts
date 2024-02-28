@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 import emitter from "../emitter";
 import server from "../server";
+import openAiClient from "./openAiClient";
 
 dotenv.config({ path: __dirname+'/../.env' });
 
@@ -22,11 +23,11 @@ class Initializer
         const server = http.createServer(app);
         this.wss = new WebSocketServer({ server });
 
-        this.wss.on('connection', (ws) => {
+        this.wss.on('connection', async (ws) => {
             console.log('Client connected');
-            ws.on('message', (message) => {
+            ws.on('message', async (message) => {
                 console.log(`Received message: ${message}`);
-                server.getIO().emit('bot.say', message.toString());
+                await openAiClient.botSay(message.toString());
             });
 
             ws.on('close', () => {

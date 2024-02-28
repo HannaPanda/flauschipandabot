@@ -7,6 +7,7 @@ import sayService from "../Services/SayService";
 import mongoDBClient from "../Clients/mongoDBClient";
 import botService from "../Services/BotService";
 import server from "../server";
+import openAiClient from "../Clients/openAiClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractCommand
@@ -136,7 +137,7 @@ abstract class AbstractCommand
         }
 
         if(!botService.botActive) {
-            server.getIO().emit('bot.say', 'Ich habe keine Lust. Ich schmolle jetzt.');
+            openAiClient.botSay('Ich habe keine Lust. Ich schmolle jetzt.');
             return Promise.resolve(false);
         }
 

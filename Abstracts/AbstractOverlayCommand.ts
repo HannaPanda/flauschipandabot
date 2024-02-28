@@ -4,6 +4,7 @@ import Fighter from "../Models/Fighter";
 import botService from "../Services/BotService";
 import sayService from "../Services/SayService";
 import server from "../server";
+import openAiClient from "../Clients/openAiClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractOverlayCommand
@@ -69,7 +70,7 @@ abstract class AbstractOverlayCommand
         }
 
         if(!botService.botActive) {
-            server.getIO().emit('bot.say', 'Nö. Einfach nur nö.');
+            await openAiClient.botSay('Nö. Einfach nur nö.');
             return Promise.resolve(false);
         }
 

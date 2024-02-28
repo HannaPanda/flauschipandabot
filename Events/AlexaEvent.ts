@@ -5,6 +5,7 @@ import emoteService from "../Services/EmoteService";
 import sayService from "../Services/SayService";
 import botService from "../Services/BotService";
 import server from "../server";
+import openAiClient from "../Clients/openAiClient";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class AlexaEvent
@@ -26,7 +27,7 @@ class AlexaEvent
                 return Promise.resolve(false);
             }
 
-            server.getIO().emit('bot.say', 'Alexa stop!');
+            await openAiClient.botSay('Alexa stop!');
 
             return Promise.resolve(true);
         }

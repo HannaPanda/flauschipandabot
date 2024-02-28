@@ -43,7 +43,7 @@ class SchrottbotEvent
             sayService.say(origin, context.displayName, '', channel, response);
 
             if(context.userName === 'jukrichel') {
-                server.getIO().emit('bot.say', 'Juki ist doof :(');
+                await openAiClient.botSay('Juki ist doof :(');
             }
 
             return Promise.resolve(true);

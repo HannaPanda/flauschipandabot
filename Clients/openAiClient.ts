@@ -6,6 +6,7 @@ import {PassThrough} from "stream";
 import * as fs from "fs";
 import {TextEmotion} from "../Types/TextEmotion";
 import obsClient from "./obsClient";
+import server from "../server";
 
 const {encode, decode} = require('gpt-3-encoder');
 
@@ -425,6 +426,15 @@ class OpenAiClient
 
         // Warten, bis alle Promises aufgelöst sind
         return await Promise.all(promises);
+    }
+
+    public async botSay(botSay: string) {
+        let result = this.convertTextToSpeech(botSay);
+        if(result) {
+            server.getIO().emit('bot.playAudio', result);
+            return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
     }
 
     private streamReadable(readable: any, writable: PassThrough): void {

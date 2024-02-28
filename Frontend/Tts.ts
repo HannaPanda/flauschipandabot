@@ -10,14 +10,12 @@ class CharacterAnimator {
     private audioContext: AudioContext | undefined;
     private analyser: AnalyserNode | undefined;
     private dataArray: Uint8Array | undefined;
-    private threshold: number = 128;
+    private threshold: number = 12;
     private currentEmotion: string = 'neutral';
     private currentMouthStatus: string = 'closed';
     private currentEyeStatus: string = 'open';
     private isShowing: boolean = false;
     private isPlaying: boolean = false;
-    private messageQueue: string[] = [];
-    private messageQueueNoText: string[] = [];
     private audioQueue: Array<{path: string, emotion: string}> = [];
 
     constructor() {
@@ -66,8 +64,11 @@ class CharacterAnimator {
         this.currentMouthStatus = mouth ?? this.currentMouthStatus;
         this.currentEyeStatus = eye ?? this.currentEyeStatus;
 
+        const targetImage = `/static/images/pngtuber/${this.currentEmotion}_${this.currentMouthStatus}_${this.currentEyeStatus}.png`;
         const characterImg = document.getElementById('character') as HTMLImageElement;
-        characterImg.src = `/static/images/pngtuber/${this.currentEmotion}_${this.currentMouthStatus}_${this.currentEyeStatus}.png`;
+        if(characterImg.src != targetImage) {
+            characterImg.src = targetImage;
+        }
     }
 
     private startAnimation(): void {
@@ -104,7 +105,7 @@ class CharacterAnimator {
             let sum = this.dataArray.reduce((a, b) => a + b, 0);
             let average = sum / this.dataArray.length;
 
-            if (average > 12) {
+            if (average > this.threshold) {
                 this.setCharacterStatus(undefined, 'open', undefined);
                 this.startAnimation();
             } else {
@@ -146,12 +147,6 @@ class CharacterAnimator {
 
     private setupSocket(): void {
         const socket = io();
-        socket.on('bot.say', (msg: string) => {
-            this.messageQueue.push(msg);
-        });
-        socket.on('bot.say.notext', (msg: string) => {
-            this.messageQueueNoText.push(msg);
-        });
         socket.on('bot.playAudio', (msg: any) => {
             if (Array.isArray(msg)) {
                 this.audioQueue.push(...msg.reverse());
@@ -168,31 +163,6 @@ class CharacterAnimator {
     }
 
     private setupIntervals(): void {
-        setInterval(() => {
-            if (!this.isShowing && !this.isPlaying && this.messageQueue.length > 0) {
-                this.isShowing = true;
-                this.isPlaying = true;
-                const $text = document.createElement('p');
-                const text = this.messageQueue.pop()!;
-                $text.textContent = text;
-                $text.style.display = 'none';
-                document.getElementById('chat-wrapper')?.appendChild($text);
-                $($text).fadeIn(200).delay(Math.max(3000, text.split(' ').length / 130 * 60000)).fadeOut(200, () => {
-                    $text.remove();
-                    this.isShowing = false;
-                });
-                this.playAudio("https://api.streamelements.com/kappa/v2/speech?voice=de-DE-Wavenet-A&text=" + encodeURIComponent(text), 0.5);
-            }
-        }, 500);
-
-        setInterval(() => {
-            if (!this.isShowing && !this.isPlaying && this.messageQueueNoText.length > 0) {
-                this.isPlaying = true;
-                const text = this.messageQueueNoText.pop()!;
-                this.playAudio("https://api.streamelements.com/kappa/v2/speech?voice=de-DE-Wavenet-A&text=" + encodeURIComponent(text), 0.5);
-            }
-        }, 500);
-
         setInterval(() => {
             if (!this.isShowing && !this.isPlaying && this.audioQueue.length > 0) {
                 this.isPlaying = true;
