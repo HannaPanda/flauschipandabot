@@ -5,6 +5,8 @@ import sayService from "../Services/SayService";
 import storyService from "../Services/StoryService";
 import openAiClient from "../Clients/openAiClient";
 import emoteService from "../Services/EmoteService";
+import mongoDBClient from "../Clients/mongoDBClient";
+import {UserModel} from "../Models/User";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class TestCommand extends AbstractCommand
@@ -20,15 +22,28 @@ class TestCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
-        /*const response = await openAiClient.shouldRespondToChat([
-            {username: context.username, text: message}
-        ]);
+        const oldUsers = await mongoDBClient
+            .db('flauschipandabot').collection('users').find().toArray();
 
-        sayService.say(origin, '', '', channel, response);*/
+        for (const oldUser of oldUsers) {
+            /*const updatedUser = {
+                username: oldUser.name,
+                role: oldUser.role || 'viewer',
+                pronomen: oldUser.pronomen || '',
+                usernameOffenseScore: oldUser.usernameOffenseScore !== undefined ? oldUser.usernameOffenseScore : null
+            };
 
-        sayService.say(origin, '', '', channel, 'testing');
-        const response = await openAiClient.getUsernameOffenseScore('Slaanesh_Prince_of_Lewd');
-        sayService.say(origin, '', '', channel, `${response}`);
+            console.log(updatedUser);
+
+            await UserModel.updateOne(
+                { username: oldUser.name },
+                { $set: updatedUser },
+                { upsert: true }
+            );*/
+
+            /*const result = await UserModel.deleteMany({ username: { $exists: false } });
+            console.log(`Deleted ${result.deletedCount} users without username field`);*/
+        }
     };
 }
 

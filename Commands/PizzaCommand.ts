@@ -34,7 +34,7 @@ class PizzaCommand extends AbstractCommand
              Nutze genderneutrale Sprache.
              Nutze ausschließlich folgende Emotes:  
              ${emoteService.getBotTwitchEmotes()}
-             Nutze das Wort "Flausch" für das Wort Lurk. Schreibe dazu eine witzige Nachricht.`,
+             Schreibe dazu eine witzige Nachricht.`,
             `@${context.displayName} spendiert eine Pizza für ${parts.slice(1).join(' ')}. Bitte wähle eine zufällige Pizza mit zufälligem Belag aus und übergebe sie.`,
             null,
             '',

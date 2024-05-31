@@ -1,0 +1,104 @@
+{% extends "layout.twig" %}
+
+{% block title %}Chat Logs{% endblock %}
+
+{% block content %}
+    <section class="m-5">
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col">
+                    <input type="text" id="filter-message" class="form-control" placeholder="Filter by message">
+                </div>
+                <div class="col">
+                    <input type="text" id="filter-username" class="form-control" placeholder="Filter by username">
+                </div>
+                <div class="col">
+                    <select id="filter-source" class="form-select">
+                        <option value="">All sources</option>
+                        <option value="discord">Discord</option>
+                        <option value="tmi">TMI</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <input type="date" id="filter-date-from" class="form-control" placeholder="From date">
+                </div>
+                <div class="col">
+                    <input type="date" id="filter-date-to" class="form-control" placeholder="To date">
+                </div>
+            </div>
+            <div id="chat-logs-table"></div>
+        </div>
+    </section>
+    <!-- Luxon Library -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
+    <!-- Tabulator Libraries -->
+    <link href="https://unpkg.com/tabulator-tables@5.2.0/dist/css/tabulator_bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .tabulator-row {
+            background-color: #32383e;
+            color: #fff;
+        }
+        .tabulator-row:hover {
+            background-color: #23272b;
+        }
+        .tabulator-cell:hover .message-hover {
+            display: block;
+        }
+        .message-hover {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            z-index: 10;
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+    </style>
+    <script src="https://unpkg.com/tabulator-tables@5.2.0/dist/js/tabulator.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var table = new Tabulator("#chat-logs-table", {
+                layout: "fitColumns",
+                pagination: "ajax",
+                paginationSize: 10,
+                ajaxURL: "/api/chatlogs",
+                columns: [
+                    {title: "Message", field: "message", widthGrow: 3, formatter: function(cell) {
+                            var value = cell.getValue();
+                            return `<span title="${value}" class="message-hover">${value}</span>` + value;
+                        }},
+                    {title: "Source", field: "source", width: 100},
+                    {title: "User Name", field: "userName", widthGrow: 1},
+                    {title: "Display Name", field: "displayName", widthGrow: 1},
+                    {title: "Date and Time", field: "dateTime", formatter: function(cell, formatterParams) {
+                            return luxon.DateTime.fromISO(cell.getValue()).toFormat("yyyy-MM-dd HH:mm:ss");
+                        }}
+                ]
+            });
+
+            function applyFilters() {
+                var message = document.getElementById('filter-message').value;
+                var username = document.getElementById('filter-username').value;
+                var source = document.getElementById('filter-source').value;
+                var dateFrom = document.getElementById('filter-date-from').value;
+                var dateTo = document.getElementById('filter-date-to').value;
+
+                table.setFilter([
+                    {field: "message", type: "like", value: message},
+                    {field: "userName", type: "like", value: username},
+                    {field: "source", type: "=", value: source},
+                    {field: "dateTime", type: ">", value: dateFrom},
+                    {field: "dateTime", type: "<", value: dateTo}
+                ]);
+            }
+
+            document.getElementById('filter-message').addEventListener('keyup', applyFilters);
+            document.getElementById('filter-username').addEventListener('keyup', applyFilters);
+            document.getElementById('filter-source').addEventListener('change', applyFilters);
+            document.getElementById('filter-date-from').addEventListener('change', applyFilters);
+            document.getElementById('filter-date-to').addEventListener('change', applyFilters);
+        });
+    </script>
+{% endblock %}

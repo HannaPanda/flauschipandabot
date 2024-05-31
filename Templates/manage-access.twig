@@ -1,0 +1,129 @@
+{% extends "layout.twig" %}
+
+{% block title %}Manage Access{% endblock %}
+
+{% block content %}
+    <section class="m-5">
+        <div class="container">
+            <div class="col">
+                <div class="card card-body">
+                    <h1>Manage Access</h1>
+                    <form id="add-user-form" class="mb-4">
+                        <div class="mb-3">
+                            <input type="text" id="username" class="form-control" placeholder="Twitch Username" required>
+                        </div>
+                        <div class="mb-3">
+                            <select id="role" class="form-select">
+                                <option value="viewer">Viewer</option>
+                                <option value="moderator">Moderator</option>
+                                <option value="super-moderator">Super Moderator</option>
+                                <option value="vip">VIP</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                    </form>
+                    <div id="users-table"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Luxon Library -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
+    <!-- Tabulator Libraries -->
+    <link href="https://unpkg.com/tabulator-tables@5.2.0/dist/css/tabulator_bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .tabulator-row {
+            background-color: #32383e;
+            color: #fff;
+        }
+        .tabulator-row:hover {
+            background-color: #23272b;
+        }
+        .tabulator-footer {
+            background-color: #32383e;
+            color: #fff;
+        }
+        .tabulator-pagination {
+            background-color: #32383e;
+            color: #fff;
+        }
+    </style>
+    <script src="https://unpkg.com/tabulator-tables@5.2.0/dist/js/tabulator.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var table = new Tabulator("#users-table", {
+                layout: "fitColumns",
+                pagination: "local",
+                paginationSize: 10,
+                ajaxURL: "/api/users",
+                ajaxResponse: function(url, params, response) {
+                    return response;
+                },
+                columns: [
+                    { title: "User Name", field: "username", editor: "input", headerFilter: "input" },
+                    { title: "Role", field: "role", editor: "select", editorParams: {
+                            values: {"viewer": "Viewer", "moderator": "Moderator", "super-moderator": "Super Moderator", "vip": "VIP"}
+                        }, headerFilter: "select", headerFilterParams: {
+                            values: {"": "All", "viewer": "Viewer", "moderator": "Moderator", "super-moderator": "Super Moderator", "vip": "VIP"}
+                        }},
+                    { formatter: "buttonCross", width: 40, align: "center", cellClick: function(e, cell) {
+                            if (confirm('Are you sure you want to delete this user?')) {
+                                var data = cell.getRow().getData();
+                                fetch('/api/manage-access/remove', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(data)
+                                }).then(response => {
+                                    if (response.ok) {
+                                        alert('User removed');
+                                        cell.getRow().delete();
+                                    } else {
+                                        alert('Failed to remove user');
+                                    }
+                                });
+                            }
+                        }}
+                ]
+            });
+
+            table.on("cellEdited", function(cell) {
+                var data = cell.getRow().getData();
+                fetch('/api/manage-access/edit', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => {
+                    if (response.ok) {
+                        alert('User role updated');
+                    } else {
+                        alert('Failed to update user role');
+                    }
+                });
+            });
+
+            document.getElementById('add-user-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const role = document.getElementById('role').value;
+                fetch('/api/manage-access/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, role })
+                }).then(response => {
+                    if (response.ok) {
+                        alert('User added');
+                        table.setData("/api/users");
+                    } else {
+                        alert('Failed to add user');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

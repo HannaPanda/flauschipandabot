@@ -7,6 +7,7 @@ import * as fs from "fs";
 import {TextEmotion} from "../Types/TextEmotion";
 import obsClient from "./obsClient";
 import server from "../server";
+import {UserModel} from "../Models/User";
 
 const {encode, decode} = require('gpt-3-encoder');
 
@@ -42,8 +43,8 @@ class OpenAiClient
         // ... weitere relevante Keywords können hinzugefügt werden
     ];
 
-    private model = 'gpt-4-turbo-preview';
-    //private model = 'gpt-3.5-turbo';
+    private model = 'gpt-4o';
+    //private model = 'gpt-4-turbo-preview';
 
     constructor()
     {
@@ -222,26 +223,16 @@ class OpenAiClient
         return Promise.resolve(response.choices[0].message.content);
     };
 
-    public getUsernameOffenseScore = async(username) => {
+    public getUsernameOffenseScore = async (username) => {
         try {
-            let user = await mongoDBClient
-                .db("flauschipandabot")
-                .collection("users")
-                .findOne({name:username.toLowerCase()}, {});
+            let user = await UserModel.findOne({ username: username.toLowerCase() });
 
-            if(!user) {
-                await mongoDBClient
-                    .db("flauschipandabot")
-                    .collection("users")
-                    .insertOne({name: username.toLowerCase(), usernameOffenseScore: null});
-
-                user = await mongoDBClient
-                    .db("flauschipandabot")
-                    .collection("users")
-                    .findOne({name:username.toLowerCase()}, {});
+            if (!user) {
+                await new UserModel({ username: username.toLowerCase(), usernameOffenseScore: null }).save();
+                user = await UserModel.findOne({ username: username.toLowerCase() });
             }
 
-            if(user.hasOwnProperty('usernameOffenseScore') && typeof user.usernameOffenseScore === 'number' && !isNaN(user.usernameOffenseScore)) {
+            if (user?.usernameOffenseScore !== undefined && typeof user.usernameOffenseScore === 'number' && !isNaN(user.usernameOffenseScore)) {
                 return Promise.resolve(user.usernameOffenseScore);
             }
 
@@ -265,7 +256,7 @@ class OpenAiClient
             `;
 
             const messages = [].concat(
-                [{"role": "system", "content": prompt, timestamp: new Date()}]
+                [{ "role": "system", "content": prompt, timestamp: new Date() }]
             );
 
             const response = await this.openAi.chat.completions.create({
@@ -281,17 +272,14 @@ class OpenAiClient
             const score = parseFloat(response.choices[0].message.content);
             console.log(response.choices[0].message.content);
 
-            await mongoDBClient
-                .db("flauschipandabot")
-                .collection("users")
-                .updateOne(
-                    {name: username.toLowerCase()},
-                    {$set: {usernameOffenseScore: score}},
-                    {upsert: true}
-                );
+            await UserModel.updateOne(
+                { username: username.toLowerCase() },
+                { $set: { usernameOffenseScore: score } },
+                { upsert: true }
+            );
 
             return Promise.resolve(score);
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             return Promise.resolve(null);
         }
@@ -429,7 +417,7 @@ class OpenAiClient
     }
 
     public async botSay(botSay: string) {
-        let result = this.convertTextToSpeech(botSay);
+        let result = await this.convertTextToSpeech(botSay);
         if(result) {
             server.getIO().emit('bot.playAudio', result);
             return Promise.resolve(true);

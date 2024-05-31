@@ -1,17 +1,21 @@
 import * as dotenv from "dotenv";
 import emitter from "./emitter";
 import mongoDBClient from "./Clients/mongoDBClient";
-import socketio from "socket.io";
+import session from 'express-session';
 import * as fs from 'fs';
+import { userService } from "./Services/UserService";
+import { chatLogService } from "./Services/ChatLogService";
+import authRoutes from './Routes/authRoutes';
+import userRoutes from './Routes/userRoutes';
+import generalRoutes from './Routes/generalRoutes';
 
-dotenv.config({ path: __dirname+'/.env' });
+dotenv.config({ path: __dirname + '/.env' });
 
-const {TwingEnvironment, TwingLoaderFilesystem} = require('twing');
+const { TwingEnvironment, TwingLoaderFilesystem } = require('twing');
 let loader = new TwingLoaderFilesystem('./Templates');
 let twing = new TwingEnvironment(loader);
 
-class Server
-{
+class Server {
     private io;
     private commands;
     private overlayCommands;
@@ -28,97 +32,23 @@ class Server
 
         emitter.on('hornyLevelChanged', this.handleHornyLevelChanged);
 
+        // Built-in Body-Parser Middleware
+        app.use(express.json());
+        app.use(express.urlencoded({ extended: true }));
+
+        // Session Middleware
+        app.use(session({
+            secret: process.env.SESSION_SECRET || 'secret',
+            resave: false,
+            saveUninitialized: false
+        }));
+
         app.use('/static', express.static('public'));
 
-        app.get('/', function (req, res) {
-            twing.render('index.twig', {activePage: 'home'}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/commands', function (req, res) {
-            twing.render('commands.twig', {'commands': self.commands, 'overlayCommands': self.overlayCommands, activePage: 'commands'}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/quotes', async (req, res) => {
-            let quotes = await mongoDBClient
-                .db("flauschipandabot")
-                .collection("quotes")
-                .find()
-                .toArray();
-            twing.render('quotes.twig', {'quotes': quotes, activePage: 'quotes'}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/soundboard', async (req, res) => {
-
-            twing.render('soundboard.twig', {activePage: 'soundboard'}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/horny', async (req, res) => {
-            const document = await mongoDBClient
-                .db("flauschipandabot")
-                .collection("misc")
-                .findOne( {identifier: 'hornyLevel'}, {});
-
-            twing.render('horny.twig', {hornyLevel: (document && document.value) ? document.value : 0}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/alerts', async (req, res) => {
-            twing.render('alerts.twig', {}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/tts', async (req, res) => {
-            twing.render('tts.twig', {}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/counter', async (req, res) => {
-            const fuckCounter = await mongoDBClient
-                .db("flauschipandabot")
-                .collection("misc")
-                .findOne( {identifier: 'fuckCounter'}, {});
-
-            const verpissdichCounter = await mongoDBClient
-                .db("flauschipandabot")
-                .collection("misc")
-                .findOne( {identifier: 'verpissdichCounter'}, {});
-
-            twing.render('counter.twig', {
-                fuckCounter: (fuckCounter && fuckCounter.value) ? fuckCounter.value : 0,
-                verpissdichCounter: (verpissdichCounter && verpissdichCounter.value) ? verpissdichCounter.value : 0
-            }).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/countdown', async (req, res) => {
-            twing.render('countdown.twig', {}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/overlay', (req, res) => {
-            twing.render('overlay.twig', {}).then((output) => {
-                res.end(output);
-            });
-        });
-
-        app.get('/chat', (req, res) => {
-            twing.render('chat.twig', {}).then((output) => {
-                res.end(output);
-            });
-        });
+        // Use Routes
+        app.use(authRoutes);
+        app.use(userRoutes);
+        app.use(generalRoutes);
 
         this.app = app;
 
@@ -140,7 +70,6 @@ class Server
             // Serves on 80 and 443
             // Get's SSL certificates magically!
             .ready(this.httpsWorker);
-
 
         setTimeout(() => {
             this.io.emit('reload');
@@ -167,7 +96,7 @@ class Server
 
             this.overlayCommands = jsonObj;
 
-        } catch (err) {};
+        } catch (err) { };
     };
 
     httpsWorker = (glx) => {
@@ -177,7 +106,7 @@ class Server
         this.io = require("socket.io")(server);
 
         // Then you do your socket.io stuff
-        this.io.on("connection", function(socket) {
+        this.io.on("connection", function (socket) {
 
         });
 
@@ -185,18 +114,16 @@ class Server
         glx.serveApp(this.app);
     }
 
-
     private handleHornyLevelChanged = async (newLevel) => {
-        if(newLevel === 69) {
-            this.getIO().emit('playVideo', {file: 'noice.mp4', mediaType: 'video', volume: 0.5});
+        if (newLevel === 69) {
+            this.getIO().emit('playVideo', { file: 'noice.mp4', mediaType: 'video', volume: 0.5 });
         } else if (newLevel === 100) {
             setTimeout(() => {
-                this.getIO().emit('playAudio', {file: 'love_moment.mp3', mediaType: 'audio', volume: 0.1});
+                this.getIO().emit('playAudio', { file: 'love_moment.mp3', mediaType: 'audio', volume: 0.1 });
             }, 5000);
         }
         this.io.emit('hornyLevelChange', { newLevel: newLevel });
     }
-
 }
 
 const server = new Server();

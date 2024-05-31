@@ -1,0 +1,62 @@
+{
+  "Abenteurer": {
+    "manaWuerfel": "1d8",
+    "lebenspunkteWuerfel": "1d8",
+    "kopfwuschel": 5,
+    "kuschelkraft": 5,
+    "schnurrfertigkeit": 5,
+    "flauschigkeit": 5,
+    "schnuffelcharme": 5,
+    "ruestungsklasse": 5
+  },
+  "Bambusmagier": {
+    "manaWuerfel": "1d8",
+    "lebenspunkteWuerfel": "1d6",
+    "kopfwuschel": 8,
+    "kuschelkraft": 3,
+    "schnurrfertigkeit": 4,
+    "flauschigkeit": 5,
+    "schnuffelcharme": 7,
+    "ruestungsklasse": 10
+  },
+  "Flauschheiler": {
+    "manaWuerfel": "1d6",
+    "lebenspunkteWuerfel": "1d8",
+    "kopfwuschel": 7,
+    "kuschelkraft": 4,
+    "schnurrfertigkeit": 4,
+    "flauschigkeit": 6,
+    "schnuffelcharme": 8,
+    "ruestungsklasse": 8
+  },
+  "Kuschelkrieger": {
+    "manaWuerfel": "1d4",
+    "lebenspunkteWuerfel": "1d12",
+    "kopfwuschel": 3,
+    "kuschelkraft": 8,
+    "schnurrfertigkeit": 5,
+    "flauschigkeit": 7,
+    "schnuffelcharme": 4,
+    "ruestungsklasse": 14
+  },
+  "PfadsucherBogenschuetze": {
+    "manaWuerfel": "1d6",
+    "lebenspunkteWuerfel": "1d8",
+    "kopfwuschel": 6,
+    "kuschelkraft": 6,
+    "schnurrfertigkeit": 7,
+    "flauschigkeit": 5,
+    "schnuffelcharme": 6,
+    "ruestungsklasse": 11
+  },
+  "Schattenlaeufer": {
+    "manaWuerfel": "1d4",
+    "lebenspunkteWuerfel": "1d10",
+    "kopfwuschel": 5,
+    "kuschelkraft": 5,
+    "schnurrfertigkeit": 8,
+    "flauschigkeit": 6,
+    "schnuffelcharme": 5,
+    "ruestungsklasse": 12
+  }
+}

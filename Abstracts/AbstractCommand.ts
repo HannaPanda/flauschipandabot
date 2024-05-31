@@ -8,6 +8,7 @@ import mongoDBClient from "../Clients/mongoDBClient";
 import botService from "../Services/BotService";
 import server from "../server";
 import openAiClient from "../Clients/openAiClient";
+import {MiscModel} from "../Models/Misc";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractCommand
@@ -71,21 +72,16 @@ abstract class AbstractCommand
             }
 
             if(this.isAggressive) {
-                const liebesritual = await mongoDBClient
-                    .db("flauschipandabot")
-                    .collection("misc")
-                    .findOne( {identifier: 'liebesritualUntil'}, {});
+                const liebesritual = await MiscModel.findOne({ identifier: 'liebesritualUntil' });
 
-                if(liebesritual) {
-                    if(liebesritual.value && moment().isBefore(moment(liebesritual.value))) {
-                        const text = `###ORIGIN###: Die Flauschis erholen sich noch für ${Math.round(moment.duration(moment(liebesritual.value).diff(moment())).asMinutes())} Minuten vom letzten Liebesritual.`;
+                if (liebesritual) {
+                    if (liebesritual.value && moment().isBefore(moment(liebesritual.value))) {
+                        const remainingMinutes = Math.round(moment.duration(moment(liebesritual.value).diff(moment())).asMinutes());
+                        const text = `###ORIGIN###: Die Flauschis erholen sich noch für ${remainingMinutes} Minuten vom letzten Liebesritual.`;
                         sayService.say(origin, context.displayName, '', channel, text);
                         return Promise.resolve(false);
                     } else {
-                        await mongoDBClient
-                            .db("flauschipandabot")
-                            .collection("misc")
-                            .deleteOne( {identifier: 'liebesritualUntil'}, {});
+                        await MiscModel.deleteOne({identifier: 'liebesritualUntil'});
                     }
                 }
 
@@ -118,37 +114,28 @@ abstract class AbstractCommand
             }
         }
 
-        const document = await mongoDBClient
-            .db("flauschipandabot")
-            .collection("misc")
-            .findOne( {identifier: `globalCooldown${this.command}`}, {});
+        const document = await MiscModel.findOne({ identifier: `globalCooldown${this.command}` });
 
-        if(document && document.value) {
-            if(moment().isBefore(moment(document.value))) {
+        if (document && document.value) {
+            if (moment().isBefore(moment(document.value))) {
                 const text = `###ORIGIN###: Der Command !${this.command} ist noch im Cooldown NotLikeThis`;
                 sayService.say(origin, context.displayName, '', channel, text);
                 return Promise.resolve(false);
             } else {
-                await mongoDBClient
-                    .db("flauschipandabot")
-                    .collection("misc")
-                    .deleteOne(document);
+                await MiscModel.deleteOne({ _id: document._id });
             }
         }
 
-        if(!botService.botActive) {
+        if (!botService.botActive) {
             openAiClient.botSay('Ich habe keine Lust. Ich schmolle jetzt.');
             return Promise.resolve(false);
         }
 
-        if(this.globalCooldown > 0) {
-            await mongoDBClient
-                .db("flauschipandabot")
-                .collection("misc")
-                .insertOne({
-                    identifier: `globalCooldown${this.command}`,
-                    value: moment().add(this.globalCooldown, 'seconds').format()
-                });
+        if (this.globalCooldown > 0) {
+            await MiscModel.create({
+                identifier: `globalCooldown${this.command}`,
+                value: moment().add(this.globalCooldown, 'seconds').toDate()
+            });
         }
 
         if(this.customHandler) {

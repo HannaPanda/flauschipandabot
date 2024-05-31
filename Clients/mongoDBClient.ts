@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import {MongoClient} from "mongodb";
+import * as mongoose from "mongoose";
 
 dotenv.config({ path: __dirname+'/../.env' });
 
@@ -20,6 +21,13 @@ class Initializer
             await this.mongoDBClient.connect();
         } catch (err) {
             console.warn(err);
+        }
+
+        try {
+            await mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {});
+            console.log("Mit MongoDB verbunden");
+        } catch (err) {
+            console.warn("Fehler beim Verbinden mit MongoDB:", err);
         }
     }
 }

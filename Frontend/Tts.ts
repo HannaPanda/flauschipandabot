@@ -148,6 +148,7 @@ class CharacterAnimator {
     private setupSocket(): void {
         const socket = io();
         socket.on('bot.playAudio', (msg: any) => {
+            console.log(msg);
             if (Array.isArray(msg)) {
                 this.audioQueue.push(...msg.reverse());
             } else {
@@ -166,7 +167,7 @@ class CharacterAnimator {
         setInterval(() => {
             if (!this.isShowing && !this.isPlaying && this.audioQueue.length > 0) {
                 this.isPlaying = true;
-                const { path, emotion } = this.audioQueue.pop()!;
+                const { emotion, path } = this.audioQueue.pop()!;
                 this.setCharacterStatus(emotion, undefined, undefined);
                 this.playAudio(path, 0.5);
             }

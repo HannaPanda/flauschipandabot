@@ -8,6 +8,7 @@ import fetch from "node-fetch";
 import sayService from "../Services/SayService";
 import {random} from "twing/dist/types/lib/extension/core/functions/random";
 import moment from "moment";
+import {MiscModel} from "../Models/Misc";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class LiebesPfeilCommand extends AbstractCommand
@@ -24,22 +25,17 @@ class LiebesPfeilCommand extends AbstractCommand
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
 
-        await mongoDBClient
-            .db("flauschipandabot")
-            .collection("misc")
-            .insertOne({
-                identifier: `liebesritualUntil`,
-                value: moment().add('20', 'minutes').format()
-            });
+        await MiscModel.create({
+            identifier: 'liebesritualUntil',
+            value: moment().add('20', 'minutes').format()
+        });
 
-        await mongoDBClient
-            .db("flauschipandabot")
-            .collection("misc")
-            .updateOne(
-                {identifier: 'hornyLevel'},
-                {$set: {value: 0}},
-                {upsert: true}
-            );
+        await MiscModel.updateOne(
+            { identifier: 'hornyLevel' },
+            { $set: { value: 0 } },
+            { upsert: true }
+        );
+
         emitter.emit('hornyLevelChanged', 0);
 
         const text = 'Die große Pandagöttin ruft die Freie Liebe aus! Die Flauschebande verfällt in eine Ekstase aus ' +
