@@ -21,7 +21,7 @@ class ChatLogEvent
     }
 
     private handleEvent = async (message, parts, context, origin = 'tmi', channel = null) => {
-        if(!this.isActive) {
+        if(!this.isActive || !message) {
             return Promise.resolve(false);
         }
 

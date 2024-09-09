@@ -7,6 +7,7 @@ import sayService from "../Services/SayService";
 import openAiClient from "../Clients/openAiClient";
 import server from "../server";
 import {UserModel} from "../Models/User";
+import {GreetedUserModel} from "../Models/GreetedUser";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class GreetEvent
@@ -33,13 +34,13 @@ class GreetEvent
             return Promise.resolve(false);
         }
 
-        let greetedUser = await UserModel.findOne({ username: context.userName });
+        let greetedUser = await GreetedUserModel.findOne({ username: context.userName });
 
         if (greetedUser) {
             return Promise.resolve(false);
         }
 
-        await new UserModel({ username: context.userName }).save();
+        await new GreetedUserModel({ username: context.userName }).save();
 
         switch (context.userName) {
             case 'killerpretzel':

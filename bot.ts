@@ -12,6 +12,7 @@ import twitchClient from "./Clients/twitchClient";
 import AbstractOverlayCommand from "./Abstracts/AbstractOverlayCommand";
 import AbstractRedeemCommand from "./Abstracts/AbstractRedeemCommand";
 import AbstractCommand from "./Abstracts/AbstractCommand";
+import {GreetedUserModel} from "./Models/GreetedUser";
 
 dotenv.config({ path: __dirname+'/.env' });
 var osProcess = require('process');
@@ -102,10 +103,11 @@ class FlauschiPandaBot
                 streamService.currentStream = stream;
             } else {
                 streamService.currentStream = null;
-                mongoDBClient
+                /*mongoDBClient
                     .db('flauschipandabot')
                     .collection('greeted_users')
-                    .deleteMany({}, {}, () => {});
+                    .deleteMany({}, {}, () => {});*/
+                await GreetedUserModel.deleteMany({});
 
                 mongoDBClient
                     .db("flauschipandabot")

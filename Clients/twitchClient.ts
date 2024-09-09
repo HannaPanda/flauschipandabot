@@ -1,16 +1,15 @@
 import { PubSubClient } from '@twurple/pubsub';
-import {RefreshingAuthProvider} from '@twurple/auth';
-import {ApiClient, CommercialLength} from '@twurple/api';
+import { RefreshingAuthProvider } from '@twurple/auth';
+import { ApiClient, CommercialLength } from '@twurple/api';
 import * as fs from 'fs';
-import {ChatClient} from "@twurple/chat";
+import { ChatClient } from "@twurple/chat";
 import openAiClient from "./openAiClient";
 import emitter from "../emitter";
-import {EventSubWsListener} from "@twurple/eventsub-ws";
+import { EventSubWsListener } from "@twurple/eventsub-ws";
 import sayService from "../Services/SayService";
 import server from '../server';
 
-class TwitchClient
-{
+class TwitchClient {
     public pubSubClient: PubSubClient;
     public apiClient: ApiClient;
     public chatClient: ChatClient;
@@ -29,17 +28,17 @@ class TwitchClient
             const clientId = process.env.CLIENT_ID;
             const clientSecret = process.env.CLIENT_SECRET;
 
-            const tokenData = JSON.parse(fs.readFileSync('./tokens.hannapanda84.json','utf8'));
-            const authProvider = new RefreshingAuthProvider({clientId, clientSecret});
+            const tokenData = JSON.parse(fs.readFileSync('./tokens.hannapanda84.json', 'utf8'));
+            const authProvider = new RefreshingAuthProvider({ clientId, clientSecret });
             authProvider.onRefresh(async (userId, newTokenData) => {
-                fs.writeFileSync(`./tokens.hannapanda84.json`, JSON.stringify(newTokenData, null, 4), {encoding: "utf8"});
+                fs.writeFileSync(`./tokens.hannapanda84.json`, JSON.stringify(newTokenData, null, 4), { encoding: "utf8" });
             });
             await authProvider.addUserForToken(tokenData, ['chat']);
 
-            const tokenDataBot = JSON.parse(fs.readFileSync('./tokens.flauschipandabot.json','utf8'));
-            const authProviderBot = new RefreshingAuthProvider({clientId, clientSecret});
+            const tokenDataBot = JSON.parse(fs.readFileSync('./tokens.flauschipandabot.json', 'utf8'));
+            const authProviderBot = new RefreshingAuthProvider({ clientId, clientSecret });
             authProviderBot.onRefresh(async (userId, newTokenData) => {
-                fs.writeFileSync(`./tokens.flauschipandabot.json`, JSON.stringify(newTokenData, null, 4), {encoding: "utf8"});
+                fs.writeFileSync(`./tokens.flauschipandabot.json`, JSON.stringify(newTokenData, null, 4), { encoding: "utf8" });
             });
             await authProviderBot.addUserForToken(tokenDataBot, ['chat']);
 
@@ -57,21 +56,7 @@ class TwitchClient
                 });
             });
             this.chatClient.onDisconnect((manually, reason) => {
-                let interval;
-
-                const tryConnect = () => {
-                    try {
-                        self.chatClient.reconnect();
-                        clearInterval(interval);
-                    } catch(err) {
-                        if(err.message === 'Connection already present') {
-                            clearInterval(interval);
-                        }
-                        console.log(err);
-                    }
-                };
-
-                interval = setInterval(tryConnect, 5000);
+                this.reconnectChatClient();
             });
             this.chatClient.onMessage((channel, user, text, msg) => {
                 if (this.bots.includes(msg.userInfo.userName)) {
@@ -102,22 +87,23 @@ class TwitchClient
 
             // PubSub
             this.pubSubClient = new PubSubClient({ authProvider });
-            this.pubSubClient.onRedemption(user.id, async (message) => {
+            const pubSubClient = this.pubSubClient;
+            pubSubClient.onRedemption(user.id, async (message) => {
                 const isOffensive = await this.checkIsOffensiveUsername(message.userName);
 
-                if(!isOffensive) {
+                if (!isOffensive) {
                     emitter.emit('chat.redeem', message);
                 }
             });
-            this.pubSubClient.onSubscription(user.id, async (message) => {
+            pubSubClient.onSubscription(user.id, async (message) => {
                 const isOffensive = await this.checkIsOffensiveUsername(message.userName);
 
-                if(isOffensive || message.isGift || message.isAnonymous) {
+                if (isOffensive || message.isGift || message.isAnonymous) {
                     return;
                 }
 
                 let infoMessage = ``;
-                if(message.months > 1) {
+                if (message.months > 1) {
                     infoMessage += `Willkommen zurück im Bambuswald, ${message.userDisplayName}!<br>Danke für ${message.months} flauschige Monate bei uns!`
                 } else {
                     infoMessage = `Ein wilder Flauschi taucht auf! Willkommen in der Panda-Bande, ${message.userDisplayName}!<br>Lass uns gemeinsam Bambus knabbern!`;
@@ -132,9 +118,15 @@ class TwitchClient
                 }
                 server.getIO().emit('showAlert', alert);
 
-                if(message.message.message) {
+                if (message.message.message) {
                     await openAiClient.botSay(message.message.message);
                 }
+            });
+
+            // PubSubClient error handling
+            pubSubClient.onListenError((handler, error, userInitiated) => {
+                console.error('PubSub listen error:', error);
+                this.reconnectPubSubClient();
             });
 
             // EventSub
@@ -143,8 +135,8 @@ class TwitchClient
 
             listener.onChannelFollow(user, user, async (event) => {
                 const isOffensive = await this.checkIsOffensiveUsername(event.userName);
-                console.log('FOLLOW: '+ event.userName);
-                if(!isOffensive) {
+                console.log('FOLLOW: ' + event.userName);
+                if (!isOffensive) {
                     const alert = {
                         imageUrl: '/static/images/alerts/follower.gif',
                         soundUrl: '/static/audio/cats.mp3',
@@ -158,7 +150,7 @@ class TwitchClient
 
             listener.onChannelSubscriptionGift(user, async (event) => {
                 const isOffensive = await this.checkIsOffensiveUsername(event.gifterName);
-                if(!isOffensive) {
+                if (!isOffensive) {
                     const alert = {
                         imageUrl: '/static/images/alerts/subscriber.gif',
                         soundUrl: '/static/audio/kitty2.mp3',
@@ -172,7 +164,7 @@ class TwitchClient
 
             listener.onChannelCheer(user, async (event) => {
                 const isOffensive = await this.checkIsOffensiveUsername(event.userName);
-                if(!isOffensive) {
+                if (!isOffensive) {
                     const alert = {
                         imageUrl: '/static/images/alerts/cheer.gif',
                         soundUrl: '/static/audio/cats.mp3',
@@ -182,15 +174,15 @@ class TwitchClient
                     }
                     server.getIO().emit('showAlert', alert);
 
-                    if(event.message) {
+                    if (event.message) {
                         await openAiClient.botSay(event.message);
                     }
                 }
             });
 
-            listener.onChannelRaidTo (user, async (event) => {
+            listener.onChannelRaidTo(user, async (event) => {
                 const isOffensive = await this.checkIsOffensiveUsername(event.raidingBroadcasterName);
-                if(!isOffensive) {
+                if (!isOffensive) {
                     const alert = {
                         imageUrl: '/static/images/alerts/raid.gif',
                         soundUrl: '/static/audio/skibidi.mp3',
@@ -206,35 +198,85 @@ class TwitchClient
                     await openAiClient.botSay('Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
                 }
             });
-        } catch(err) {
+        } catch (err) {
             console.error(err);
         }
     };
 
+    reconnectChatClient = () => {
+        let interval;
+        const tryConnect = () => {
+            try {
+                this.chatClient.reconnect();
+                clearInterval(interval);
+            } catch (err) {
+                if (err.message === 'Connection already present') {
+                    clearInterval(interval);
+                }
+                console.log(err);
+            }
+        };
+        interval = setInterval(tryConnect, 5000);
+    };
+
+    reconnectPubSubClient = () => {
+        let interval;
+        const tryConnect = async () => {
+            try {
+                const user = await this.apiClient.users.getUserByName('hannapanda84');
+                this.pubSubClient.onRedemption(user.id, async (message) => {
+                    const isOffensive = await this.checkIsOffensiveUsername(message.userName);
+                    if (!isOffensive) {
+                        emitter.emit('chat.redeem', message);
+                    }
+                });
+                clearInterval(interval);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        interval = setInterval(tryConnect, 5000);
+    };
+
+    async safeApiCall(apiCall, retries = 3) {
+        try {
+            return await apiCall();
+        } catch (err) {
+            if (retries > 0) {
+                console.warn(`API call failed. Retrying... (${retries} attempts left)`);
+                return this.safeApiCall(apiCall, retries - 1);
+            } else {
+                console.error('API call failed after multiple attempts:', err);
+                throw err;
+            }
+        }
+    }
+
     startCommercial = async (duration: CommercialLength = 30) => {
         try {
-            await this.apiClient.channels.startChannelCommercial(await this.apiClient.users.getUserByName('hannapanda84'), duration);
-        } catch(err) {
+            const user = await this.apiClient.users.getUserByName('hannapanda84');
+            await this.safeApiCall(() => this.apiClient.channels.startChannelCommercial(user, duration));
+        } catch (err) {
             console.warn(err);
         }
     }
 
     checkIsOffensiveUsername = async (username: string) => {
         const score = await openAiClient.getUsernameOffenseScore(username);
-        if(score >= 0.75) {
+        if (score >= 0.75) {
             console.log(`Banning user ${username} due to offensive username (Score ${score})`);
             try {
                 const broadcaster = await this.apiClient.users.getUserByName('hannapanda84');
                 const user = await this.apiClient.users.getUserByName(username);
-                await this.apiClient.moderation.banUser(
+                await this.safeApiCall(() => this.apiClient.moderation.banUser(
                     broadcaster,
                     {
                         reason: "Offensive username",
                         user: user
                     }
-                );
+                ));
                 return Promise.resolve(true);
-            } catch(err) {
+            } catch (err) {
                 console.log(err);
             }
         } else {

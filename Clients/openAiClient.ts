@@ -16,7 +16,8 @@ dotenv.config({ path: __dirname+'/../.env' });
 class OpenAiClient
 {
     private maxLinesInDatabase = 100;
-    private maxTokens = 300;
+    //private maxTokens = 300;
+    private maxTokens = 3000;
     private maxAgeInMinutes = 60;
 
     private openAi;
@@ -44,7 +45,7 @@ class OpenAiClient
     ];
 
     private model = 'gpt-4o';
-    //private model = 'gpt-4-turbo-preview';
+    //private model = 'gpt-4o-mini';
 
     constructor()
     {

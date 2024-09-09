@@ -34,40 +34,45 @@
     <!-- Tabulator Libraries -->
     <link href="https://unpkg.com/tabulator-tables@5.2.0/dist/css/tabulator_bootstrap5.min.css" rel="stylesheet">
     <style>
-        .tabulator-row {
+        .tabulator-row,
+        .tabulator-row.tabulator-row-even {
             background-color: #32383e;
             color: #fff;
         }
-        .tabulator-row:hover {
+        .tabulator-row:hover,
+        .tabulator-row.tabulator-row-even:hover,
+        .tabulator-row.tabulator-selectable:hover {
             background-color: #23272b;
         }
-        .tabulator-cell:hover .message-hover {
-            display: block;
+
+        .tabulator-cell:hover {
+            height: auto!important;
         }
-        .message-hover {
-            display: none;
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 5px;
-            border-radius: 3px;
-            z-index: 10;
-            max-width: 300px;
-            word-wrap: break-word;
+
+        .tabulator-row:hover .message-hover {
+            width: 585px;
+            overflow: auto;
+            white-space: normal;
+            z-index: 999;
+            background: #23272b;
+            padding: 20px;
+            border-radius: 5px;
         }
+
     </style>
     <script src="https://unpkg.com/tabulator-tables@5.2.0/dist/js/tabulator.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var table = new Tabulator("#chat-logs-table", {
+                tooltips: true,
                 layout: "fitColumns",
                 pagination: "ajax",
-                paginationSize: 10,
+                paginationSize: 500,
                 ajaxURL: "/api/chatlogs",
                 columns: [
-                    {title: "Message", field: "message", widthGrow: 3, formatter: function(cell) {
+                    {title: "Message", field: "message", widthGrow: 3, height: 'auto', formatter: function(cell) {
                             var value = cell.getValue();
-                            return `<span title="${value}" class="message-hover">${value}</span>` + value;
+                            return `<div class="message-hover">${value}</div>`;
                         }},
                     {title: "Source", field: "source", width: 100},
                     {title: "User Name", field: "userName", widthGrow: 1},
@@ -79,19 +84,34 @@
             });
 
             function applyFilters() {
-                var message = document.getElementById('filter-message').value;
-                var username = document.getElementById('filter-username').value;
-                var source = document.getElementById('filter-source').value;
-                var dateFrom = document.getElementById('filter-date-from').value;
-                var dateTo = document.getElementById('filter-date-to').value;
+                var filters = [];
 
-                table.setFilter([
-                    {field: "message", type: "like", value: message},
-                    {field: "userName", type: "like", value: username},
-                    {field: "source", type: "=", value: source},
-                    {field: "dateTime", type: ">", value: dateFrom},
-                    {field: "dateTime", type: "<", value: dateTo}
-                ]);
+                var message = document.getElementById('filter-message').value;
+                if (message) {
+                    filters.push({ field: "message", type: "like", value: message });
+                }
+
+                var username = document.getElementById('filter-username').value;
+                if (username) {
+                    filters.push({ field: "userName", type: "like", value: username });
+                }
+
+                var source = document.getElementById('filter-source').value;
+                if (source) {
+                    filters.push({ field: "source", type: "=", value: source });
+                }
+
+                var dateFrom = document.getElementById('filter-date-from').value;
+                if (dateFrom) {
+                    filters.push({ field: "dateTime", type: ">", value: dateFrom + "T00:00:00.000Z" });
+                }
+
+                var dateTo = document.getElementById('filter-date-to').value;
+                if (dateTo) {
+                    filters.push({ field: "dateTime", type: "<", value: dateTo + "T23:59:59.999Z" });
+                }
+
+                table.setFilter(filters);
             }
 
             document.getElementById('filter-message').addEventListener('keyup', applyFilters);

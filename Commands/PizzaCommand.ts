@@ -35,7 +35,7 @@ class PizzaCommand extends AbstractCommand
              Nutze ausschließlich folgende Emotes:  
              ${emoteService.getBotTwitchEmotes()}
              Schreibe dazu eine witzige Nachricht.`,
-            `@${context.displayName} spendiert eine Pizza für ${parts.slice(1).join(' ')}. Bitte wähle eine zufällige Pizza mit zufälligem Belag aus und übergebe sie.`,
+            `@${context.displayName} spendiert eine Pizza für ${parts.slice(1).join(' ')}. Bitte wähle eine zufällige Pizza mit zufälligem Belag aus und übergebe sie. Und keine Ananas >:(`,
             null,
             '',
             false
