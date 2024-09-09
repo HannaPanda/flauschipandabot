@@ -65,6 +65,7 @@ class CharacterAnimator {
         this.currentEyeStatus = eye ?? this.currentEyeStatus;
 
         const targetImage = `/static/images/pngtuber/${this.currentEmotion}_${this.currentMouthStatus}_${this.currentEyeStatus}.png`;
+        console.log(targetImage);
         const characterImg = document.getElementById('character') as HTMLImageElement;
         if(characterImg.src != targetImage) {
             characterImg.src = targetImage;
@@ -105,12 +106,16 @@ class CharacterAnimator {
             let sum = this.dataArray.reduce((a, b) => a + b, 0);
             let average = sum / this.dataArray.length;
 
-            if (average > this.threshold) {
-                this.setCharacterStatus(undefined, 'open', undefined);
-                this.startAnimation();
-            } else {
-                this.setCharacterStatus(undefined, 'closed', undefined);
-                this.stopAnimation();
+            const newMouthStatus = average > this.threshold ? 'open' : 'closed';
+
+            console.log(average, this.threshold, this.currentMouthStatus, newMouthStatus);
+            if (this.currentMouthStatus !== newMouthStatus) {
+                this.setCharacterStatus(undefined, newMouthStatus, undefined);
+                if (newMouthStatus === 'open') {
+                    this.startAnimation();
+                } else {
+                    this.stopAnimation();
+                }
             }
         };
         analyzeAudio();
@@ -125,6 +130,9 @@ class CharacterAnimator {
                 audio.setAttribute("preload", "auto");
                 audio.volume = volume;
                 audio.autoplay = true;
+
+                // CORS-Attribut setzen
+                audio.crossOrigin = "anonymous";
 
                 if (!this.audioContext) return;
 
@@ -141,6 +149,7 @@ class CharacterAnimator {
                 });
 
                 document.getElementById("root")?.appendChild(audio);
+                audio.play();
             })
             .catch(error => console.error('Error:', error));
     }

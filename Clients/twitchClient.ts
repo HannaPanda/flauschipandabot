@@ -263,7 +263,8 @@ class TwitchClient {
 
     checkIsOffensiveUsername = async (username: string) => {
         const score = await openAiClient.getUsernameOffenseScore(username);
-        if (score >= 0.75) {
+        // deactivated due to high false positives
+        /*if (score >= 0.75) {
             console.log(`Banning user ${username} due to offensive username (Score ${score})`);
             try {
                 const broadcaster = await this.apiClient.users.getUserByName('hannapanda84');
@@ -281,7 +282,7 @@ class TwitchClient {
             }
         } else {
             console.log(`Checked user ${username} (Score ${score})`);
-        }
+        }*/
 
         return Promise.resolve(false);
     }
