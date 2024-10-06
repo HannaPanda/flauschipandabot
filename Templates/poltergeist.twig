@@ -1,0 +1,19 @@
+{% extends "layout-blank.twig" %}
+
+{% set showMenu = false %}
+
+{% block title %}Poltergeist{% endblock %}
+{% block bodyClass %}transparent{% endblock %}
+
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/static/css/poltergeist.css">
+{% endblock %}
+
+{% block content %}
+    <div id="media-container" class="media-container"></div>
+    <div id="audio-prompt" class="audio-prompt">
+        Klicken Sie, um Audio zu aktivieren
+    </div>
+    <script type="text/javascript" src="/static/js/poltergeist.bundle.js"></script>
+{% endblock %}

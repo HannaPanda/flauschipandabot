@@ -12,6 +12,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
   },
-  "include": ["*.ts"],              // Dateien, die kompiliert werden sollen
+  "include": ["*.ts", "photoswipe-augmentation.d.ts"],              // Dateien, die kompiliert werden sollen
   "exclude": ["node_modules"]       // Ausgeschlossene Dateien/Verzeichnisse
 }

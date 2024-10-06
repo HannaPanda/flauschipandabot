@@ -36,7 +36,9 @@ class AntwortEvent
                 /@950121475619323924/i.test(message) ||
                 (origin === 'tmi' &&
                     (currentScene.currentProgramSceneName === 'PNGTuber' || currentScene.currentProgramSceneName === 'Coworking') &&
-                    !/@/.test(message)))) {
+                    !/@/.test(message)) ||
+                    'Ja' === await openAiClient.shouldRespondToChat([{text: message, username: context.userName}])
+            )) {
 
             message = message.replace('950122590918291469', '@FlauschiPandaBot');
 
@@ -46,7 +48,7 @@ class AntwortEvent
                 return Promise.resolve(false);
             }
 
-            let response = await openAiClient.getChatGPTResponse(`Frage von "@${username}": ${message}`, username);
+            let response = await openAiClient.getChatGPTResponse(`Nachricht von "@${username}": ${message}`, username);
 
             if(origin === 'discord') {
                 response = emoteService.replaceTwitchEmotesWithDiscord(response);

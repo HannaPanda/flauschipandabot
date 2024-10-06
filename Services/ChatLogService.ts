@@ -12,11 +12,8 @@ class ChatLogService {
         });
 
         try {
-            const result = await chatLog.save();
-            console.log("Chat log saved with Mongoose:", result._id);
-            return result;
+            return await chatLog.save();
         } catch (err) {
-            console.error("Error saving chat log with Mongoose:", err);
             throw err;
         }
     }

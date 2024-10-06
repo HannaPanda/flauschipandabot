@@ -8,6 +8,7 @@ import { chatLogService } from "./Services/ChatLogService";
 import authRoutes from './Routes/authRoutes';
 import userRoutes from './Routes/userRoutes';
 import generalRoutes from './Routes/generalRoutes';
+import poltergeistRoutes from './Routes/poltergeistRoutes';
 
 dotenv.config({ path: __dirname + '/.env' });
 
@@ -49,6 +50,7 @@ class Server {
         app.use(authRoutes);
         app.use(userRoutes);
         app.use(generalRoutes);
+        app.use(poltergeistRoutes);
 
         this.app = app;
 
