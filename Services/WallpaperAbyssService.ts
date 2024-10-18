@@ -15,7 +15,10 @@ class WallpaperAbyssService {
                 const url = `https://alphacoders.com/${category}-wallpapers?page=${randomPage}&quickload=1`;
 
                 // Use Puppeteer to fetch the page content
-                const browser = await puppeteer.launch({ headless: 'shell' });
+                const browser = await puppeteer.launch({
+                    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                    headless: 'shell'
+                });
                 const page = await browser.newPage();
                 await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36');
                 await page.goto(url, { waitUntil: 'domcontentloaded' });
