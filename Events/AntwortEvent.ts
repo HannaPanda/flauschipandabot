@@ -31,6 +31,8 @@ class AntwortEvent
             currentScene = {currentProgramSceneName: ''}
         }
 
+        const username = (origin === 'tmi') ? context.displayName : context.userName;
+
         if (!message.startsWith("!") &&
             (/@flauschipandabot/i.test(message) ||
                 /@950121475619323924/i.test(message) ||
@@ -41,8 +43,6 @@ class AntwortEvent
             )) {
 
             message = message.replace('950122590918291469', '@FlauschiPandaBot');
-
-            let username = (origin === 'tmi') ? context.displayName : context.userName;
 
             if(username && username.toLowerCase() === 'flauschipandabot') {
                 return Promise.resolve(false);
@@ -61,6 +61,13 @@ class AntwortEvent
             }
 
             return Promise.resolve(true);
+        } else if(!message.startsWith("!")) {
+            try {
+                const assistant = await openAiClient.getOrCreateAssistant('FlauschiPandaBot', 'Ein niedlicher, rotz-frecher Panda mit super vielen süßen Emotes.');
+                const thread = await openAiClient.getOrCreateThread(assistant, 'main-chat');
+
+                openAiClient.createThreadMessage(`Nachricht von "@${username}": ${message}`, thread);
+            } catch(err) {}
         }
 
         return Promise.resolve(false);

@@ -169,10 +169,7 @@ class OpenAiClient
                 .replace('###INFO###', infoText)
                 .replace("###DATETIME###", new Date().toString());
 
-            await this.openAi.beta.threads.messages.create(thread.openaiThreadId, {
-                role: 'user',
-                content: input,
-            });
+            await this.createThreadMessage(input, thread);
 
             let run = await this.openAi.beta.threads.runs.createAndPoll(
                 thread.openaiThreadId,
@@ -204,6 +201,13 @@ class OpenAiClient
             console.error(err);
             return 'Tut mir leid, bin gerade mit Bambus holen beschäftigt hannap5Lurk';
         }
+    }
+
+    public createThreadMessage = async (input, thread) => {
+        await this.openAi.beta.threads.messages.create(thread.openaiThreadId, {
+            role: 'user',
+            content: input,
+        });
     }
 
     private isMessageRecent = (message) => {
