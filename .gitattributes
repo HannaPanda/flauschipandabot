@@ -1,0 +1,25 @@
+# Automatically handle text files and normalize line endings to LF (Unix-style)
+* text=auto
+
+# Mark specific file types as text
+*.js text
+*.ts text
+*.json text
+*.html text
+*.css text
+*.md text
+*.yml text
+*.yaml text
+*.xml text
+
+# Mark binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
+*.pdf binary
+
+# Special handling for node.js-specific files
+package-lock.json text

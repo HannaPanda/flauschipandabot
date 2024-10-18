@@ -1,0 +1,38 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# Top-level configuration applies to all files
+root = true
+
+[*]
+# Indentation (4 spaces)
+indent_style = space
+indent_size = 4
+
+# Unix-style line endings (LF)
+end_of_line = lf
+
+# UTF-8 encoding
+charset = utf-8
+
+# Trim trailing whitespace
+trim_trailing_whitespace = true
+
+# Insert a newline at the end of every file
+insert_final_newline = true
+
+[*.md]
+# Markdown files use 2 spaces for indentation
+indent_size = 2
+trim_trailing_whitespace = false  # Allow trailing whitespace in markdown
+
+[*.json]
+# JSON files should have 2 spaces for indentation
+indent_size = 2
+
+[{*.yml,*.yaml}]
+# YAML files should have 2 spaces for indentation
+indent_size = 2
+
+[{*.ts,*.js,*.jsx,*.tsx}]
+# TypeScript/JavaScript files should use 4 spaces
+indent_size = 4
