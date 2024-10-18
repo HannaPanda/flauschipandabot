@@ -23,8 +23,6 @@ class Server {
     private app;
 
     constructor() {
-        const self = this;
-
         const express = require('express');
         const app = express();
         const server = require("http").createServer(app);
@@ -54,24 +52,11 @@ class Server {
 
         this.app = app;
 
-        const srv = require('greenlock-express')
-            .init({
-                packageRoot: __dirname,
-
-                // where to look for configuration
-                configDir: './greenlock.d',
-
-                // contact for security and critical bug notices
-                maintainerEmail: "johanna@hannapanda.de",
-
-                // whether or not to run at cloudscale
-                cluster: false,
-
-                app: app
-            })
-            // Serves on 80 and 443
-            // Get's SSL certificates magically!
-            .ready(this.httpsWorker);
+        // Starte den HTTP-Server auf einem konfigurierbaren Port
+        const PORT = process.env.PORT || 3000;  // Port kann über .env konfiguriert werden, Standard ist 3000
+        server.listen(PORT, () => {
+            console.log(`Server listening on port ${PORT}`);
+        });
 
         setTimeout(() => {
             this.io.emit('reload');
@@ -100,21 +85,6 @@ class Server {
 
         } catch (err) { };
     };
-
-    httpsWorker = (glx) => {
-        // we need the raw https server
-        const server = glx.httpsServer();
-
-        this.io = require("socket.io")(server);
-
-        // Then you do your socket.io stuff
-        this.io.on("connection", function (socket) {
-
-        });
-
-        // servers a node app that proxies requests to a localhost
-        glx.serveApp(this.app);
-    }
 
     private handleHornyLevelChanged = async (newLevel) => {
         if (newLevel === 69) {
