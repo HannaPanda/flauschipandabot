@@ -53,12 +53,13 @@ class BildCommand extends AbstractCommand
 
         try {
             const { data, status } = await axios.post<any>(
-                'http://127.0.0.1:7860/sdapi/v1/txt2img',
+                'http://ddns.hannapanda.de:7860/sdapi/v1/txt2img',
                 payload,
                 {
                     headers: {
                         'Content-Type': 'application/json',
                         Accept: 'application/json',
+                        Authorization: 'Basic aGFubmFwYW5kYTp0ZXN0MTIzJA==',
                     },
                 },
             );

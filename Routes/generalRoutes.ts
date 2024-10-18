@@ -1,12 +1,50 @@
 import { Router } from 'express';
 import mongoDBClient from "../Clients/mongoDBClient";
 import {MiscModel} from "../Models/Misc";
+import { collectDefaultMetrics, register, Counter, Gauge } from 'prom-client';
 
 const { TwingEnvironment, TwingLoaderFilesystem } = require('twing');
 let loader = new TwingLoaderFilesystem('./Templates');
 let twing = new TwingEnvironment(loader);
 
+collectDefaultMetrics();
+
 const router = Router();
+
+// Endpoint to serve metrics
+router.get('/metrics', (req, res) => {
+    res.setHeader('Content-Type', register.contentType);
+    register.metrics().then((metrics) => {
+        res.end(metrics);
+    }).catch((err) => {
+        res.status(500).end(err.message);
+    });
+});
+
+// Customized HTTP Metrics
+const httpMetricsLabelNames = ['method', 'path'];
+const totalHttpRequestCount = new Counter({
+    name: 'nodejs_http_total_count',
+    help: 'Total number of requests',
+    labelNames: httpMetricsLabelNames
+});
+
+const totalHttpRequestDuration = new Gauge({
+    name: 'nodejs_http_total_duration',
+    help: 'The last duration or response time of last request',
+    labelNames: httpMetricsLabelNames
+});
+
+// Middleware to capture HTTP metrics for each request
+router.use((req, res, next) => {
+    const start = new Date().getTime();
+    res.on('finish', () => {
+        const duration = new Date().getTime() - start;
+        totalHttpRequestCount.labels(req.method, req.path).inc();
+        totalHttpRequestDuration.labels(req.method, req.path).set(duration);
+    });
+    next();
+});
 
 router.get('/', function (req, res) {
     twing.render('index.twig', { activePage: 'home' }).then((output) => {

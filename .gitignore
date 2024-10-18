@@ -17,6 +17,7 @@ tmp
 
 # Build
 public/css/main.css
+public/js/*.bundle.js
 
 # Coverage reports
 coverage
@@ -50,3 +51,4 @@ yarn.lock
 *.wav
 *.webm
 *.ogg
+public/backgrounds/
