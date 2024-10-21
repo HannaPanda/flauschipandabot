@@ -1,18 +1,31 @@
 import * as dotenv from "dotenv";
 import { JSDOM } from "jsdom";
 import puppeteer from "puppeteer";
+import NodeCache from "node-cache";
 dotenv.config({ path: __dirname + '/../.env' });
 
 class NotionPageService {
+    private cache: NodeCache;
+    private cacheKey: string = 'notion_content';
+
+    constructor() {
+        const cacheTTL = parseInt(process.env.CACHE_TTL || '86400', 10);
+        this.cache = new NodeCache({ stdTTL: cacheTTL });
+    }
+
     async fetchNotionContent(): Promise<string[]> {
+        const cachedContent = this.cache.get<string[]>(this.cacheKey);
+        if (cachedContent) {
+            return cachedContent;
+        }
+
         const notionUrl = process.env.DREAMTALKING_URL;
-        const texts = [];
+        const texts: string[] = [];
 
         try {
-            // Launch Puppeteer browser to access the Notion page
             const browser = await puppeteer.launch({
                 args: ['--no-sandbox', '--disable-setuid-sandbox'],
-                headless: 'shell'
+                headless: true
             });
             const page = await browser.newPage();
             await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36');
@@ -23,15 +36,19 @@ class NotionPageService {
             const dom = new JSDOM(content);
             const document = dom.window.document;
 
-            // Select all elements matching the div structure provided
             const elements = document.querySelectorAll('div[data-block-id][class*="notion-bulleted_list-block"]');
             elements.forEach(element => {
-                const textDiv = element.querySelector('[data-content-editable-leaf="true"]');
-                if (textDiv) {
-                    texts.push(textDiv.textContent.trim());
+                const extractedText = element.textContent?.trim();
+                if (extractedText) {
+                    texts.push(extractedText);
                 }
             });
 
+            const filteredTexts = texts.filter(text => text.length > 0);
+
+            this.cache.set(this.cacheKey, filteredTexts);
+
+            return filteredTexts;
         } catch (error) {
             console.error('Error fetching Notion page content:', error);
         }

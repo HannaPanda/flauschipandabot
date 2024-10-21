@@ -42,6 +42,8 @@ class TraumRedenCommand extends AbstractCommand {
 
             if(origin === 'discord') {
                 response = emoteService.replaceTwitchEmotesWithDiscord(response);
+            } else {
+                await openAiClient.botSay(response);
             }
 
             sayService.say(origin, context.displayName, '', channel, response);
