@@ -1,17 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es6",                // Zielsprachversion von ECMAScript
-    "module": "commonjs",           // Modulsystem
-    "outDir": "./dist",             // Ausgabeverzeichnis für kompilierten Code
-    "rootDir": "./",                // Wurzelverzeichnis Ihrer Quell-Dateien
-    "strict": false,                 // Aktiviert eine Reihe von strengen Typüberprüfungen
+    "target": "es2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["*.ts", "photoswipe-augmentation.d.ts"],              // Dateien, die kompiliert werden sollen
-  "exclude": ["node_modules"]       // Ausgeschlossene Dateien/Verzeichnisse
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
 }
