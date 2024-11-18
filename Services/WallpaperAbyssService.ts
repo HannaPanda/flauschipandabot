@@ -4,8 +4,9 @@ import puppeteer from "puppeteer";
 dotenv.config({ path: __dirname + '/../.env' });
 
 class WallpaperAbyssService {
-    async getRandomWallpaperUrl(category: string = 'cat'): Promise<string> {
+    async getRandomWallpaperData(category: string = 'cat'): Promise<{ url: string, attribution: string }> {
         let wallpaperUrl = '';
+        let attribution = '';
         let isValidUrl = false;
 
         while (!isValidUrl) {
@@ -23,7 +24,6 @@ class WallpaperAbyssService {
                 await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36');
                 await page.goto(url, { waitUntil: 'domcontentloaded' });
                 const content = await page.content();
-                await browser.close();
 
                 const dom = new JSDOM(content);
 
@@ -45,16 +45,42 @@ class WallpaperAbyssService {
                         const firstThreeDigits = id.substring(0, 3);
 
                         wallpaperUrl = `https://${subdomain}.alphacoders.com/${firstThreeDigits}/${id}.${extension}`;
-                        isValidUrl = true;
+
+                        // Extract the wallpaper attribution link
+                        const itemDiv = button.closest('div.item');
+                        const attributionLink = itemDiv?.querySelector('div.center > a');
+
+                        if (attributionLink) {
+                            const wallpaperPageUrl = attributionLink.getAttribute('href');
+                            if (wallpaperPageUrl) {
+                                // Visit the wallpaper detail page to extract attribution info
+                                await page.goto(wallpaperPageUrl, { waitUntil: 'domcontentloaded' });
+                                const detailContent = await page.content();
+                                const detailDom = new JSDOM(detailContent);
+
+                                const artistContainer = detailDom.window.document.querySelector('div.content-artist-container');
+                                const submitterContainer = detailDom.window.document.querySelector('div.content-submitter-container');
+
+                                let artistText = artistContainer?.textContent?.trim().replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ') || '';
+                                if (artistText === 'Add Artist') {
+                                    artistText = '';
+                                }
+                                let submitterText = submitterContainer?.textContent?.trim().replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ') || '';
+
+                                attribution = `${artistText}${artistText && submitterText ? ' | ' : ''}${submitterText}`;
+                                isValidUrl = true;
+                            }
+                        }
                     }
                 }
+                await browser.close();
             } catch (error) {
                 // If a request fails (e.g., 404 or redirect issue), continue the loop to try again
                 console.error('Error fetching page or following redirect, trying another page...', error);
             }
         }
 
-        return wallpaperUrl;
+        return { url: wallpaperUrl, attribution };
     }
 }
 
