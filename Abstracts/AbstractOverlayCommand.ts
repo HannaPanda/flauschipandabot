@@ -5,6 +5,8 @@ import botService from "../Services/BotService";
 import sayService from "../Services/SayService";
 import server from "../server";
 import openAiClient from "../Clients/openAiClient";
+import { Context } from "../Interfaces/Context";
+import { Message } from "discord.js";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractOverlayCommand
@@ -28,7 +30,7 @@ abstract class AbstractOverlayCommand
         emitter.on('chat.message', this.handleEvent);
     }
 
-    protected handleEvent = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    protected handleEvent = async (message: string, parts: Array<string>, context: Context, origin = 'tmi', channel = null, messageObject: Message|null = null) => {
         if(!this.isActive) {
             return Promise.resolve(false);
         }

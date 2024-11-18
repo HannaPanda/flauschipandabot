@@ -1,14 +1,13 @@
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
-import emoteService from "../Services/EmoteService";
+import { Message } from "discord.js";
 import Fighter from "../Models/Fighter";
 import moment from "moment";
 import sayService from "../Services/SayService";
-import mongoDBClient from "../Clients/mongoDBClient";
 import botService from "../Services/BotService";
-import server from "../server";
 import openAiClient from "../Clients/openAiClient";
-import {MiscModel} from "../Models/Misc";
+import { MiscModel } from "../Models/Misc";
+import { Context } from "../Interfaces/Context"
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractCommand
@@ -31,7 +30,7 @@ abstract class AbstractCommand
         emitter.on('chat.message', this.handleEvent);
     }
 
-    protected handleEvent = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    protected handleEvent = async (message: string, parts: Array<string>, context: Context, origin: string = 'tmi', channel: string|null = null, messageObject: Message|null = null) => {
         if(!this.isActive) {
             return Promise.resolve(false);
         }
@@ -127,7 +126,7 @@ abstract class AbstractCommand
         }
 
         if (!botService.botActive) {
-            openAiClient.botSay('Ich habe keine Lust. Ich schmolle jetzt.');
+            openAiClient.botSay('Ich habe keine Lust. Ich schmolle jetzt.').catch(err => console.log(err));
             return Promise.resolve(false);
         }
 
@@ -152,7 +151,7 @@ abstract class AbstractCommand
         }
     }
 
-    protected getTarget = (origin, parts, messageObject) => {
+    protected getTarget = (origin: string, parts: Array<string>, messageObject: Message|null) => {
         let target = '';
         if(origin === 'tmi') {
             target = parts[1] ? parts[1].split('@').join('').toLowerCase() : '';
@@ -165,7 +164,7 @@ abstract class AbstractCommand
         return target;
     }
 
-    protected randomInt = (min, max) => {
+    protected randomInt = (min: number, max: number) => {
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
 }
