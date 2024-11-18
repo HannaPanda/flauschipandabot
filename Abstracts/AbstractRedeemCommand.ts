@@ -1,11 +1,6 @@
 import emitter from "../emitter";
 import * as dotenv from "dotenv";
-import emoteService from "../Services/EmoteService";
-import Fighter from "../Models/Fighter";
-import moment from "moment";
-import sayService from "../Services/SayService";
-import mongoDBClient from "../Clients/mongoDBClient";
-import botService from "../Services/BotService";
+import { PubSubRedemptionMessage } from "@twurple/pubsub";
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractRedeemCommand
@@ -19,7 +14,7 @@ abstract class AbstractRedeemCommand
         emitter.on('chat.redeem', this.internalHandler);
     }
 
-    private internalHandler = (message) => {
+    private internalHandler = (message: PubSubRedemptionMessage) => {
         if(this.isActive && this.handler && message.rewardTitle === this.command) {
             this.handler(message);
         }

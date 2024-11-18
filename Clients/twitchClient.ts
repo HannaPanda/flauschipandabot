@@ -1,4 +1,4 @@
-import { PubSubClient } from '@twurple/pubsub';
+import { PubSubClient, PubSubRedemptionMessage } from '@twurple/pubsub';
 import { RefreshingAuthProvider } from '@twurple/auth';
 import { ApiClient, CommercialLength } from '@twurple/api';
 import * as fs from 'fs';
@@ -88,7 +88,7 @@ class TwitchClient {
             // PubSub
             this.pubSubClient = new PubSubClient({ authProvider });
             const pubSubClient = this.pubSubClient;
-            pubSubClient.onRedemption(user.id, async (message) => {
+            pubSubClient.onRedemption(user.id, async (message: PubSubRedemptionMessage) => {
                 const isOffensive = await this.checkIsOffensiveUsername(message.userName);
 
                 if (!isOffensive) {
@@ -224,7 +224,7 @@ class TwitchClient {
         const tryConnect = async () => {
             try {
                 const user = await this.apiClient.users.getUserByName('hannapanda84');
-                this.pubSubClient.onRedemption(user.id, async (message) => {
+                this.pubSubClient.onRedemption(user.id, async (message: PubSubRedemptionMessage) => {
                     const isOffensive = await this.checkIsOffensiveUsername(message.userName);
                     if (!isOffensive) {
                         emitter.emit('chat.redeem', message);
@@ -262,9 +262,11 @@ class TwitchClient {
     }
 
     checkIsOffensiveUsername = async (username: string) => {
-        const score = await openAiClient.getUsernameOffenseScore(username);
         // deactivated due to high false positives
-        /*if (score >= 0.75) {
+
+        /*const score = await openAiClient.getUsernameOffenseScore(username);
+
+        if (score >= 0.75) {
             console.log(`Banning user ${username} due to offensive username (Score ${score})`);
             try {
                 const broadcaster = await this.apiClient.users.getUserByName('hannapanda84');

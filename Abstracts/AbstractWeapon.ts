@@ -17,7 +17,7 @@ class AbstractWeapon
         return this.hits[this.randomInt(0, this.hits.length - 1)];
     }
 
-    protected randomInt = (min, max) => {
+    protected randomInt = (min: number, max: number) => {
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
 }
