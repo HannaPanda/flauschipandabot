@@ -36,7 +36,7 @@ class NotionPageService {
             const dom = new JSDOM(content);
             const document = dom.window.document;
 
-            const elements = document.querySelectorAll('div[data-block-id][class*="notion-bulleted_list-block"]');
+            const elements = document.querySelectorAll('div[data-block-id][class*="notion-numbered_list-block"]');
             elements.forEach(element => {
                 const extractedText = element.textContent?.trim();
                 if (extractedText) {
@@ -62,6 +62,7 @@ class NotionPageService {
             throw new Error('No content found');
         }
         const randomIndex = Math.floor(Math.random() * texts.length);
+        console.log('Traumreden-Text:', texts[randomIndex].replace(process.env.DREAMTALKING_REPLACE_NAME, process.env.DREAMTALKING_REPLACE_WITH));
         return texts[randomIndex].replace(process.env.DREAMTALKING_REPLACE_NAME, process.env.DREAMTALKING_REPLACE_WITH);
     }
 }
