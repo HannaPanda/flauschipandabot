@@ -17,13 +17,14 @@ class Poltergeist {
     private currentElement: HTMLElement;
     private category: string;
     private currentAudioElement: HTMLAudioElement | null = null;
+    private imageInfo: HTMLDivElement | null = null;
 
     private config = {
         audio: {
             minBlockInterval: 5 * 60 * 1000,
             maxBlockInterval: 10 * 60 * 1000,
             weightedExponent: 1.5, // Higher weight for shorter times
-            betweenFilesInterval: 5000, // 5 seconds between audio files
+            betweenFilesInterval: 500, // .5 seconds between audio files
             allowedStartTime: null, // '0800' for 8 AM
             allowedEndTime: null,   // '2330' for 11:30 PM
         },
@@ -59,6 +60,12 @@ class Poltergeist {
 
         transitionService.setContainer(this.container);
         transitionService.setInitialScale(this.initialScale);
+
+        // Create image info
+        this.imageInfo = document.createElement('div');
+        this.imageInfo.classList.add('image-info');
+        this.imageInfo.innerText = 'Bild Attribution: ';
+        this.container.appendChild(this.imageInfo);
 
         this.init();
 
@@ -102,9 +109,7 @@ class Poltergeist {
         const lastKey = keys[keys.length - 1];
 
         // Attempt to parse numbers and booleans
-        const parsedValue = this.parseValue(value);
-
-        current[lastKey] = parsedValue;
+        current[lastKey] = this.parseValue(value);
     }
 
     /**
@@ -172,18 +177,28 @@ class Poltergeist {
      * Fetches a random audio file from the server.
      * @returns {Promise<string>}
      */
-    async fetchAudioFile(): Promise<string> {
-        const response = await axios.get(`/api/poltergeist/audio`);
-        return response.data.url ? response.data.url : '';
+    async fetchAudioFile(): Promise<any> {
+        try {
+            const response = await axios.get(`/api/poltergeist/audio`);
+            return response.data ? response.data : null;
+        } catch (error) {
+            console.error('Error fetching audio file:', error);
+            return null;
+        }
     }
 
     /**
      * Fetches a random background image file from the server.
-     * @returns {Promise<string>}
+     * @returns {Promise<any>}
      */
-    async fetchBackgroundFile(): Promise<string> {
-        const response = await axios.get(`/api/poltergeist/backgrounds?category=${encodeURIComponent(this.category)}`);
-        return response.data.url ? response.data.url : '';
+    async fetchBackgroundFile(): Promise<any> {
+        try {
+            const response = await axios.get(`/api/poltergeist/backgrounds?category=${encodeURIComponent(this.category)}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching background file:', error);
+            return null;
+        }
     }
 
     /**
@@ -198,74 +213,90 @@ class Poltergeist {
      */
     async showNextMedia(): Promise<void> {
         const mediaFile = await this.fetchBackgroundFile();
-        if (!mediaFile) {
-            console.error('No background file available');
+        if (!mediaFile || !mediaFile.url) {
+            console.error('No background file available, retrying in 10 seconds');
+            setTimeout(() => this.showNextMedia(), 10000); // Retry after 10 seconds
             return;
         }
 
-        this.loadMedia(mediaFile);
+        this.loadMedia(mediaFile.url, mediaFile.attribution);
     }
 
     /**
      * Loads a media file (image or video) into the container and applies effects.
-     * @param {string} file - The media file name.
+     * @param {string} url - The media file name.
+     * @param {string} info - The media file attribution information.
      * @returns {Promise<void>}
      */
-    async loadMedia(file: string): Promise<void> {
-        const fileExtension = file.split('.').pop().toLowerCase();
+    async loadMedia(url: string, info: string): Promise<void> {
+        const fileExtension = url.split('.').pop().toLowerCase();
         let mediaElement: HTMLElement;
 
-        if (['mp4', 'webm'].includes(fileExtension)) {
-            // Handle video files
-            const videoElement = document.createElement('video');
-            videoElement.src = file;
-            videoElement.autoplay = true;
-            videoElement.loop = false;
-            videoElement.onended = () => {
-                this.showNextMedia();
-            };
-            videoElement.muted = !this.enableAudio; // Mute video if audio is disabled
-            videoElement.style.width = '100%';
-            videoElement.style.height = '100%';
-            videoElement.style.objectFit = 'cover';
+        try {
+            if (['mp4', 'webm'].includes(fileExtension)) {
+                // Handle video files
+                const videoElement = document.createElement('video');
+                videoElement.src = url;
+                videoElement.autoplay = true;
+                videoElement.loop = false;
+                videoElement.onended = () => {
+                    this.showNextMedia();
+                };
+                videoElement.muted = !this.enableAudio; // Mute video if audio is disabled
+                videoElement.style.width = '100%';
+                videoElement.style.height = '100%';
+                videoElement.style.objectFit = 'cover';
 
-            await new Promise<void>((resolve) => {
-                videoElement.onloadeddata = () => resolve();
+                await new Promise<void>((resolve, reject) => {
+                    videoElement.onloadeddata = () => resolve();
+                    videoElement.onerror = () => {
+                        console.error('Error loading video:', url);
+                        reject(new Error('Video load error'));
+                    };
+                });
+
+                mediaElement = document.createElement('div');
+                mediaElement.classList.add('media-element');
+                mediaElement.appendChild(videoElement);
+            } else {
+                // Handle image files
+                await new Promise<void>((resolve, reject) => {
+                    const img = new Image();
+                    img.src = url;
+                    img.onload = () => resolve();
+                    img.onerror = () => {
+                        console.error('Error loading image:', url);
+                        reject(new Error('Image load error'));
+                    };
+                });
+
+                mediaElement = document.createElement('div');
+                mediaElement.classList.add('media-element');
+                mediaElement.style.backgroundImage = `url('${url}')`;
+                mediaElement.style.backgroundSize = 'cover';
+                mediaElement.style.backgroundPosition = 'center center';
+            }
+
+            // Reset GSAP transformations
+            gsap.killTweensOf(mediaElement);
+            gsap.set(mediaElement, {
+                clearProps: 'transform,filter,opacity,x,y,xPercent,yPercent,rotation,rotationY,scale,height,width',
+            });
+            gsap.set(mediaElement, {
+                scale: this.initialScale,
+                x: 0,
+                y: 0,
+                xPercent: 0,
+                yPercent: 0,
             });
 
-            mediaElement = document.createElement('div');
-            mediaElement.classList.add('media-element');
-            mediaElement.appendChild(videoElement);
-        } else {
-            // Handle image files
-            mediaElement = document.createElement('div');
-            mediaElement.classList.add('media-element');
-            mediaElement.style.backgroundImage = `url('${file}')`;
-            mediaElement.style.backgroundSize = 'cover';
-            mediaElement.style.backgroundPosition = 'center center';
-
-            await new Promise<void>((resolve) => {
-                const img = new Image();
-                img.src = file;
-                img.onload = () => resolve();
-            });
+            this.transitionToNewMedia(mediaElement);
+            this.displayImageInfo(info);
+        } catch (error) {
+            console.error('Error loading media:', error);
+            // Load the next media after a delay
+            setTimeout(() => this.showNextMedia(), 5000);
         }
-
-        // Reset GSAP transformations
-        gsap.killTweensOf(mediaElement);
-        gsap.set(mediaElement, {
-            clearProps: 'transform,filter,opacity,x,y,xPercent,yPercent,rotation,rotationY,scale,height,width',
-        });
-        gsap.set(mediaElement, {
-            scale: this.initialScale,
-            x: 0,
-            y: 0,
-            xPercent: 0,
-            yPercent: 0,
-        });
-
-        this.transitionToNewMedia(mediaElement);
-        this.displayExifData(mediaElement, file);
     }
 
     /**
@@ -548,19 +579,25 @@ class Poltergeist {
     }
 
     /**
-     * Displays EXIF data for the media file.
-     * @param {HTMLElement} element - The media element to append EXIF data to.
-     * @param {string} file - The name of the media file.
+     * Displays image info.
+     * @param {string} data - The data to display
      */
-    displayExifData(element: HTMLElement, file: string): void {
-        const exifInfo = document.createElement('div');
-        exifInfo.classList.add('exif-info');
-        exifInfo.innerText = `Dateiname: ${file}`;
-        this.container.appendChild(exifInfo);
+    displayImageInfo(data: string): void {
+        this.imageInfo.style.display = 'block';
+        this.imageInfo.innerText = `Image ${data}`;
+    }
 
-        setTimeout(() => {
-            exifInfo.remove();
-        }, 5000);
+    /**
+     * Displays audio info.
+     * @param {string} data - The data to display
+     */
+    displayAudioInfo(data: string): HTMLDivElement {
+        const audioInfo = document.createElement('div');
+        audioInfo.classList.add('audio-info');
+        audioInfo.innerText = `Audio: ${data}`;
+        this.container.appendChild(audioInfo);
+
+        return audioInfo;
     }
 
     /**
@@ -621,9 +658,9 @@ class Poltergeist {
         }
 
         if (!this.isAudioAllowedAtCurrentTime()) {
-            // Audio playback is not allowed at this time
-            console.log('Audio playback is currently restricted.');
-            setTimeout(() => this.playAudioBlock(), 60000); // Check again in 1 minute
+            // Audiowiedergabe ist derzeit nicht erlaubt
+            console.log('Audiowiedergabe ist derzeit eingeschränkt.');
+            setTimeout(() => this.playAudioBlock(), 60000);
             return;
         }
 
@@ -631,33 +668,32 @@ class Poltergeist {
         let filesToPlayPromises = [];
 
         for (let i = 0; i < numFiles; i++) {
-            // Fetch audio file URLs as promises
+            // Audiodatei-URLs als Promises abrufen
             filesToPlayPromises.push(this.fetchAudioFile());
         }
 
-        let filesToPlay = [];
         try {
-            // Resolve all promises in parallel
-            filesToPlay = await Promise.all(filesToPlayPromises);
+            // Alle Promises parallel auflösen
+            const filesToPlay = await Promise.all(filesToPlayPromises);
 
-            // Filter out any empty strings in case fetchAudioFile returned invalid URLs
-            const validFiles = filesToPlay.filter(file => file !== '');
+            // Ungültige Dateien herausfiltern
+            const validFiles = filesToPlay.filter(file => file && file.url);
 
-            // Continue with valid files
             if (validFiles.length > 0) {
-                // Play or process the valid audio files here
-                console.log('Files to play:', validFiles);
+                // Gültige Audiodateien abspielen
+                for (const file of validFiles) {
+                    await this.playAudioFile(file);
+                    await this.delay(this.config.audio.betweenFilesInterval);
+                }
             } else {
-                console.log('No valid audio files to play');
+                console.log('Keine gültigen Audiodateien zum Abspielen verfügbar, erneuter Versuch in 10 Sekunden');
+                setTimeout(() => this.playAudioBlock(), 10000);
+                return;
             }
-
         } catch (error) {
-            console.error('Error fetching audio files:', error);
-        }
-
-        for (const file of filesToPlay) {
-            await this.playAudioFile(file);
-            await this.delay(this.config.audio.betweenFilesInterval);
+            console.error('Fehler beim Abrufen der Audiodateien:', error);
+            setTimeout(() => this.playAudioBlock(), 10000);
+            return;
         }
 
         const blockInterval = this.getRandomBlockInterval();
@@ -669,17 +705,26 @@ class Poltergeist {
      * @param {string} file - The name of the audio file to play.
      * @returns {Promise<void>}
      */
-    playAudioFile(file: string): Promise<void> {
+    playAudioFile(file: any): Promise<void> {
         return new Promise((resolve) => {
-            const audio = new Audio(file);
+            const audio = new Audio(file.url);
+            const audioInfo = this.displayAudioInfo(file.title);
             audio.volume = 0.5;
-            this.currentAudioElement = audio; // Save the current audio element
+            this.currentAudioElement = audio; // Aktuelles Audioelement speichern
             audio.play().catch((error) => {
-                console.error('Audio could not be played:', error);
+                console.error('Audio konnte nicht abgespielt werden:', error);
+                audioInfo.remove();
                 resolve();
             });
             audio.onended = () => {
                 this.currentAudioElement = null;
+                audioInfo.remove();
+                resolve();
+            };
+            audio.onerror = () => {
+                console.error('Fehler während der Audiowiedergabe');
+                this.currentAudioElement = null;
+                audioInfo.remove();
                 resolve();
             };
         });
