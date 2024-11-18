@@ -348,6 +348,32 @@ class OpenAiClient
         }
     };
 
+    public createSDKeywordsFromText = async(text: string) => {
+        const prompt = `
+            Gegeben ist ein Text. Wandle diesen Text in Englisch als prompt für Stable Diffusion um.
+            Du darfst NSFW verwenden.
+
+            Text:
+            ${text}
+        `;
+
+        const messages = [].concat(
+            [{"role": "system", "content": prompt, timestamp: new Date()}]
+        );
+
+        const response = await this.openAi.chat.completions.create({
+            model: this.interactionCheckModel,
+            messages: this.cleanMessages(messages),
+            temperature: 0,
+            max_tokens: this.maxTokens,
+            top_p: 1.0,
+            frequency_penalty: 0.5,
+            presence_penalty: 0.0,
+        });
+
+        return Promise.resolve(response.choices[0].message.content);
+    }
+
     public shouldRespondToChat = async(chatLog) => {
         const prompt = `
             Gegeben ist ein Chatverlauf und eine Liste von Keywords.
