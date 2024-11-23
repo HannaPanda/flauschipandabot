@@ -8,6 +8,7 @@ import emitter from "../emitter";
 import { EventSubWsListener } from "@twurple/eventsub-ws";
 import sayService from "../Services/SayService";
 import server from '../server';
+import { ChatMessageEvent, eventManager } from "../Services/EventManager";
 
 class TwitchClient {
     public pubSubClient: PubSubClient;
@@ -63,6 +64,24 @@ class TwitchClient {
                     return;
                 }
 
+                // v2
+                const event: ChatMessageEvent = {
+                    message: msg.text,
+                    tokens: msg.text.split(' '),
+                    user: {
+                        userName: msg.userInfo.userName,
+                        displayName: msg.userInfo.displayName,
+                        mod: msg.userInfo.isMod,
+                        vip: msg.userInfo.isVip,
+                        owner: msg.userInfo.userName.toLowerCase() === process.env.CHANNEL.toLowerCase(),
+                    },
+                    platform: 'twitch',
+                    channel: msg.channelId,
+                    rawMessage: msg,
+                };
+                eventManager.emitChatMessage(event);
+
+                // v1 for legacy purposes until changed
                 emitter.emit(
                     'chat.message',
                     msg.text,

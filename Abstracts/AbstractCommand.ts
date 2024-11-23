@@ -1,4 +1,4 @@
-import emitter from "../emitter";
+import { eventManager, ChatMessageEvent } from "../Services/EventManager";
 import * as dotenv from "dotenv";
 import { Message } from "discord.js";
 import Fighter from "../Models/Fighter";
@@ -7,7 +7,6 @@ import sayService from "../Services/SayService";
 import botService from "../Services/BotService";
 import openAiClient from "../Clients/openAiClient";
 import { MiscModel } from "../Models/Misc";
-import { Context } from "../Interfaces/Context"
 dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractCommand
@@ -27,46 +26,48 @@ abstract class AbstractCommand
 
     constructor()
     {
-        emitter.on('chat.message', this.handleEvent);
+        eventManager.onChatMessage(this.handleEvent);
     }
 
-    protected handleEvent = async (message: string, parts: Array<string>, context: Context, origin: string = 'tmi', channel: string|null = null, messageObject: Message|null = null) => {
+    protected handleEvent = async (event: ChatMessageEvent) => {
+        const { message, tokens, user, platform, channel, rawMessage } = event;
+
         if(!this.isActive) {
             return Promise.resolve(false);
         }
 
-        parts[0] = parts[0].toLowerCase();
+        tokens[0] = tokens[0].toLowerCase();
 
-        if(parts[0] !== `!${this.command}` && !this.aliases.includes(parts[0])) {
+        if(tokens[0] !== `!${this.command}` && !this.aliases.includes(tokens[0])) {
             return Promise.resolve(false);
         }
 
-        if(this.isVipOnly && !context.mod && !context.owner && !context.vip) {
-            sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für VIPs verfügbar`);
+        if(this.isVipOnly && !user.mod && !user.owner && !user.vip) {
+            sayService.say(platform, '', '', channel, `Dieser Befehl ist leider nur für VIPs verfügbar`);
             return Promise.resolve(false);
         }
 
-        if(this.isModOnly && !context.mod && !context.owner) {
-            sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für Mods verfügbar`);
+        if(this.isModOnly && !user.mod && !user.owner) {
+            sayService.say(platform, '', '', channel, `Dieser Befehl ist leider nur für Mods verfügbar`);
             return Promise.resolve(false);
         }
 
-        if(this.isOwnerOnly && !context.owner) {
-            sayService.say(origin, '', '', channel, `Dieser Befehl ist leider nur für Hanna verfügbar`);
+        if(this.isOwnerOnly && !user.owner) {
+            sayService.say(platform, '', '', channel, `Dieser Befehl ist leider nur für Hanna verfügbar`);
             return Promise.resolve(false);
         }
 
         if(!this.isModOnly) {
             const fighter = new Fighter();
-            await fighter.init(context.userName);
+            await fighter.init(user.userName);
             if(fighter.get('curHp') <= 0) {
-                const text = `###ORIGIN###, du bist gerade ohnmächtig und kannst keine Commands ausführen NotLikeThis Erst wenn du geheilt wurdest, geht das wieder.`;
-                sayService.say(origin, context.displayName, '', channel, text);
+                const text = `###platform###, du bist gerade ohnmächtig und kannst keine Commands ausführen NotLikeThis Erst wenn du geheilt wurdest, geht das wieder.`;
+                sayService.say(platform, user.displayName, '', channel, text);
                 return Promise.resolve(false);
             }
             if(!fighter.get('canUseCommands')) {
-                const text = `###ORIGIN###, du hast dich selbst verhext und kannst keine Commands ausführen NotLikeThis Da hilft nur warten.`;
-                sayService.say(origin, context.displayName, '', channel, text);
+                const text = `###platform###, du hast dich selbst verhext und kannst keine Commands ausführen NotLikeThis Da hilft nur warten.`;
+                sayService.say(platform, user.displayName, '', channel, text);
                 return Promise.resolve(false);
             }
 
@@ -76,8 +77,8 @@ abstract class AbstractCommand
                 if (liebesritual) {
                     if (liebesritual.value && moment().isBefore(moment(liebesritual.value))) {
                         const remainingMinutes = Math.round(moment.duration(moment(liebesritual.value).diff(moment())).asMinutes());
-                        const text = `###ORIGIN###: Die Flauschis erholen sich noch für ${remainingMinutes} Minuten vom letzten Liebesritual.`;
-                        sayService.say(origin, context.displayName, '', channel, text);
+                        const text = `###platform###: Die Flauschis erholen sich noch für ${remainingMinutes} Minuten vom letzten Liebesritual.`;
+                        sayService.say(platform, user.displayName, '', channel, text);
                         return Promise.resolve(false);
                     } else {
                         await MiscModel.deleteOne({identifier: 'liebesritualUntil'});
@@ -85,12 +86,12 @@ abstract class AbstractCommand
                 }
 
                 if(moment().isBefore(fighter.get('isAsleepUntil'))) {
-                    const text = `###ORIGIN###: Du schläfst gerade und kannst nicht angreifen emote_sleep emote_sleep`;
-                    sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, text);
+                    const text = `###platform###: Du schläfst gerade und kannst nicht angreifen emote_sleep emote_sleep`;
+                    sayService.say(platform, user.displayName, tokens.slice(1).join(' '), channel, text);
                     return Promise.resolve(false);
                 }
 
-                const target = this.getTarget(origin, parts, messageObject);
+                const target = this.getTarget(platform, tokens, rawMessage);
                 const inLoveWith = fighter.get('inLoveWith');
                 const newInLoveWith = [];
                 let refuses = false;
@@ -106,8 +107,8 @@ abstract class AbstractCommand
                 }
                 await fighter.set('inLoveWith', newInLoveWith).update();
                 if(refuses) {
-                    const text = `###ORIGIN### ist in ###TARGET### ganz doll verflauscht und weigert sich ###TARGET### anzugreifen emote_woah emote_heart`;
-                    sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, text);
+                    const text = `###platform### ist in ###TARGET### ganz doll verflauscht und weigert sich ###TARGET### anzugreifen emote_woah emote_heart`;
+                    sayService.say(platform, user.displayName, tokens.slice(1).join(' '), channel, text);
                     return Promise.resolve(false);
                 }
             }
@@ -117,8 +118,8 @@ abstract class AbstractCommand
 
         if (document && document.value) {
             if (moment().isBefore(moment(document.value))) {
-                const text = `###ORIGIN###: Der Command !${this.command} ist noch im Cooldown NotLikeThis`;
-                sayService.say(origin, context.displayName, '', channel, text);
+                const text = `###platform###: Der Command !${this.command} ist noch im Cooldown NotLikeThis`;
+                sayService.say(platform, user.displayName, '', channel, text);
                 return Promise.resolve(false);
             } else {
                 await MiscModel.deleteOne({ _id: document._id });
@@ -138,27 +139,27 @@ abstract class AbstractCommand
         }
 
         if(this.customHandler) {
-            await this.customHandler(message, parts, context, origin, channel, messageObject);
+            await this.customHandler(message, tokens, user, platform, channel, rawMessage);
             return Promise.resolve(true);
         } else {
-            if(parts.length > 1 && this.answerTarget !== '') {
-                sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerTarget);
+            if(tokens.length > 1 && this.answerTarget !== '') {
+                sayService.say(platform, user.displayName, tokens.slice(1).join(' '), channel, this.answerTarget);
             } else {
-                sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, this.answerNoTarget);
+                sayService.say(platform, user.displayName, tokens.slice(1).join(' '), channel, this.answerNoTarget);
             }
 
             return Promise.resolve(true);
         }
     }
 
-    protected getTarget = (origin: string, parts: Array<string>, messageObject: Message|null) => {
+    protected getTarget = (platform: string, tokens: Array<string>, rawMessage: Message|null) => {
         let target = '';
-        if(origin === 'tmi') {
-            target = parts[1] ? parts[1].split('@').join('').toLowerCase() : '';
-        } else if(origin === 'discord' && messageObject.mentions.users.first()) {
-            target = messageObject.mentions.users.first().username.toLowerCase();
-        } if(origin === 'discord' && messageObject.mentions.roles.first()) {
-            target = messageObject.mentions.roles.first().name.toLowerCase();
+        if(platform === 'twitch') {
+            target = tokens[1] ? tokens[1].split('@').join('').toLowerCase() : '';
+        } else if(platform === 'discord' && rawMessage.mentions.users.first()) {
+            target = rawMessage.mentions.users.first().username.toLowerCase();
+        } if(platform === 'discord' && rawMessage.mentions.roles.first()) {
+            target = rawMessage.mentions.roles.first().name.toLowerCase();
         }
 
         return target;
