@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express'
+import { Router, Request, Response, NextFunction } from 'express'
 import fs from 'fs'
 import path from 'path'
 import myInstantsService from "../Services/MyInstantsService"
@@ -12,10 +12,32 @@ const router = Router()
 
 // Liste erlaubter Ordner zur Sicherheit
 const allowedAudioFolders = ['audio', 'myAudioFolder1', 'myAudioFolder2']
-const allowedBgFolders = ['backgrounds', 'myBgFolder1', 'myBgFolder2']
+const allowedBgFolders = ['images/wallpaper/wallpaper-stefan', 'images/wallpaper/wallpaper-hanna']
+
+// Basic Auth Middleware
+function basicAuth(req: Request, res: Response, next: NextFunction): void {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        res.setHeader('WWW-Authenticate', 'Basic realm="Protected Area"');
+        res.status(401).send('Authentication required');
+        return;
+    }
+
+    const credentials = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+    const [username, password] = credentials;
+
+    if (username === 'hello' && password === 'world') {
+        next();
+    } else {
+        res.setHeader('WWW-Authenticate', 'Basic realm="Protected Area"');
+        res.status(401).send('Invalid credentials');
+        return;
+    }
+}
 
 // Route für /poltergeist
-router.get('/poltergeist', (req: Request, res: Response): void => {
+router.get('/poltergeist', basicAuth, (req: Request, res: Response): void => {
     const audioFolder = (req.query.audioFolder as string) || 'audio'
     const bgFolder = (req.query.bgFolder as string) || 'backgrounds'
 

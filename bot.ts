@@ -1,3 +1,5 @@
+import * as net from 'net';
+
 //@ts-ignore
 import OBSWebSocket from "obs-websocket-js";
 
@@ -12,7 +14,8 @@ import twitchClient from "./Clients/twitchClient";
 import AbstractOverlayCommand from "./Abstracts/AbstractOverlayCommand";
 import AbstractRedeemCommand from "./Abstracts/AbstractRedeemCommand";
 import AbstractCommand from "./Abstracts/AbstractCommand";
-import {GreetedUserModel} from "./Models/GreetedUser";
+import { GreetedUserModel } from "./Models/GreetedUser";
+import replService from "./Services/ReplService";
 
 dotenv.config({ path: __dirname+'/.env' });
 var osProcess = require('process');
@@ -64,6 +67,8 @@ class FlauschiPandaBot
         this.server = server;
         this.server.setCommands(this.commands);
         this.server.initializeOverlayCommands();
+
+        this.startReplServer();
     }
 
     private initializeModules = () => {
@@ -119,6 +124,9 @@ class FlauschiPandaBot
         }
     }
 
+    private startReplServer = () => {
+        replService.startRepl('flauschipandabot> ');
+    }
 }
 
 let flauschiPandaBot = new FlauschiPandaBot();

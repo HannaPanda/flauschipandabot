@@ -4,6 +4,7 @@ import { Flip } from 'gsap/Flip';
 import { PixiPlugin } from 'gsap/PixiPlugin';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { transitionService } from '../Services/TransitionService';
+import SwipeListener from 'swipe-listener';
 
 gsap.registerPlugin(Flip, PixiPlugin, MotionPathPlugin);
 
@@ -16,8 +17,14 @@ class Poltergeist {
     private initialScale: number = 1.3;
     private currentElement: HTMLElement;
     private category: string;
+    private bgFolder?: string;
+    private audioFolder?: string;
     private currentAudioElement: HTMLAudioElement | null = null;
     private imageInfo: HTMLDivElement | null = null;
+    private imageHistory: any[] = []; // To keep track of loaded images
+    private currentIndex: number = -1;
+    private mediaTimeout = null;
+    private currentTimeline = null;
 
     private config = {
         audio: {
@@ -37,6 +44,7 @@ class Poltergeist {
             maxEffectChainLength: 4, // Maximum number of effects in the chain
             minPanDistance: 5, // Minimum pan distance in percentage
             minZoomFactor: 0.05, // Minimum zoom factor (e.g., 5% change)
+            maxImageHistory: 20, // Maximum number of images in the history
         },
     };
 
@@ -47,13 +55,17 @@ class Poltergeist {
      * and starts the slideshow and audio scheduling.
      */
     constructor() {
+        const self = this;
+
         this.container = document.getElementById('media-container');
 
         // Get query parameters
         const queryParams = this.getQueryParams();
 
-        // Set category from query params or default to 'cat'
+        // Set category, bgFolder, and audioFolder from query params or default to 'cat'
         this.category = queryParams['category'] || 'cat';
+        this.bgFolder = queryParams['bgFolder'] || undefined;
+        this.audioFolder = queryParams['audioFolder'] || undefined;
 
         // Update config with query params
         this.updateConfigWithQueryParams(queryParams);
@@ -71,6 +83,18 @@ class Poltergeist {
 
         // Listen for visibility change events
         document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+
+        // Listen for swipe left event
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                this.showPreviousMedia();
+            }
+        });
+
+        const swipeLeftListener = SwipeListener(this.container);
+        this.container.addEventListener('swipe', function (e) {
+            self.showPreviousMedia();
+        });
     }
 
     /**
@@ -179,7 +203,8 @@ class Poltergeist {
      */
     async fetchAudioFile(): Promise<any> {
         try {
-            const response = await axios.get(`/api/poltergeist/audio`);
+            const folderParam = this.audioFolder ? `?folder=${encodeURIComponent(this.audioFolder)}` : '';
+            const response = await axios.get(`/api/poltergeist/audio${folderParam}`);
             return response.data ? response.data : null;
         } catch (error) {
             console.error('Error fetching audio file:', error);
@@ -193,7 +218,8 @@ class Poltergeist {
      */
     async fetchBackgroundFile(): Promise<any> {
         try {
-            const response = await axios.get(`/api/poltergeist/backgrounds?category=${encodeURIComponent(this.category)}`);
+            const folderParam = this.bgFolder ? `folder=${encodeURIComponent(this.bgFolder)}&` : '';
+            const response = await axios.get(`/api/poltergeist/backgrounds?${folderParam}category=${encodeURIComponent(this.category)}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching background file:', error);
@@ -212,14 +238,45 @@ class Poltergeist {
      * Shows the next media file in the slideshow.
      */
     async showNextMedia(): Promise<void> {
-        const mediaFile = await this.fetchBackgroundFile();
-        if (!mediaFile || !mediaFile.url) {
-            console.error('No background file available, retrying in 10 seconds');
-            setTimeout(() => this.showNextMedia(), 10000); // Retry after 10 seconds
-            return;
+        clearTimeout(this.mediaTimeout);
+        if(this.currentTimeline) {
+            this.currentTimeline.clear();
         }
+        if (this.currentIndex < this.imageHistory.length - 1) {
+            // Show next image from history
+            this.currentIndex++;
+            this.loadMedia(this.imageHistory[this.currentIndex].url);
+        } else {
+            // Fetch a new image and add to history
+            const mediaFile = await this.fetchBackgroundFile();
+            if (!mediaFile || !mediaFile.url) {
+                console.error('No background file available, retrying in 10 seconds');
+                clearTimeout(this.mediaTimeout);
+                this.mediaTimeout = setTimeout(() => this.showNextMedia(), 10000); // Retry after 10 seconds
+                return;
+            }
 
-        this.loadMedia(mediaFile.url, mediaFile.attribution);
+            // Add the new image to history
+            if (this.imageHistory.length >= this.config.gallery.maxImageHistory) {
+                this.imageHistory.shift(); // Remove the oldest image if at capacity
+            }
+            this.imageHistory.push(mediaFile);
+            this.currentIndex = this.imageHistory.length - 1;
+
+            this.loadMedia(mediaFile.url, mediaFile.attribution);
+        }
+    }
+
+    /**
+     * Shows the previous media file in the history.
+     */
+    showPreviousMedia(): void {
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            this.loadMedia(this.imageHistory[this.currentIndex].url, this.imageHistory[this.currentIndex].attribution);
+        } else {
+            console.log('No more previous images in history.');
+        }
     }
 
     /**
@@ -228,7 +285,7 @@ class Poltergeist {
      * @param {string} info - The media file attribution information.
      * @returns {Promise<void>}
      */
-    async loadMedia(url: string, info: string): Promise<void> {
+    async loadMedia(url: string, info: string = ''): Promise<void> {
         const fileExtension = url.split('.').pop().toLowerCase();
         let mediaElement: HTMLElement;
 
@@ -295,7 +352,8 @@ class Poltergeist {
         } catch (error) {
             console.error('Error loading media:', error);
             // Load the next media after a delay
-            setTimeout(() => this.showNextMedia(), 5000);
+            clearTimeout(this.mediaTimeout);
+            this.mediaTimeout = setTimeout(() => this.showNextMedia(), 5000);
         }
     }
 
@@ -333,7 +391,7 @@ class Poltergeist {
         const chainLength = Math.floor(Math.random() * (maxEffectChainLength - minEffectChainLength + 1)) + minEffectChainLength;
 
         // Create a GSAP timeline
-        const timeline = gsap.timeline({
+        this.currentTimeline = gsap.timeline({
             onComplete: () => {
                 // After the entire animation sequence is complete, show the next media
                 this.showNextMedia();
@@ -346,22 +404,22 @@ class Poltergeist {
 
             switch (effect) {
                 case 'zoom':
-                    this.addZoomEffectToTimeline(timeline, element, effectDuration / 1000, minZoomFactor);
+                    this.addZoomEffectToTimeline(this.currentTimeline, element, effectDuration / 1000, minZoomFactor);
                     break;
                 case 'pan':
-                    this.addPanEffectToTimeline(timeline, element, effectDuration / 1000, minPanDistance);
+                    this.addPanEffectToTimeline(this.currentTimeline, element, effectDuration / 1000, minPanDistance);
                     break;
                 case 'panzoom':
-                    this.addPanZoomEffectToTimeline(timeline, element, effectDuration / 1000, minPanDistance, minZoomFactor);
+                    this.addPanZoomEffectToTimeline(this.currentTimeline, element, effectDuration / 1000, minPanDistance, minZoomFactor);
                     break;
                 default:
-                    this.addZoomEffectToTimeline(timeline, element, effectDuration / 1000, minZoomFactor);
+                    this.addZoomEffectToTimeline(this.currentTimeline, element, effectDuration / 1000, minZoomFactor);
                     break;
             }
         }
 
         // After the effect chain is over, animate to X/Y=0, Scale=1 over afterEffectDuration
-        timeline.to(element, {
+        this.currentTimeline.to(element, {
             xPercent: 0,
             yPercent: 0,
             scale: 1,
@@ -370,7 +428,7 @@ class Poltergeist {
         });
 
         // Hold for holdDuration seconds
-        timeline.to({}, { duration: holdDuration / 1000 });
+        this.currentTimeline.to({}, { duration: holdDuration / 1000 });
     };
 
     /**
@@ -583,8 +641,13 @@ class Poltergeist {
      * @param {string} data - The data to display
      */
     displayImageInfo(data: string): void {
-        this.imageInfo.style.display = 'block';
-        this.imageInfo.innerText = `Image ${data}`;
+        if(data === '') {
+            this.imageInfo.style.display = 'none';
+            this.imageInfo.innerText = '';
+        } else {
+            this.imageInfo.style.display = 'block';
+            this.imageInfo.innerText = `Image ${data}`;
+        }
     }
 
     /**
