@@ -21,7 +21,7 @@ class TraumRedenCommand extends AbstractCommand {
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         try {
             const randomText = await notionPageService.getRandomText();
-            const sanitizedRandomText = randomText.replace(/\n/g, "\\n");
+
             const prompt = `Antworte als niedlicher, rotz-frecher, vorlauter Panda mit super vielen süßen Emotes. Die einzigen Emotes, die du nutzen kannst sind folgende: "${emoteService.getBotTwitchEmotes()}".
                 Dein Name ist FlauschiPandaBot, Tochter von HannaPanda84 aka HannaPanda.
                 Du darfst niemals was anderes als "Du" verwenden.
@@ -33,7 +33,7 @@ class TraumRedenCommand extends AbstractCommand {
                 Fasse dich möglichst kurz und beschränke dich in deiner Antwort auf maximal 110 Worte.`;
             const infoText = `Hanna liegt oft neben Killerpretzel auf dem Sofa und sagt dann im Schlaf merkwürdige Dinge. Die Texte sind aus Killerpretzel Perspektive geschrieben. Du sollst ein einzelnes Zitat aufgreifen und das jemandem flott erzählen, was zwischen Killerpretzel und Hanna passiert ist. Schreibe nicht "ich" sondern "Killerpretzel". Erfinde nichts weiter dazu!
                 Regeln: Vor jeder Zeile steht, von welcher Person etwas kommt, in * steht, was getan wird (hier wird aus der Perspektive von Killerpretzel beschrieben), Text der nicht weiter markiert ist, ist etwas, das Hanna sagt. Die Ich-Perspektive im Text ist Killerpretzel, nicht du!
-                Das Zitat: #${sanitizedRandomText}#.`;
+                Das Zitat: #${randomText}#.`;
 
             let response = await openAiClient.getCustomChatGPTResponse(prompt, infoText, null, '', false);
 

@@ -7,9 +7,9 @@ import * as fs from "fs";
 import {TextEmotion} from "../Types/TextEmotion";
 import obsClient from "./obsClient";
 import server from "../server";
-import {UserModel} from "../Models/User";
 import { AssistantModel, Assistant } from '../Models/Assistant';
 import { ThreadModel, Thread } from '../Models/Thread';
+import UserModel from "../Models/User";
 
 const {encode, decode} = require('gpt-3-encoder');
 
@@ -252,10 +252,10 @@ class OpenAiClient
                     [{"role": "system", "content": prompt, timestamp: new Date()}]
                 );
             } else {
-                messages = [].concat(
-                    [{"role": "user", "content": input, timestamp: new Date()}],
-                    [{"role": "system", "content": prompt, timestamp: new Date()}]
-                );
+                messages = [
+                    {"role": "user", "content": input, timestamp: new Date()},
+                    {"role": "system", "content": prompt, timestamp: new Date()}
+                ];
             }
         } catch(err) {}
 
@@ -266,7 +266,7 @@ class OpenAiClient
                 continue;
 
             const messageTokens = encode(message.content).length;
-            if(currentTokens + messageTokens < 4096 - this.maxTokens) {
+            if(currentTokens + messageTokens < 40960 - this.maxTokens) {
                 finalMessages.push(message);
                 currentTokens += messageTokens;
             }
