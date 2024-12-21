@@ -153,7 +153,7 @@ class QuoteCommand extends AbstractCommand
 
             if(randomQuote) {
                 const text = `###ORIGIN### Zitat #${randomQuote.id}: ${randomQuote.quote} [${randomQuote.date}]`;
-                sayService.say(origin, context.displayName, '', channel, text);
+                sayService.say(origin, context?.displayName || '', '', channel, text);
             }
         }
     };
