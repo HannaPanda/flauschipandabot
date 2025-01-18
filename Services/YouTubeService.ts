@@ -7,7 +7,7 @@ dotenv.config({ path: __dirname + '/../.env' });
 
 class YouTubeService {
     private downloadPath = path.resolve(__dirname, "../downloads");
-    private apiKey = process.env.LOADER_API_KEY || ""; // API-Key aus der .env Datei
+    private apiKey = process.env.LOADER_API_KEY || "";
     private downloadApiUrl = "https://loader.to/ajax/download.php";
     private progressApiUrl = "https://p.oceansaver.in/ajax/progress.php";
 
@@ -18,15 +18,15 @@ class YouTubeService {
     }
 
     /**
-     * Lädt ein YouTube-Video als MP3 über die Loader.to API herunter.
-     * @param url Die YouTube-URL
-     * @returns Den Pfad zur heruntergeladenen MP3-Datei
+     * Downloads a YouTube video as an MP3 file using the Loader.to API.
+     * @param url The YouTube URL.
+     * @returns The file path of the downloaded MP3.
      */
     public async downloadMp3(url: string): Promise<string> {
         try {
-            console.log(`Starte Download-Anfrage für: ${url}`);
+            console.log(`Starting download request for: ${url}`);
 
-            // 1️⃣ API Request an `download.php` senden
+            // Step 1️⃣: Send API request to `download.php`
             const { data: downloadResponse } = await axios.get(this.downloadApiUrl, {
                 params: {
                     format: "mp3",
@@ -36,25 +36,25 @@ class YouTubeService {
             });
 
             if (!downloadResponse.success) {
-                throw new Error(`Fehler beim Starten des Downloads: ${JSON.stringify(downloadResponse)}`);
+                throw new Error(`Error starting download: ${JSON.stringify(downloadResponse)}`);
             }
 
             const downloadId = downloadResponse.id;
-            console.log(`Download gestartet, ID: ${downloadId}`);
+            console.log(`Download started, ID: ${downloadId}`);
 
-            // 2️⃣ Fortschritt abfragen, bis `progress: 1000`
+            // Step 2️⃣: Poll progress API until `progress` reaches 1000
             let progress = 0;
             let downloadUrl = null;
 
             while (progress < 1000) {
-                await this.sleep(5000); // 5 Sekunden warten, um Rate-Limits zu vermeiden
+                await this.sleep(5000); // Wait 5 seconds to avoid rate limits
 
                 const { data: progressResponse } = await axios.get(this.progressApiUrl, {
                     params: { id: downloadId }
                 });
 
                 progress = progressResponse.progress || 0;
-                console.log(`Download-Fortschritt: ${progress / 10}%`);
+                console.log(`Download progress: ${progress / 10}%`);
 
                 if (progressResponse.success === 1 && progress === 1000 && progressResponse.download_url) {
                     downloadUrl = progressResponse.download_url;
@@ -63,30 +63,30 @@ class YouTubeService {
             }
 
             if (!downloadUrl) {
-                throw new Error(`Download-URL konnte nicht ermittelt werden.`);
+                throw new Error(`Failed to retrieve download URL.`);
             }
 
-            console.log(`Download bereit: ${downloadUrl}`);
+            console.log(`Download ready: ${downloadUrl}`);
 
-            // 3️⃣ Datei herunterladen & speichern
+            // Step 3️⃣: Download the file and save locally
             const mp3FilePath = await this.saveMp3(downloadUrl);
-            console.log(`MP3 gespeichert unter: ${mp3FilePath}`);
+            console.log(`MP3 saved at: ${mp3FilePath}`);
 
             return mp3FilePath;
         } catch (err) {
-            console.error(`Fehler beim MP3-Download: ${err.message}`);
+            console.error(`Error during MP3 download: ${err.message}`);
             throw err;
         }
     }
 
     /**
-     * Lädt die MP3 von der gegebenen URL herunter und speichert sie.
+     * Downloads the MP3 from the given URL and saves it locally.
      */
     private async saveMp3(downloadUrl: string): Promise<string> {
         const response = await axios.get(downloadUrl, { responseType: "stream" });
 
-        // 3️⃣a Dateinamen aus den HTTP-Headern holen (falls verfügbar)
-        let filename = "downloaded_audio.mp3"; // Fallback-Name
+        // Step 3️⃣a: Retrieve filename from HTTP headers (if available)
+        let filename = "downloaded_audio.mp3"; // Fallback name
         const contentDisposition = response.headers["content-disposition"];
 
         if (contentDisposition) {
@@ -96,11 +96,11 @@ class YouTubeService {
             }
         }
 
-        // 3️⃣b Sicheren Pfad erzeugen
+        // Step 3️⃣b: Generate a safe file path
         const safeFilename = filename.replace(/[\/\\?%*:|"<>]/g, "").trim();
         const filePath = path.join(this.downloadPath, safeFilename);
 
-        // 3️⃣c Datei speichern
+        // Step 3️⃣c: Save the file
         const writer = fs.createWriteStream(filePath);
         response.data.pipe(writer);
 
@@ -111,7 +111,7 @@ class YouTubeService {
     }
 
     /**
-     * Sleep-Funktion, um API-Polling zu verzögern.
+     * Sleep utility to delay API polling.
      */
     private sleep(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
