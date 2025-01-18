@@ -33,6 +33,7 @@
     "http-proxy": "^1.18.1",
     "install": "^0.13.0",
     "jsdom": "^25.0.1",
+    "megajs": "^1.3.5",
     "moment": "^2.29.3",
     "mongodb": "^4.4.0",
     "mongoose": "^8.8.1",
@@ -49,12 +50,17 @@
     "passport-twitch-strategy": "^2.2.0",
     "photoswipe": "^5.4.4",
     "prom-client": "^15.1.3",
-    "puppeteer": "^23.5.0",
+    "puppeteer": "^23.8.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "react": "^18.1.0",
+    "sharp": "^0.33.5",
     "socket.io": "^4.4.1",
+    "swipe-listener": "^1.3.0",
     "ts-node": "^10.9.1",
     "twing": "^5.1.1",
-    "ws": "^8.16.0"
+    "ws": "^8.16.0",
+    "yt-dlp-wrap": "^2.3.12"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
