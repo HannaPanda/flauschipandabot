@@ -7,14 +7,14 @@ dotenv.config({ path: __dirname + '/../.env' });
 
 class MegaService {
     private storage: Storage;
-    private defaultFolder = "Music"; // Standard-Ordner für Uploads
+    private defaultFolder = "Music"; // Default folder for uploads
 
     constructor() {
         this.initStorage();
     }
 
     /**
-     * Initialisiert die Verbindung zu Mega mit gespeicherten Zugangsdaten.
+     * Initializes the connection to MEGA using stored credentials.
      */
     private async initStorage() {
         this.storage = await new Storage({
@@ -24,10 +24,10 @@ class MegaService {
     }
 
     /**
-     * Lädt eine Datei in den Mega-Ordner hoch.
-     * @param filePath Der lokale Pfad der Datei
-     * @param folderName Der Mega-Ordner, in den hochgeladen wird (Standard: "Music")
-     * @returns Die öffentliche Mega-URL zur hochgeladenen Datei
+     * Uploads a file to the specified MEGA folder.
+     * @param filePath The local file path
+     * @param folderName The target folder in MEGA (default: "Music")
+     * @returns The public MEGA URL of the uploaded file
      */
     public async uploadFile(filePath: string, folderName: string = this.defaultFolder): Promise<string> {
         const fileName = path.basename(filePath);
@@ -37,32 +37,30 @@ class MegaService {
             }
 
             const folder = await this.getOrCreateFolder(folderName);
+            const file = await folder.upload({ name: fileName }, fs.readFileSync(filePath)).complete;
 
-            const file = await folder.upload({name: fileName}, fs.readFileSync(filePath)).complete
-
-            console.log(`Lade ${fileName} in den Mega-Ordner "${folderName}" hoch...`);
+            console.log(`Uploading ${fileName} to MEGA folder "${folderName}"...`);
 
             const publicLink = await file.link();
-
-            console.log(`Upload erfolgreich! Datei-URL: ${publicLink}`);
+            console.log(`Upload successful! File URL: ${publicLink}`);
 
             return publicLink;
         } catch (err) {
-            console.error(`Fehler beim Hochladen zu Mega: ${err}`);
+            console.error(`Error uploading to MEGA: ${err}`);
             throw err;
         }
     }
 
     /**
-     * Sucht oder erstellt einen Ordner in Mega.
-     * @param folderName Der gewünschte Ordnername
-     * @returns Das Ordner-Objekt
+     * Finds or creates a folder in MEGA.
+     * @param folderName The desired folder name
+     * @returns The folder object
      */
     private async getOrCreateFolder(folderName: string) {
         let folder = this.storage.find(folderName, true);
 
         if (!folder) {
-            console.log(`Mega-Ordner "${folderName}" existiert nicht. Erstelle neuen Ordner...`);
+            console.log(`MEGA folder "${folderName}" does not exist. Creating a new folder...`);
             folder = await this.storage.mkdir(this.defaultFolder);
         }
 
