@@ -7,7 +7,7 @@ import megaService from "../Services/MegaService";
 class YtMp3Command extends AbstractCommand {
     isActive = true;
     isModOnly = false;
-    isOwnerOnly = false;
+    isOwnerOnly = true;
     command = "ytmp3";
     description = "Lädt ein YouTube-Video als MP3 herunter und speichert es auf Mega.";
 
@@ -22,7 +22,6 @@ class YtMp3Command extends AbstractCommand {
         try {
             sayService.say(origin, context.displayName, '', channel, "Lade Video herunter...");
             const mp3Path = await youtubeService.downloadMp3(url);
-            console.log(mp3Path);
 
             sayService.say(origin, context.displayName, '', channel, "Lade Datei auf Mega hoch...");
             const fileUrl = await megaService.uploadFile(mp3Path);
