@@ -10,6 +10,7 @@ class YouTubeService {
     private apiKey = process.env.LOADER_API_KEY || "";
     private downloadApiUrl = "https://loader.to/ajax/download.php";
     private progressApiUrl = "https://p.oceansaver.in/ajax/progress.php";
+    private defaultMp4Format = "1080";
 
     constructor() {
         if (!fs.existsSync(this.downloadPath)) {
@@ -23,13 +24,26 @@ class YouTubeService {
      * @returns The file path of the downloaded MP3.
      */
     public async downloadMp3(url: string): Promise<string> {
+        return this.downloadFile(url, "mp3");
+    }
+
+    /**
+     * Downloads a YouTube video as an MP4 file using the Loader.to API.
+     * @param url The YouTube URL.
+     * @returns The file path of the downloaded MP4.
+     */
+    public async downloadMp4(url: string): Promise<string> {
+        return this.downloadFile(url, this.defaultMp4Format);
+    }
+
+    private async downloadFile(url: string, format: string): Promise<string> {
         try {
-            console.log(`Starting download request for: ${url}`);
+            console.log(`Starting download request for ${format.toUpperCase()}: ${url}`);
 
             // Step 1️⃣: Send API request to `download.php`
             const { data: downloadResponse } = await axios.get(this.downloadApiUrl, {
                 params: {
-                    format: "mp3",
+                    format: format,
                     url: url,
                     api: this.apiKey
                 }
@@ -69,10 +83,10 @@ class YouTubeService {
             console.log(`Download ready: ${downloadUrl}`);
 
             // Step 3️⃣: Download the file and save locally
-            const mp3FilePath = await this.saveMp3(downloadUrl);
-            console.log(`MP3 saved at: ${mp3FilePath}`);
+            const filePath = await this.saveFile(downloadUrl, format === "mp3" ? "downloaded_audio.mp3" : "downloaded_video.mp4");
+            console.log(`${format.toUpperCase()} saved at: ${filePath}`);
 
-            return mp3FilePath;
+            return filePath;
         } catch (err) {
             console.error(`Error during MP3 download: ${err.message}`);
             throw err;
@@ -80,13 +94,13 @@ class YouTubeService {
     }
 
     /**
-     * Downloads the MP3 from the given URL and saves it locally.
+     * Downloads the file from the given URL and saves it locally.
      */
-    private async saveMp3(downloadUrl: string): Promise<string> {
+    private async saveFile(downloadUrl: string, defaultFilename: string): Promise<string> {
         const response = await axios.get(downloadUrl, { responseType: "stream" });
 
         // Step 3️⃣a: Retrieve filename from HTTP headers (if available)
-        let filename = "downloaded_audio.mp3"; // Fallback name
+        let filename = defaultFilename;
         const contentDisposition = response.headers["content-disposition"];
 
         if (contentDisposition) {
@@ -120,3 +134,4 @@ class YouTubeService {
 
 const youtubeService = new YouTubeService();
 export default youtubeService;
+
