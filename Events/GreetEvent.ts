@@ -1,13 +1,11 @@
 import emitter from "../emitter";
-import mongoDBClient from "../Clients/mongoDBClient";
 import * as dotenv from "dotenv";
-import emoteService from "../Services/EmoteService";
 import streamService from "../Services/StreamService";
 import sayService from "../Services/SayService";
 import openAiClient from "../Clients/openAiClient";
 import server from "../server";
-import {UserModel} from "../Models/User";
 import {GreetedUserModel} from "../Models/GreetedUser";
+import UserModel from "../Models/User";
 dotenv.config({ path: __dirname+'/../.env' });
 
 class GreetEvent
@@ -72,8 +70,8 @@ class GreetEvent
 
         if (!user) {
             response = await openAiClient.getChatGPTResponse(`
-                Bitte begrüße den User ${context.displayName} ganz lieb zu Hanna's Stream. 
-                Nutze genderneutrale Sprache. 
+                Bitte begrüße den User ${context.displayName} ganz lieb zu Hanna's Stream.
+                Nutze genderneutrale Sprache.
                 Behandle die Person als sei sie komplett neu im Stream.`, '', true, '60');
 
             await new UserModel({ username: context.userName }).save();
@@ -81,8 +79,8 @@ class GreetEvent
             const pronomenText = (user?.pronomen) ? `Die Pronomen der Person sind '${user?.pronomen}'` : 'Nutze genderneutrale Sprache.';
 
             response = await openAiClient.getChatGPTResponse(`
-            Bitte begrüße den User ${context.displayName} ganz lieb zu Hanna's Stream. 
-            ${pronomenText} 
+            Bitte begrüße den User ${context.displayName} ganz lieb zu Hanna's Stream.
+            ${pronomenText}
             Behandle die Person wie einen bereits Bekannten Menschen.`, '', true, '60');
         }
 
