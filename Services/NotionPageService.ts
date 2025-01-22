@@ -15,7 +15,7 @@ class NotionPageService {
 
     async fetchNotionContent(): Promise<string[]> {
         const cachedContent = this.cache.get<string[]>(this.cacheKey);
-        if (cachedContent) {
+        if (cachedContent && cachedContent.length > 0) {
             return cachedContent;
         }
 
@@ -46,7 +46,9 @@ class NotionPageService {
 
             const filteredTexts = texts.filter(text => text.length > 0);
 
-            this.cache.set(this.cacheKey, filteredTexts);
+            if(filteredTexts && filteredTexts.length > 0) {
+                this.cache.set(this.cacheKey, filteredTexts);
+            }
 
             return filteredTexts;
         } catch (error) {
