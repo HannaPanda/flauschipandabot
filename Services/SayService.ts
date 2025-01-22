@@ -6,7 +6,7 @@ dotenv.config({ path: __dirname+'/../.env' });
 
 class SayService
 {
-    say = (origin, displayName, targetName, channel, message) => {
+    public say = (origin, displayName, targetName, channel, message) => {
         message = message
             .split('###ORIGIN###').join(displayName)
             .split('###TARGET###').join(targetName)
