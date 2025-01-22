@@ -61,7 +61,7 @@ class MegaService {
 
         if (!folder) {
             console.log(`MEGA folder "${folderName}" does not exist. Creating a new folder...`);
-            folder = await this.storage.mkdir(this.defaultFolder);
+            folder = await this.storage.mkdir(folderName);
         }
 
         return folder;
