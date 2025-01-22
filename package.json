@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "nodemon-watch": "nodemon -e ts,js,twig,html,css --ignore public/ --exec \"ts-node bot.ts || touch bot.ts\"",
+    "nodemon-watch": "nodemon -e ts,js,twig,html,css --ignore public/ --exec \"tsx --tsconfig tsconfig.json bot.ts || touch bot.ts\"",
     "webpack-watch": "webpack --watch",
     "dev": "concurrently --kill-others --shell cmd \"npm run nodemon-watch\" \"npm run webpack-watch\""
   },
@@ -54,6 +54,7 @@
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "react": "^18.1.0",
+    "reflect-metadata": "^0.2.2",
     "sharp": "^0.33.5",
     "socket.io": "^4.4.1",
     "swipe-listener": "^1.3.0",

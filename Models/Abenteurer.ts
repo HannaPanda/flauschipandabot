@@ -28,49 +28,49 @@ export class Abenteurer {
         ruestungsklasse: 5
     };
 
-    @prop({ required: true })
+    @prop({ required: true, type: String })
     public name!: string;
 
-    @prop({ required: true, default: 1 })
+    @prop({ required: true, default: 1, type: Number })
     public level!: number;
 
-    @prop({ required: true })
+    @prop({ required: true, type: String })
     public klasse!: string;
 
-    @prop({ required: true })
+    @prop({ required: true, type: String })
     public rasse!: string;
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public kopfwuschel!: number; // Intelligenz
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public kuschelkraft!: number; // Stärke
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public schnurrfertigkeit!: number; // Geschicklichkeit
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public flauschigkeit!: number; // Ausdauer
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public schnuffelcharme!: number; // Charisma
 
-    @prop({ required: true, default: 0 })
+    @prop({ required: true, default: 0, type: Number })
     public erfahrung!: number;
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public mana!: number;
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public maxMana!: number;
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public lebenspunkte!: number;
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public maxLebenspunkte!: number;
 
-    @prop({ required: true })
+    @prop({ required: true, type: Number })
     public ruestungsklasse!: number;
 
     static levelSystem = new LevelSystem(100, 1.5);

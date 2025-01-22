@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as net from 'net';
 
 //@ts-ignore
