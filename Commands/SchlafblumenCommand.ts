@@ -1,14 +1,7 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import knochenCommand from "./KnochenCommand";
 import Fighter from "../Models/Fighter";
-import mongoDBClient from "../Clients/mongoDBClient";
-import fetch from "node-fetch";
 import sayService from "../Services/SayService";
-import {random} from "twing/dist/types/lib/extension/core/functions/random";
 import moment from "moment";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class SchlafblumenCommand extends AbstractCommand
 {

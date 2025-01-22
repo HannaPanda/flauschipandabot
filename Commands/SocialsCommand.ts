@@ -1,7 +1,4 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class SocialsCommand extends AbstractCommand
 {

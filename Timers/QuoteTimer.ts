@@ -1,8 +1,6 @@
 import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractTimer from "../Abstracts/AbstractTimer";
 import sayService from "../Services/SayService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class QuoteTimer extends AbstractTimer
 {

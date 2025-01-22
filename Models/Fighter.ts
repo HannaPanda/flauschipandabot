@@ -1,7 +1,5 @@
 import mongoDBClient from "../Clients/mongoDBClient";
-import * as dotenv from "dotenv";
 import moment from "moment";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class Fighter {
 

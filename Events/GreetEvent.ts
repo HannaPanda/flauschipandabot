@@ -1,12 +1,10 @@
 import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import streamService from "../Services/StreamService";
 import sayService from "../Services/SayService";
 import openAiClient from "../Clients/openAiClient";
 import server from "../server";
 import {GreetedUserModel} from "../Models/GreetedUser";
 import UserModel from "../Models/User";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class GreetEvent
 {

@@ -1,8 +1,5 @@
-import * as dotenv from "dotenv";
-import discordClient from "../Clients/discordClient";
 import emitter from "../emitter";
 import emoteService from "./EmoteService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class SayService
 {

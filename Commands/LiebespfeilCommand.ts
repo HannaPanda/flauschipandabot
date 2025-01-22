@@ -1,14 +1,9 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import knochenCommand from "./KnochenCommand";
 import Fighter from "../Models/Fighter";
 import mongoDBClient from "../Clients/mongoDBClient";
-import fetch from "node-fetch";
 import sayService from "../Services/SayService";
-import {random} from "twing/dist/types/lib/extension/core/functions/random";
 import moment from "moment";
-dotenv.config({ path: __dirname+'/../.env' });
+import { Env } from "../Config/Environment";
 
 class LiebesPfeilCommand extends AbstractCommand
 {
@@ -29,7 +24,7 @@ class LiebesPfeilCommand extends AbstractCommand
         const targetName = parts.slice(1).join(' ');
 
         const fetch = require('node-fetch');
-        const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${process.env.CHANNEL}/chatters`, {method: "Get"})
+        const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${Env.channel}/chatters`, {method: "Get"})
             .then(res => res.json())
             .catch(err => {console.log(err)});
 

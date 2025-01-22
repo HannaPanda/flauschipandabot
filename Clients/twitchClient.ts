@@ -9,6 +9,7 @@ import { EventSubWsListener } from "@twurple/eventsub-ws";
 import sayService from "../Services/SayService";
 import server from '../server';
 import { ChatMessageEvent, eventManager } from "../Services/EventManager";
+import { Env } from "../Config/Environment";
 
 class TwitchClient {
     public pubSubClient: PubSubClient;
@@ -26,8 +27,8 @@ class TwitchClient {
             let self = this;
 
             // Auth
-            const clientId = process.env.CLIENT_ID;
-            const clientSecret = process.env.CLIENT_SECRET;
+            const clientId = Env.clientId;
+            const clientSecret = Env.clientSecret;
 
             const tokenData = JSON.parse(fs.readFileSync('./tokens.hannapanda84.json', 'utf8'));
             const authProvider = new RefreshingAuthProvider({ clientId, clientSecret });
@@ -74,7 +75,7 @@ class TwitchClient {
                         displayName: msg.userInfo.displayName,
                         mod: msg.userInfo.isMod,
                         vip: msg.userInfo.isVip,
-                        owner: msg.userInfo.userName.toLowerCase() === process.env.CHANNEL.toLowerCase(),
+                        owner: msg.userInfo.userName.toLowerCase() === Env.channel.toLowerCase(),
                     },
                     platform: 'twitch',
                     channel: msg.channelId,
@@ -92,7 +93,7 @@ class TwitchClient {
                         displayName: msg.userInfo.displayName,
                         mod: msg.userInfo.isMod,
                         vip: msg.userInfo.isVip,
-                        owner: msg.userInfo.userName.toLowerCase() === process.env.CHANNEL.toLowerCase()
+                        owner: msg.userInfo.userName.toLowerCase() === Env.channel.toLowerCase()
                     },
                     'tmi',
                     null,

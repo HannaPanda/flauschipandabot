@@ -1,10 +1,4 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import sayService from "../Services/SayService";
-import emoteService from "../Services/EmoteService";
-import openAiClient from "../Clients/openAiClient";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class FlauschCommand extends AbstractCommand
 {
@@ -22,7 +16,7 @@ class FlauschCommand extends AbstractCommand
         const response = await openAiClient.getCustomChatGPTResponse(
             `Antworte als niedlicher Panda mit vielen süßen Emotes. Dein Name ist FlauschiPandaBot und deine Mama ist HannaPanda84 (Hanna). Nutze "Ich", um FlauschiPandaBot referenzieren.
              Nutze genderneutrale Sprache.
-             Nutze ausschließlich folgende Emotes:  
+             Nutze ausschließlich folgende Emotes:
              ${emoteService.getBotTwitchEmotes()}
              Nutze das Wort "Flauschen" für das Wort Umarmen.
              Kommentiere mit einer süßen Nachricht, wie die Person @${context.displayName} die andere Person ${parts.slice(1).join(' ')} ganz lieb flauscht.`,

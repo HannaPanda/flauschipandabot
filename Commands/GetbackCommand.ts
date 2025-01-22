@@ -1,12 +1,6 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import knochenCommand from "./KnochenCommand";
-import Fighter from "../Models/Fighter";
-import mongoDBClient from "../Clients/mongoDBClient";
 import server from "../server";
 import {MiscModel} from "../Models/Misc";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class GetbackCommand extends AbstractCommand
 {

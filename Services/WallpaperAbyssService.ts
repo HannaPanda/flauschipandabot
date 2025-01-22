@@ -1,9 +1,7 @@
-import * as dotenv from "dotenv";
 import { JSDOM } from "jsdom";
 import headlessBrowserService from "./HeadlessBrowserService";
 import replService from "./ReplService";
 import WallpaperModel from "../Models/Wallpaper";
-dotenv.config({ path: __dirname + '/../.env' });
 
 class WallpaperAbyssService {
     private wallpaperLinks: string[] = [];

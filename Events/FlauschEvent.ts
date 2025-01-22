@@ -1,8 +1,5 @@
 import emitter from "../emitter";
 import mongoDBClient from "../Clients/mongoDBClient";
-import * as dotenv from "dotenv";
-import emoteService from "../Services/EmoteService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class FlauschEvent
 {

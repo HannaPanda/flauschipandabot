@@ -1,8 +1,6 @@
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
 import UserModel from "../Models/User";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class PronomenCommand extends AbstractCommand {
     isActive = true;

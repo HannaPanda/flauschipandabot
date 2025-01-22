@@ -1,12 +1,4 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import mongoDBClient from "../Clients/mongoDBClient";
-import Fighter from "../Models/Fighter";
-import sayService from "../Services/SayService";
-import moment from "moment";
-import twitchClient from "../Clients/twitchClient";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class MigrateCommand extends AbstractCommand
 {

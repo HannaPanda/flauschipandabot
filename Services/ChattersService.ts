@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import fetch from "node-fetch";
 import discordClient from "../Clients/discordClient";
-dotenv.config({ path: __dirname+'/../.env' });
+import { Env } from "../Config/Environment";
 
 class ChattersService
 {
@@ -10,7 +10,7 @@ class ChattersService
         console.log(origin);
         if(origin === 'tmi') {
             const fetch = require('node-fetch');
-            const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${process.env.CHANNEL}/chatters`, {method: "Get"})
+            const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${Env.channel}/chatters`, {method: "Get"})
                 .then(res => res.json())
                 .catch(err => {console.log(err)});
 
@@ -23,7 +23,7 @@ class ChattersService
             return Promise.resolve(chatters);
         } else if(origin === 'discord') {
             console.log("test");
-            const guild = await discordClient.guilds.cache.get(process.env.DISCORD_GUILD_ID);
+            const guild = await discordClient.guilds.cache.get(Env.discordGuildId);
             const chatterInfo = await guild.members.fetch();
 
             console.log("###################");

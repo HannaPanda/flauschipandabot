@@ -1,12 +1,6 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import mongoDBClient from "../Clients/mongoDBClient";
-import Fighter from "../Models/Fighter";
-import emoteService from "../Services/EmoteService";
 import sayService from "../Services/SayService";
-import {random} from "twing/dist/types/lib/extension/core/functions/random";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class QuoteCommand extends AbstractCommand
 {

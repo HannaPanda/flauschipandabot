@@ -1,5 +1,4 @@
 import { eventManager, ChatMessageEvent } from "../Services/EventManager";
-import * as dotenv from "dotenv";
 import { Message } from "discord.js";
 import Fighter from "../Models/Fighter";
 import moment from "moment";
@@ -7,7 +6,6 @@ import sayService from "../Services/SayService";
 import botService from "../Services/BotService";
 import openAiClient from "../Clients/openAiClient";
 import { MiscModel } from "../Models/Misc";
-dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractCommand
 {

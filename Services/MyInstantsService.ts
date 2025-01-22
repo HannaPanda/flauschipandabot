@@ -1,10 +1,8 @@
-import * as dotenv from "dotenv";
 import axios from "axios";
 import { JSDOM } from "jsdom";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
-dotenv.config({ path: __dirname + '/../.env' });
 
 class MyInstantsService {
     async getRandomAudio(): Promise<{ url: string; title: string }> {

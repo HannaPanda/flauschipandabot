@@ -9,6 +9,7 @@ import authRoutes from './Routes/authRoutes';
 import userRoutes from './Routes/userRoutes';
 import generalRoutes from './Routes/generalRoutes';
 import poltergeistRoutes from './Routes/poltergeistRoutes';
+import { Env } from "./Config/Environment";
 
 dotenv.config({ path: __dirname + '/.env' });
 
@@ -37,7 +38,7 @@ class Server {
 
         // Session Middleware
         app.use(session({
-            secret: process.env.SESSION_SECRET || 'secret',
+            secret: Env.sessionSecret || 'secret',
             resave: false,
             saveUninitialized: false
         }));
@@ -53,7 +54,7 @@ class Server {
         this.app = app;
 
         // Starte den HTTP-Server auf einem konfigurierbaren Port
-        const PORT = process.env.PORT || 3000;  // Port kann über .env konfiguriert werden, Standard ist 3000
+        const PORT = Env.httpServerPort || 3000;  // Port kann über .env konfiguriert werden, Standard ist 3000
         server.listen(PORT, () => {
             console.log(`Server listening on port ${PORT}`);
         });

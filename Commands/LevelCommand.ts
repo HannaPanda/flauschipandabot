@@ -1,10 +1,6 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import sayService from "../Services/SayService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class LevelCommand extends AbstractCommand
 {
@@ -38,9 +34,9 @@ class LevelCommand extends AbstractCommand
             await fighter.init(username);
         }
 
-        const text = `${name}: LVL ${fighter.get('level')} | 
-XP ${fighter.get('xp').toLocaleString('de-DE')} | 
-HP ${fighter.get('curHp')}/${fighter.get('maxHp')} | 
+        const text = `${name}: LVL ${fighter.get('level')} |
+XP ${fighter.get('xp').toLocaleString('de-DE')} |
+HP ${fighter.get('curHp')}/${fighter.get('maxHp')} |
 Immunität ${fighter.get('immunity')}%
 ${(fighter.get('disease') ? ' | Krankheit' : '')}
 ${(fighter.get('incurableDisease') ? ' | Unheilbare Krankheit' : '')}`;

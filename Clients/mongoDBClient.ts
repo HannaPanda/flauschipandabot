@@ -1,13 +1,11 @@
-import * as dotenv from "dotenv";
 import {MongoClient} from "mongodb";
 import * as mongoose from "mongoose";
-
-dotenv.config({ path: __dirname+'/../.env' });
+import { Env } from "../Config/Environment";
 
 class Initializer
 {
     public mongoDBClient = new MongoClient(
-        process.env.MONGODB_CONNECTION_STRING,
+        Env.mongoDbConnectionString,
     {}
     );
 
@@ -24,7 +22,7 @@ class Initializer
         }
 
         try {
-            await mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {});
+            await mongoose.connect(Env.mongoDbConnectionString, {});
             console.log("Mit MongoDB verbunden");
         } catch (err) {
             console.warn("Fehler beim Verbinden mit MongoDB:", err);

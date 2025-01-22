@@ -1,9 +1,7 @@
 import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import OBSWebSocket from "obs-websocket-js";
 import sayService from "../Services/SayService";
-
-dotenv.config({ path: __dirname+'/../.env' });
+import { Env } from "../Config/Environment";
 
 class Initializer
 {
@@ -16,7 +14,7 @@ class Initializer
     }
 
     private connectObs = () => {
-        this.obs.connect('ws://127.0.0.1:4444', process.env.OBS_WS_PASS)
+        this.obs.connect('ws://127.0.0.1:4444', Env.obsWsPass)
             .then(() => {
                 console.log('OBS connected');
                 this.obs.on('CurrentProgramSceneChanged', data => {

@@ -1,13 +1,5 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import sayService from "../Services/SayService";
-import storyService from "../Services/StoryService";
-import openAiClient from "../Clients/openAiClient";
-import emoteService from "../Services/EmoteService";
 import mongoDBClient from "../Clients/mongoDBClient";
-import {UserModel} from "../Models/User";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class TestCommand extends AbstractCommand
 {

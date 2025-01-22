@@ -1,9 +1,5 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import server from "../server";
 import openAiClient from "../Clients/openAiClient";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class HypeCommand extends AbstractCommand
 {

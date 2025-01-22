@@ -1,9 +1,6 @@
-import * as dotenv from "dotenv";
 import Fighter from "../Models/Fighter";
-import emitter from "../emitter";
 import sayService from "./SayService";
 import mongoDBClient from "../Clients/mongoDBClient";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class StatusService
 {

@@ -1,5 +1,4 @@
 import mongoDBClient from "../Clients/mongoDBClient";
-import * as dotenv from "dotenv";
 import emoteService from "../Services/EmoteService";
 import OpenAI from 'openai';
 import {PassThrough} from "stream";
@@ -10,10 +9,9 @@ import server from "../server";
 import { AssistantModel, Assistant } from '../Models/Assistant';
 import { ThreadModel, Thread } from '../Models/Thread';
 import UserModel from "../Models/User";
+import { Env } from "../Config/Environment";
 
 const {encode, decode} = require('gpt-3-encoder');
-
-dotenv.config({ path: __dirname+'/../.env' });
 
 class OpenAiClient
 {
@@ -71,7 +69,7 @@ class OpenAiClient
     constructor()
     {
         this.openAi = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
+            apiKey: Env.openAiApiKey,
         })
     }
 

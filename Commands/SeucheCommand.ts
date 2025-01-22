@@ -1,13 +1,8 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import statusService from "../Services/StatusService";
-import fetch from "node-fetch";
 import sayService from "../Services/SayService";
-import {constants} from "os";
-dotenv.config({ path: __dirname+'/../.env' });
+import { Env } from "../Config/Environment";
 
 class SeucheCommand extends AbstractCommand
 {
@@ -31,7 +26,7 @@ class SeucheCommand extends AbstractCommand
         const randomNumber = this.randomInt(1, 100);
 
         const fetch = require('node-fetch');
-        const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${process.env.CHANNEL}/chatters`, {method: "Get"})
+        const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${Env.channel}/chatters`, {method: "Get"})
             .then(res => res.json())
             .catch(err => {console.log(err)});
         const chatters = [].concat(...Object.values(chatterInfo.chatters));

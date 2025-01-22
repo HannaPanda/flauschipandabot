@@ -1,13 +1,11 @@
 import * as fs from "fs";
 import * as path from "path";
-import * as dotenv from "dotenv";
 import axios from "axios";
-
-dotenv.config({ path: __dirname + '/../.env' });
+import { Env } from "../Config/Environment";
 
 class YouTubeService {
     private downloadPath = path.resolve(__dirname, "../downloads");
-    private apiKey = process.env.LOADER_API_KEY || "";
+    private apiKey = Env.loaderApiKey || "";
     private downloadApiUrl = "https://loader.to/ajax/download.php";
     private progressApiUrl = "https://p.oceansaver.in/ajax/progress.php";
     private defaultMp4Format = "1080";

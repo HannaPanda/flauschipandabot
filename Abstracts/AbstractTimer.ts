@@ -1,7 +1,5 @@
 import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import streamService from "../Services/StreamService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractTimer
 {

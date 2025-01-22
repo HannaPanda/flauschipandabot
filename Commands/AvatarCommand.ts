@@ -1,11 +1,7 @@
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
 import {Abenteurer} from "../Models/Abenteurer";
 import {AbenteurerFactory} from "../Factory/AbenteurerFactory";
-import {LevelSystem} from "../Utils/LevelSystem";
-
-dotenv.config({ path: __dirname+'/../.env' });
 
 class AvatarCommand extends AbstractCommand
 {

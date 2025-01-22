@@ -1,11 +1,7 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import statusService from "../Services/StatusService";
 import sayService from "../Services/SayService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class KrankheitCommand extends AbstractCommand
 {

@@ -1,10 +1,6 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractTimer from "../Abstracts/AbstractTimer";
 import sayService from "../Services/SayService";
-import openAiClient from "../Clients/openAiClient";
 import storyService from "../Services/StoryService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class StoryTimer extends AbstractTimer
 {

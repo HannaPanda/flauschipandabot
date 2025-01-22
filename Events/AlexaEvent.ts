@@ -1,12 +1,5 @@
 import emitter from "../emitter";
-import mongoDBClient from "../Clients/mongoDBClient";
-import * as dotenv from "dotenv";
-import emoteService from "../Services/EmoteService";
-import sayService from "../Services/SayService";
-import botService from "../Services/BotService";
-import server from "../server";
 import openAiClient from "../Clients/openAiClient";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class AlexaEvent
 {

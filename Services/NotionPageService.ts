@@ -1,15 +1,14 @@
-import * as dotenv from "dotenv";
 import { JSDOM } from "jsdom";
 import puppeteer from "puppeteer";
 import NodeCache from "node-cache";
-dotenv.config({ path: __dirname + '/../.env' });
+import { Env } from "../Config/Environment";
 
 class NotionPageService {
     private cache: NodeCache;
     private cacheKey: string = 'notion_content';
 
     constructor() {
-        const cacheTTL = parseInt(process.env.CACHE_TTL || '86400', 10);
+        const cacheTTL = parseInt(Env.cacheTtl.toString() || '86400', 10);
         this.cache = new NodeCache({ stdTTL: cacheTTL });
     }
 
@@ -19,7 +18,7 @@ class NotionPageService {
             return cachedContent;
         }
 
-        const notionUrl = process.env.DREAMTALKING_URL;
+        const notionUrl = Env.dreamTalkingUrl;
         const texts: string[] = [];
 
         try {
@@ -64,8 +63,8 @@ class NotionPageService {
             throw new Error('No content found');
         }
         const randomIndex = Math.floor(Math.random() * texts.length);
-        console.log('Traumreden-Text:', texts[randomIndex].replace(process.env.DREAMTALKING_REPLACE_NAME, process.env.DREAMTALKING_REPLACE_WITH));
-        return texts[randomIndex].replace(process.env.DREAMTALKING_REPLACE_NAME, process.env.DREAMTALKING_REPLACE_WITH);
+        console.log('Traumreden-Text:', texts[randomIndex].replace(Env.dreamTalkingReplaceName, Env.dreamTalkingReplaceWith));
+        return texts[randomIndex].replace(Env.dreamTalkingReplaceName, Env.dreamTalkingReplaceWith);
     }
 }
 

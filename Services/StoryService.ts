@@ -1,8 +1,5 @@
-import * as dotenv from "dotenv";
-import discordClient from "../Clients/discordClient";
 import openAiClient from "../Clients/openAiClient";
 import emoteService from "./EmoteService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class StoryService {
 
@@ -36,7 +33,7 @@ class StoryService {
         const response = await openAiClient.getCustomChatGPTResponse(
             `Antworte als niedlicher Panda mit vielen süßen Emotes. Dein Name ist FlauschiPandaBot und deine Mama ist HannaPanda84 (Hanna). Nutze "Ich", um auf dich zu referenzieren.
              Nutze genderneutrale Sprache.
-             Nutze ausschließlich folgende Emotes:  
+             Nutze ausschließlich folgende Emotes:
              ${emoteService.getBotTwitchEmotes()}
              Nutze das Wort "Flausch" so oft es geht.`,
             this.storySeeds[Math.floor(Math.random() * this.storySeeds.length)].prompt,

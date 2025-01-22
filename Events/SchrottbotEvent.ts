@@ -1,12 +1,6 @@
 import emitter from "../emitter";
-import mongoDBClient from "../Clients/mongoDBClient";
-import * as dotenv from "dotenv";
-import emoteService from "../Services/EmoteService";
 import sayService from "../Services/SayService";
-import botService from "../Services/BotService";
 import openAiClient from "../Clients/openAiClient";
-import server from "../server";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class SchrottbotEvent
 {

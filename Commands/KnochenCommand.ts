@@ -1,11 +1,9 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import {DiceRoll} from "@dice-roller/rpg-dice-roller";
 import sayService from "../Services/SayService";
-dotenv.config({ path: __dirname+'/../.env' });
+import { Env } from "../Config/Environment";
 
 class KnochenCommand extends AbstractCommand
 {
@@ -28,7 +26,7 @@ class KnochenCommand extends AbstractCommand
 
     customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
         const fetch = require('node-fetch');
-        const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${process.env.CHANNEL}/chatters`, {method: "Get"})
+        const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${Env.channel}/chatters`, {method: "Get"})
             .then(res => res.json())
             .catch(err => {console.log(err)});
 

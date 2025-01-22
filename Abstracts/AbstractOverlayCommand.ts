@@ -1,5 +1,4 @@
 import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import Fighter from "../Models/Fighter";
 import botService from "../Services/BotService";
 import sayService from "../Services/SayService";
@@ -7,7 +6,6 @@ import server from "../server";
 import openAiClient from "../Clients/openAiClient";
 import { Context } from "../Interfaces/Context";
 import { Message } from "discord.js";
-dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractOverlayCommand
 {

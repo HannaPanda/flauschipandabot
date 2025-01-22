@@ -1,7 +1,6 @@
 import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import twitchClient from "../Clients/twitchClient";
-dotenv.config({ path: __dirname+'/../.env' });
+import { Env } from "../Config/Environment";
 
 class SayEvent
 {
@@ -18,7 +17,7 @@ class SayEvent
             return Promise.resolve(false);
         }
 
-        return twitchClient.chatClient.say(process.env.CHANNEL, message).catch((err) => {console.warn(err)});
+        return twitchClient.chatClient.say(Env.channel, message).catch((err) => {console.warn(err)});
     }
 
     private handleDiscordEvent = async (message, channel) => {

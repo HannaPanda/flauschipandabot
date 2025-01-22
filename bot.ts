@@ -17,6 +17,7 @@ import AbstractRedeemCommand from "./Abstracts/AbstractRedeemCommand";
 import AbstractCommand from "./Abstracts/AbstractCommand";
 import { GreetedUserModel } from "./Models/GreetedUser";
 import replService from "./Services/ReplService";
+import { Env } from "./Config/Environment";
 
 dotenv.config({ path: __dirname+'/.env' });
 var osProcess = require('process');
@@ -103,7 +104,7 @@ class FlauschiPandaBot
 
     private getStreamInfo = async () => {
         try {
-            const stream = await this.twitchClient.apiClient.streams.getStreamByUserName(process.env.CHANNEL);
+            const stream = await this.twitchClient.apiClient.streams.getStreamByUserName(Env.channel);
 
             if(stream) {
                 streamService.currentStream = stream;

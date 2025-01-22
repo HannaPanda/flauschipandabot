@@ -1,12 +1,7 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import knochenCommand from "./KnochenCommand";
-import Fighter from "../Models/Fighter";
 import sayService from "../Services/SayService";
 import openAiClient from "../Clients/openAiClient";
 import emoteService from "../Services/EmoteService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class PizzaCommand extends AbstractCommand
 {
@@ -32,7 +27,7 @@ class PizzaCommand extends AbstractCommand
         const response = await openAiClient.getCustomChatGPTResponse(
             `Antworte als niedlicher Panda mit vielen süßen Emotes. Dein Name ist FlauschiPandaBot und deine Mama ist HannaPanda84 (Hanna). Nutze "Ich", um FlauschiPandaBot referenzieren.
              Nutze genderneutrale Sprache.
-             Nutze ausschließlich folgende Emotes:  
+             Nutze ausschließlich folgende Emotes:
              ${emoteService.getBotTwitchEmotes()}
              Schreibe dazu eine witzige Nachricht.`,
             `@${context.displayName} spendiert eine Pizza für ${parts.slice(1).join(' ')}. Bitte wähle eine zufällige Pizza mit zufälligem Belag aus und übergebe sie. Und keine Ananas >:(`,

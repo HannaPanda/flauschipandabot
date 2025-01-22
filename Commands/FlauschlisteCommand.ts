@@ -1,9 +1,6 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import mongoDBClient from "../Clients/mongoDBClient";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class FlauschlisteCommand extends AbstractCommand
 {

@@ -1,8 +1,6 @@
-import * as dotenv from "dotenv";
-import AbstractTimer from "../Abstracts/AbstractTimer";
-import fs from "fs";
-import path from "path";
-dotenv.config({ path: __dirname+'/../.env' });
+    import AbstractTimer from "../Abstracts/AbstractTimer";
+    import fs from "fs";
+    import path from "path";
 
 /**
  * CleanupTimer class that extends AbstractTimer.

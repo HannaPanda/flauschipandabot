@@ -1,16 +1,8 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import knochenCommand from "./KnochenCommand";
-import Fighter from "../Models/Fighter";
 import sayService from "../Services/SayService";
 import openAiClient from "../Clients/openAiClient";
-import emoteService from "../Services/EmoteService";
-import {url} from "inspector";
 import axios from 'axios';
-import discordClient from "../Clients/discordClient";
 const Discord = require('discord.js');
-dotenv.config({ path: __dirname+'/../.env' });
 
 class BildCommand extends AbstractCommand
 {

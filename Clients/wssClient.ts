@@ -1,9 +1,4 @@
-import * as dotenv from "dotenv";
-import emitter from "../emitter";
-import server from "../server";
 import openAiClient from "./openAiClient";
-
-dotenv.config({ path: __dirname+'/../.env' });
 
 class Initializer
 {

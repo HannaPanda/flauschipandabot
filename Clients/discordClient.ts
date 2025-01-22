@@ -2,6 +2,7 @@ import emitter from "../emitter";
 import * as Discord from 'discord.js';
 import { Message } from 'discord.js';
 import { ChatMessageEvent, eventManager } from "../Services/EventManager";
+import { Env } from "../Config/Environment";
 
 const discordClient = new Discord.Client({intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS']});
 
@@ -9,7 +10,7 @@ discordClient.on('ready', () => {
     console.log(`Logged in as ${discordClient.user.tag}!`);
 });
 
-discordClient.login(process.env.BOT_DISCORD_CLIENT_TOKEN).catch(err => console.log(err));
+discordClient.login(Env.botDiscordClientToken).catch(err => console.log(err));
 
 discordClient.on('messageCreate', async (message: Message) => {
 

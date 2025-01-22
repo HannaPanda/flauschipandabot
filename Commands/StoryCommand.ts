@@ -1,9 +1,6 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import sayService from "../Services/SayService";
 import storyService from "../Services/StoryService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class BrezelCommand extends AbstractCommand
 {

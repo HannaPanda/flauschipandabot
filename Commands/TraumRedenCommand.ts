@@ -1,11 +1,8 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import notionPageService from "../Services/NotionPageService";
 import sayService from "../Services/SayService";
 import openAiClient from "../Clients/openAiClient";
 import emoteService from "../Services/EmoteService";
-dotenv.config({ path: __dirname + '/../.env' });
 
 class TraumRedenCommand extends AbstractCommand {
     isActive = true;

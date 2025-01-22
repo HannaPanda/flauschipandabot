@@ -1,16 +1,10 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
-import mongoDBClient from "../Clients/mongoDBClient";
 import Fighter from "../Models/Fighter";
 import bunnyWeapon from "../Weapons/Bunny";
-import emoteService from "../Services/EmoteService";
 import staticElectricityWeapon from "../Weapons/StaticElectricity";
 import tongueWeapon from "../Weapons/Tongue";
-import tickle from "../Weapons/Tickle";
 import tickleWeapon from "../Weapons/Tickle";
 import sayService from "../Services/SayService";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class DuellCommand extends AbstractCommand
 {

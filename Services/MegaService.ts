@@ -1,9 +1,7 @@
-import * as dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
+import { Env } from "../Config/Environment";
 const { Storage } = require('megajs');
-
-dotenv.config({ path: __dirname + '/../.env' });
 
 class MegaService {
     private storage: Storage;
@@ -18,8 +16,8 @@ class MegaService {
      */
     private async initStorage() {
         this.storage = await new Storage({
-            email: process.env.MEGA_EMAIL,
-            password: process.env.MEGA_PASSWORD
+            email: Env.megaEmail,
+            password: Env.megaPassword
         }).ready;
     }
 

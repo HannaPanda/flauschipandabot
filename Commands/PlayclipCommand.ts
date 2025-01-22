@@ -1,10 +1,7 @@
-import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import twitchClient from "../Clients/twitchClient";
 import sayService from "../Services/SayService";
 import server from "../server";
-dotenv.config({ path: __dirname+'/../.env' });
 
 class PlayclipCommand extends AbstractCommand
 {

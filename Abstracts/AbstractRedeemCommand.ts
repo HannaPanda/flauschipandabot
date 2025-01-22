@@ -1,7 +1,5 @@
 import emitter from "../emitter";
-import * as dotenv from "dotenv";
 import { PubSubRedemptionMessage } from "@twurple/pubsub";
-dotenv.config({ path: __dirname+'/../.env' });
 
 abstract class AbstractRedeemCommand
 {

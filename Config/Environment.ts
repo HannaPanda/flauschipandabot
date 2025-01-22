@@ -16,6 +16,7 @@ class Environment {
 
     // Example environment variables (extend as needed)
     public readonly clientId: string;
+    public readonly httpServerPort: Number;
     public readonly clientSecret: string;
     public readonly redirectUri: string;
     public readonly obsWsPass: string;
@@ -64,6 +65,7 @@ class Environment {
         dotenv.config({ path: this.envPath });
 
         // Load environment variables with fallback values
+        this.httpServerPort = Number(process.env.HTTP_SERVER_PORT) || 3000;
         this.clientId = process.env.CLIENT_ID || "";
         this.clientSecret = process.env.CLIENT_SECRET || "";
         this.redirectUri = process.env.REDIRECT_URI || "";
