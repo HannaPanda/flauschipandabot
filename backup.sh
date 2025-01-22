@@ -21,6 +21,7 @@ borg create \
     --stats \
     --show-rc \
     --compression zstd,3 \
+    --exclude-from /var/www/flauschipandabot/borg-excludes.txt \
     $REPO::${ARCHIVE_NAME} \
     $SOURCE >> $LOGFILE 2>&1
 
@@ -40,5 +41,7 @@ if [ ${backup_exit} -eq 0 ]; then
 else
     echo "Backup failed: $(date)" >> $LOGFILE
 fi
+
+chown -R flauschipandabot:flauschipandabot $REPO
 
 exit ${backup_exit}
