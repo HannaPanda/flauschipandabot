@@ -57,7 +57,8 @@ class TwitchClient {
                 });
             });
             this.chatClient.onDisconnect((manually, reason) => {
-                this.reconnectChatClient();
+                console.log("TWURPLE DISCONNECTED");
+                //this.reconnectChatClient();
             });
             this.chatClient.onMessage((channel, user, text, msg) => {
                 if (this.bots.includes(msg.userInfo.userName)) {
@@ -224,12 +225,16 @@ class TwitchClient {
 
     reconnectChatClient = () => {
         let interval;
+        if (this.chatClient.isConnecting || this.chatClient.isConnected) {
+            clearInterval(interval);
+            return;
+        }
         const tryConnect = () => {
             try {
                 this.chatClient.reconnect();
                 clearInterval(interval);
             } catch (err) {
-                if (err.message === 'Connection already present') {
+                if (this.chatClient.isConnecting || this.chatClient.isConnected) {
                     clearInterval(interval);
                 }
                 console.log(err);
