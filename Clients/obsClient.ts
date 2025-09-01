@@ -22,7 +22,7 @@ class Initializer
                     if(data['sceneName'] === 'Bitte Warten') {
                         //twitchClient.startCommercial(120);
 
-                        sayService.say('tmi', '', '', null, `Werbepause! ヾ(ﾟдﾟ)ﾉ`);
+                        sayService.say('twitch', '', '', null, `Werbepause! ヾ(ﾟдﾟ)ﾉ`);
                         emitter.emit('chat.message', '!klo', ['!klo'], {username: '', 'display-name': '', mod: false, owner: false});
                     }
                 });
