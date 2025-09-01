@@ -10,6 +10,7 @@ import { AssistantModel, Assistant } from '../Models/Assistant';
 import { ThreadModel, Thread } from '../Models/Thread';
 import UserModel from "../Models/User";
 import { Env } from "../Config/Environment";
+import { MemoryModel, Memory } from "../Models/Memory";
 
 const {encode, decode} = require('gpt-3-encoder');
 
@@ -141,64 +142,87 @@ class OpenAiClient
         return thread;
     }
 
-    public async sendMessage(thread: Thread, input: string, username: string): Promise<string> {
-        try {
-            const assistant = await AssistantModel.findById(thread.assistant);
+    public async sendMessage(
+        thread: Thread,
+        input: string,
+        username: string,
+        maxRetries = 10,
+        retryDelay = 1000
+    ): Promise<string> {
+        let attempt = 0;
 
-            if (!assistant) {
-                throw new Error('Assistant not found');
-            }
-
-            let user = await mongoDBClient
-                .db("flauschipandabot")
-                .collection("users")
-                .findOne({ name: username.toLowerCase() }, {});
-
-            let pronomenText = '';
-            let infoText = '';
-
-            if (user) {
-                pronomenText = (user?.pronomen) ? `Die Pronomen des Users sind '${user.pronomen}'` : '';
-                infoText = (user?.info) ? `Der User hat folgende Info über sich abgelegt: '${user.info}'` : '';
-            }
-
-            const additionalInstructions = this.additionalInstructions
-                .replace('###PRONOMEN###', pronomenText)
-                .replace('###INFO###', infoText)
-                .replace("###DATETIME###", new Date().toString());
-
-            await this.createThreadMessage(input, thread);
-
-            let run = await this.openAi.beta.threads.runs.createAndPoll(
-                thread.openaiThreadId,
-                {
-                    assistant_id: assistant.openaiAssistantId,
-                    instructions: this.assistantPrompt,
-                    additional_instructions: additionalInstructions,
-                    max_prompt_tokens: 5000,
-                    max_completion_tokens: 5000,
-                    temperature: 0.8
+        while (attempt < maxRetries) {
+            try {
+                console.log(new Date());
+                const assistant = await AssistantModel.findById(thread.assistant);
+                if (!assistant) {
+                    throw new Error('Assistant not found');
                 }
-            );
 
-            const messagesResponse = await this.openAi.beta.threads.messages.list(thread.openaiThreadId);
-            const messages = messagesResponse.data;
+                let user = await mongoDBClient
+                    .db("flauschipandabot")
+                    .collection("users")
+                    .findOne({ name: username.toLowerCase() }, {});
 
-            const assistantMessages = messages.filter(msg => msg.role === 'assistant');
-            const assistantMessage = assistantMessages[0];
+                let pronomenText = '';
+                let infoText = '';
 
-            if (!assistantMessage) {
-                throw new Error('No assistant reply found');
+                if (user) {
+                    pronomenText = user.pronomen ? `Die Pronomen des Users sind '${user.pronomen}'` : '';
+                    infoText = user.info ? `Der User hat folgende Info über sich abgelegt: '${user.info}'` : '';
+                }
+
+                const additionalInstructions = this.additionalInstructions
+                    .replace('###PRONOMEN###', pronomenText)
+                    .replace('###INFO###', infoText)
+                    .replace("###DATETIME###", new Date().toString());
+
+                await openAiClient.waitForRunCompletion(thread);
+                await this.createThreadMessage(input, thread);
+
+                let run = await this.openAi.beta.threads.runs.createAndPoll(
+                    thread.openaiThreadId,
+                    {
+                        assistant_id: assistant.openaiAssistantId,
+                        instructions: this.assistantPrompt,
+                        additional_instructions: additionalInstructions,
+                        max_prompt_tokens: 5000,
+                        max_completion_tokens: 5000,
+                        temperature: 0.8
+                    }
+                );
+
+                const messagesResponse = await this.openAi.beta.threads.messages.list(thread.openaiThreadId);
+                const messages = messagesResponse.data;
+
+                const assistantMessages = messages.filter(msg => msg.role === 'assistant');
+                const assistantMessage = assistantMessages[0];
+
+                if (!assistantMessage) {
+                    throw new Error('No assistant reply found');
+                }
+
+                thread.updatedAt = new Date();
+                await thread.save();
+                console.log(new Date());
+                return assistantMessage.content[0].text.value;
+
+            } catch (err) {
+                attempt++;
+                console.error(`Fehler beim Senden der Nachricht (Versuch ${attempt}/${maxRetries}):`, err.message);
+
+                if (attempt >= maxRetries) {
+                    console.error('Maximale Anzahl an Versuchen erreicht. Abbruch.');
+                    return 'Tut mir leid, bin gerade mit Bambus holen beschäftigt hannap5Lurk';
+                }
+
+                // Exponentielle Wartezeit mit einer kleinen zufälligen Variation, um Rate Limits zu vermeiden
+                const delay = retryDelay * Math.pow(2, attempt - 1) + Math.random() * 200;
+                await new Promise(resolve => setTimeout(resolve, delay));
             }
-
-            thread.updatedAt = new Date();
-            await thread.save();
-
-            return assistantMessage.content[0].text.value;
-        } catch (err) {
-            console.error(err);
-            return 'Tut mir leid, bin gerade mit Bambus holen beschäftigt hannap5Lurk';
         }
+
+        return 'Tut mir leid, bin gerade mit Bambus holen beschäftigt hannap5Lurk';
     }
 
     public createThreadMessage = async (input, thread) => {
@@ -206,6 +230,44 @@ class OpenAiClient
             role: 'user',
             content: input,
         });
+    }
+
+    public async waitForRunCompletion(thread: Thread, checkInterval = 2000, timeout = 60000): Promise<void> {
+        const startTime = Date.now();
+
+        while (true) {
+            // Prüfen, ob noch ein aktiver Run existiert
+            const isActive = await this.isRunActive(thread);
+
+            if (!isActive) {
+                // Falls kein aktiver Run existiert, verlässt die Funktion die Schleife
+                return;
+            }
+
+            // Timeout prüfen
+            if (Date.now() - startTime > timeout) {
+                throw new Error(`Timeout: Der Run für Thread ${thread.openaiThreadId} wurde nicht innerhalb von ${timeout / 1000} Sekunden beendet.`);
+            }
+
+            // Warten, bevor die nächste Prüfung durchgeführt wird
+            await new Promise(resolve => setTimeout(resolve, checkInterval));
+        }
+    }
+
+    public async isRunActive(thread: Thread): Promise<boolean> {
+        try {
+            const runsResponse = await this.openAi.beta.threads.runs.list(thread.openaiThreadId);
+
+            // Prüfen, ob es aktive Runs gibt
+            const activeRuns = runsResponse.data.filter(run =>
+                ["queued", "in_progress", "cancelling"].includes(run.status)
+            );
+
+            return activeRuns.length > 0;
+        } catch (error) {
+            console.error("Fehler beim Überprüfen aktiver Runs:", error);
+            return false;
+        }
     }
 
     private isMessageRecent = (message) => {
@@ -619,6 +681,173 @@ class OpenAiClient
         readable.on('data', (chunk: any) => writable.write(chunk));
         readable.on('end', () => writable.end());
         readable.on('error', (err: any) => writable.emit('error', err));
+    }
+
+    /**
+     * Retrieves all memories for a given channel sorted by creation date (oldest first).
+     * @param {string} channel - The channel identifier.
+     * @returns {Promise<Memory[]>} A promise that resolves to an array of Memory documents.
+     */
+    public async getChannelMemories(channel: string): Promise<Memory[]> {
+        return await MemoryModel.find({ channel }).sort({ createdAt: 1 }).exec();
+    }
+
+    /**
+     * Adds a new memory entry for the specified channel.
+     * @param {string} channel - The channel identifier.
+     * @param {any} memoryData - The compressed memory data in JSON format.
+     * @returns {Promise<Memory>} A promise that resolves to the newly created Memory document.
+     */
+    public async addMemory(channel: string, memoryData: any): Promise<Memory> {
+        // Convert memoryData to a string and calculate token count using gpt-3-encoder
+        const memoryString = JSON.stringify(memoryData);
+        const tokenCount = encode(memoryString).length;
+        const newMemory = new MemoryModel({ channel, memoryData, tokens: tokenCount });
+        return await newMemory.save();
+    }
+
+    /**
+     * Prunes old memories for a channel so that the total token count of the system prompt, user input, and memories
+     * does not exceed the allowed token limit. Oldest memories are removed first.
+     * @param {string} channel - The channel identifier.
+     * @param {string} systemPrompt - The system prompt text.
+     * @param {string} userInput - The current user input.
+     * @param {number} allowedTokens - The maximum allowed tokens for the conversation context.
+     * @returns {Promise<Memory[]>} A promise that resolves to the pruned array of Memory documents.
+     */
+    public async pruneMemories(channel: string, systemPrompt: string, userInput: string, allowedTokens: number): Promise<Memory[]> {
+        let memories = await this.getChannelMemories(channel);
+        // Calculate tokens used by the system prompt and user input
+        let baseTokens = encode(systemPrompt).length + encode(userInput).length;
+        // Sum tokens of all memories
+        let totalMemoryTokens = memories.reduce((sum, mem) => sum + mem.tokens, 0);
+        // Remove oldest memories until within allowed token budget
+        while (baseTokens + totalMemoryTokens > allowedTokens && memories.length > 0) {
+            const removed = memories.shift();
+            if (removed) {
+                totalMemoryTokens -= removed.tokens;
+                await MemoryModel.deleteOne({ _id: removed._id }).exec();
+            }
+        }
+        return memories;
+    }
+
+    /**
+     * Retrieves the cumulative memory for the given channel.
+     * This memory is stored as a document with the `cumulative` flag set to true.
+     *
+     * @param {string} channel - The channel identifier.
+     * @returns {Promise<any>} The cumulative memory object, or an empty object if none exists.
+     */
+    public async getCumulativeMemory(channel: string): Promise<any> {
+        const doc = await MemoryModel.findOne({ channel, cumulative: true }).exec();
+        return doc ? doc.memoryData : {};
+    }
+
+    /**
+     * Updates the cumulative memory for a given channel with the new memory delta.
+     * It merges the existing cumulative memory with the new delta (new keys override old ones).
+     *
+     * @param {string} channel - The channel identifier.
+     * @param {any} newDelta - The new memory delta to merge.
+     * @returns {Promise<any>} The updated cumulative memory object.
+     */
+    public async updateCumulativeMemory(channel: string, newDelta: any): Promise<any> {
+        const existingDoc = await MemoryModel.findOne({ channel, cumulative: true }).exec();
+        let updatedMemory = {};
+        if (existingDoc) {
+            // Merge existing memory with the new delta; new values override existing keys.
+            updatedMemory = { ...existingDoc.memoryData, ...newDelta };
+            existingDoc.memoryData = updatedMemory;
+            const memoryString = JSON.stringify(updatedMemory);
+            existingDoc.tokens = encode(memoryString).length;
+            await existingDoc.save();
+        } else {
+            updatedMemory = newDelta;
+            const memoryString = JSON.stringify(updatedMemory);
+            const tokenCount = encode(memoryString).length;
+            const newDoc = new MemoryModel({ channel, memoryData: updatedMemory, tokens: tokenCount, cumulative: true });
+            await newDoc.save();
+        }
+        return updatedMemory;
+    }
+
+    /**
+     * Retrieves a response from the Chat Completions API for the interactive narrative.
+     * This method builds the conversation context using:
+     * - A fixed German system prompt.
+     * - The user's input.
+     * - The current cumulative memory (if available).
+     *
+     * The response from OpenAI must include two parts separated by the delimiter "---MEMORY---":
+     * 1. The GM narrative.
+     * 2. A memory delta (in JSON format) containing only the new or updated facts.
+     *
+     * The memory delta is then merged into the cumulative memory.
+     *
+     * @param {string} userInput - The user's narrative input.
+     * @param {string} channel - The channel identifier.
+     * @param {number} allowedTokens - The maximum allowed tokens for the conversation context.
+     * @returns {Promise<{ gmResponse: string, memoryChunk: any }>} An object containing the GM narrative and the updated cumulative memory.
+     */
+    public async getStoryGameResponse(userInput: string, channel: string, allowedTokens: number): Promise<{ gmResponse: string, memoryChunk: any }> {
+        // German system prompt for the interactive narrative
+        const systemPrompt = `
+Du bist der Spielleiter für ein interaktives Abenteuer.
+Gib eine detaillierte narrative Antwort mit Setting, Aktionen der NSCs und atmosphärischen Beschreibungen.
+Nach der Erzählung füge einen Memory-Chuck hinzu, der eine stark komprimierte Zusammenfassung der neu hinzugekommenen oder geänderten Schlüsselfakten (z.B. Szene, Charaktere, Aufgaben) in JSON enthält.
+Trenne die narrative Antwort und den Memory-Chuck mit dem Trenner: ---MEMORY---
+Format:
+<Narrative Text>
+---MEMORY---
+<JSON Memory Chunk>
+Halte die narrative Antwort unter 400 Wörtern.
+    `;
+
+        // Retrieve the current cumulative memory for this channel.
+        const cumulativeMemory = await this.getCumulativeMemory(channel);
+
+        // Build the conversation messages: system prompt, user input, and cumulative memory (if exists)
+        const messages: any[] = [];
+        messages.push({ role: "system", content: systemPrompt });
+        messages.push({ role: "user", content: userInput });
+        if (Object.keys(cumulativeMemory).length > 0) {
+            messages.push({ role: "system", content: `Cumulative Memory: ${JSON.stringify(cumulativeMemory)}` });
+        }
+
+        // Optionally, you could also check the token budget here and adjust if necessary.
+
+        // Call the Chat Completions API with the current conversation context
+        const response = await this.openAi.chat.completions.create({
+            model: this.model,
+            messages: this.cleanMessages(messages),
+            temperature: 0.7,
+            max_tokens: this.maxTokens,
+            top_p: 1.0,
+            frequency_penalty: 0.5,
+            presence_penalty: 0.0,
+        });
+
+        const content = response.choices[0].message.content;
+        // Split the response into narrative and memory delta using the delimiter.
+        const parts = content.split('---MEMORY---');
+        if (parts.length < 2) {
+            throw new Error("Response format incorrect, missing delimiter.");
+        }
+        const gmResponse = parts[0].trim();
+        let memoryDelta: any = {};
+        try {
+            // Remove ```json tags if present, then parse the JSON.
+            memoryDelta = JSON.parse(parts[1].replace('```json', '').replace('```', '').trim());
+            console.log(memoryDelta);
+        } catch (e) {
+            console.error("Error parsing memory JSON, using empty object", e);
+            memoryDelta = {};
+        }
+        // Merge the new delta into the cumulative memory and save it.
+        const updatedCumulative = await this.updateCumulativeMemory(channel, memoryDelta);
+
+        return { gmResponse, memoryChunk: updatedCumulative };
     }
 }
 
