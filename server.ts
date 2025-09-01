@@ -10,6 +10,7 @@ import userRoutes from './Routes/userRoutes';
 import generalRoutes from './Routes/generalRoutes';
 import poltergeistRoutes from './Routes/poltergeistRoutes';
 import { Env } from "./Config/Environment";
+import twitchRoutes from "./Routes/twitchRoutes";
 
 dotenv.config({ path: __dirname + '/.env' });
 
@@ -50,6 +51,7 @@ class Server {
         app.use(userRoutes);
         app.use(generalRoutes);
         app.use(poltergeistRoutes);
+        app.use(twitchRoutes);
 
         this.app = app;
 
