@@ -1,6 +1,6 @@
 import AbstractCommand from "../Abstracts/AbstractCommand";
 import youtubeService from "../Services/YouTubeService";
-import megaService from "../Services/MegaService";
+//import megaService from "../Services/MegaService";
 import sayService from "../Services/SayService";
 
 class YtMp4Command extends AbstractCommand {
@@ -11,7 +11,7 @@ class YtMp4Command extends AbstractCommand {
     description = "Lädt ein YouTube-Video als MP4 herunter und speichert es auf Mega.";
 
     customHandler = async (message, parts, context, origin, channel) => {
-        if (parts.length < 2) {
+        /*if (parts.length < 2) {
             sayService.say(origin, context.displayName, '', channel, "Bitte gib eine YouTube-URL an.");
             return;
         }
@@ -28,7 +28,7 @@ class YtMp4Command extends AbstractCommand {
             sayService.say(origin, context.displayName, '', channel, `MP4 erfolgreich hochgeladen: ${fileUrl}`);
         } catch (err) {
             sayService.say(origin, context.displayName, '', channel, `Fehler: ${err.message}`);
-        }
+        }*/
     };
 }
 

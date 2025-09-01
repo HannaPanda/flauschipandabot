@@ -12,7 +12,7 @@ class YtMp3Command extends AbstractCommand {
     description = "Lädt ein YouTube-Video als MP3 herunter und speichert es auf Mega.";
 
     customHandler = async (message, parts, context, origin, channel) => {
-        if (parts.length < 2) {
+        /*if (parts.length < 2) {
             sayService.say(origin, context.displayName, '', channel, "Bitte gib eine YouTube-URL an.");
             return;
         }
@@ -29,7 +29,7 @@ class YtMp3Command extends AbstractCommand {
             sayService.say(origin, context.displayName, '', channel, `MP3 erfolgreich hochgeladen: ${fileUrl}`);
         } catch (err) {
             sayService.say(origin, context.displayName, '', channel, `Fehler: ${err.message}`);
-        }
+        }*/
     };
 }
 
