@@ -95,7 +95,7 @@ class TwitchClient {
                         vip: msg.userInfo.isVip,
                         owner: msg.userInfo.userName.toLowerCase() === Env.channel.toLowerCase()
                     },
-                    'tmi',
+                    'twitch',
                     null,
                     null
                 );
@@ -107,7 +107,7 @@ class TwitchClient {
             const user = await this.apiClient.users.getUserByName('hannapanda84');
 
             // PubSub
-            this.pubSubClient = new PubSubClient({ authProvider });
+            /*this.pubSubClient = new PubSubClient({ authProvider });
             const pubSubClient = this.pubSubClient;
             pubSubClient.onRedemption(user.id, async (message: PubSubRedemptionMessage) => {
                 const isOffensive = await this.checkIsOffensiveUsername(message.userName);
@@ -213,12 +213,12 @@ class TwitchClient {
                     }
                     server.getIO().emit('showAlert', alert);
 
-                    sayService.say('tmi', '', '', null, `emote_hype emote_hype emote_hype Vielen Dank für den Raid ${event.raidingBroadcasterDisplayName} emote_hype emote_hype emote_hype`)
-                    sayService.say('tmi', '', '', null, `emote_heart emote_heart emote_heart Hey ihr Flauschis, schaut doch mal bei ${event.raidingBroadcasterDisplayName} rein! https://twitch.tv/${event.raidingBroadcasterName} emote_heart emote_heart emote_heart`)
+                    sayService.say('twitch', '', '', null, `emote_hype emote_hype emote_hype Vielen Dank für den Raid ${event.raidingBroadcasterDisplayName} emote_hype emote_hype emote_hype`)
+                    sayService.say('twitch', '', '', null, `emote_heart emote_heart emote_heart Hey ihr Flauschis, schaut doch mal bei ${event.raidingBroadcasterDisplayName} rein! https://twitch.tv/${event.raidingBroadcasterName} emote_heart emote_heart emote_heart`)
                     this.apiClient.chat.shoutoutUser(user, event.raidedBroadcasterId);
                     await openAiClient.botSay('Willkommen im beklopptesten Stream auf Twitch ihr flauschigen Raider!');
                 }
-            });
+            });*/
         } catch (err) {
             console.error(err);
         }
