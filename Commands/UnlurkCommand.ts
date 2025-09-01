@@ -15,7 +15,7 @@ class UnlurkCommand extends AbstractCommand
     answerNoTarget = '###ORIGIN### ist wieder da! emote_hype';
     answerTarget   = '';
     globalCooldown = 0;
-    customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler  = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         server.getIO().emit('playAudio', {file: 'weird.wav', mediaType: 'audio', volume: 0.5});
 
         const response = await openAiClient.getCustomChatGPTResponse(

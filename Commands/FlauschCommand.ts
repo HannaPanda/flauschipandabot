@@ -11,7 +11,7 @@ class FlauschCommand extends AbstractCommand
     answerNoTarget = '###ORIGIN### flauscht ins Leere v( ‘.’ )v';
     answerTarget   = 'emote_heart emote_heart ###ORIGIN### flauscht ###TARGET### emote_heart emote_heart';
     globalCooldown = 0;
-    /*customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    /*customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
 
         const response = await openAiClient.getCustomChatGPTResponse(
             `Antworte als niedlicher Panda mit vielen süßen Emotes. Dein Name ist FlauschiPandaBot und deine Mama ist HannaPanda84 (Hanna). Nutze "Ich", um FlauschiPandaBot referenzieren.

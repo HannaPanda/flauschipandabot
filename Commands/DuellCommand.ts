@@ -22,7 +22,7 @@ class DuellCommand extends AbstractCommand
         bunnyWeapon, staticElectricityWeapon, tongueWeapon, tickleWeapon
     ]
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const target = this.getTarget(origin, parts, messageObject);
         const targetName = parts.slice(1).join(' ');
         const username = context.userName;

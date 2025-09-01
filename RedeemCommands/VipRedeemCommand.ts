@@ -12,8 +12,8 @@ class VipRedeemCommand extends AbstractRedeemCommand
             'emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype ' +
             'emote_hype emote_hype emote_hype emote_hype emote_hype';
         server.getIO().emit('playAudio', {file: 'secret1.wav', mediaType: 'audio', volume: 0.5});
-        sayService.say('tmi', '', '', null, hype);
-        sayService.say('tmi', '', '', null, hype);
+        sayService.say('twitch', '', '', null, hype);
+        sayService.say('twitch', '', '', null, hype);
     };
 }
 

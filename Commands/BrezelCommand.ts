@@ -13,7 +13,7 @@ class BrezelCommand extends AbstractCommand
     answerNoTarget = '🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨 🥨';
     answerTarget   = '';
     globalCooldown = 0;
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         sayService.say(origin, '', '', channel, this.answerNoTarget);
         server.getIO().emit('playAudio', {file: 'pretzels.mp3', mediaType: 'audio', volume: 0.5});
     };

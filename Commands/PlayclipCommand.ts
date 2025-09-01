@@ -20,7 +20,7 @@ class PlayclipCommand extends AbstractCommand
         'brain': 'ToughYawningWatermelonBabyRage-anZ2kAwvZqEMW_U-'
     };
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         if(parts.length <= 1) {
             return false;
         }
@@ -43,12 +43,12 @@ class PlayclipCommand extends AbstractCommand
                 const videoUrl = clipInfo.thumbnailUrl.replace('-preview-480x272.jpg', '.mp4');
                 server.getIO().emit('playVideo', {file: videoUrl, mediaType: 'video', volume: 1});
             } else {
-                sayService.say('tmi', '', '', null, 'Clip nicht gefunden');
+                sayService.say('twitch', '', '', null, 'Clip nicht gefunden');
             }
             return true;
         } catch(err) {
             console.warn(err);
-            sayService.say('tmi', '', '', null, 'Fehler beim Abspielen des Clips');
+            sayService.say('twitch', '', '', null, 'Fehler beim Abspielen des Clips');
         }
 
         return false;

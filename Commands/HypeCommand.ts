@@ -12,7 +12,7 @@ class HypeCommand extends AbstractCommand
     answerNoTarget = 'emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype emote_hype ';
     answerTarget   = '';
     globalCooldown = 0;
-    customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler  = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const numberPattern = /\d+/g;
         const numbers = parts.slice(1).join(' ').match( numberPattern );
         const number = (numbers) ? numbers.join('') : '';

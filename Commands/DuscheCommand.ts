@@ -14,7 +14,7 @@ class DuscheCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const document = await MiscModel.findOne({ identifier: 'hornyLevel' });
 
         let curHornyLevel = Math.max(0, ((document && document.value) ? document.value : 0) - 5);

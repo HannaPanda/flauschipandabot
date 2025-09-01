@@ -16,7 +16,7 @@ class LiebesknochenCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const fetch = require('node-fetch');
         const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${Env.channel}/chatters`, {method: "Get"})
             .then(res => res.json())

@@ -10,13 +10,13 @@ class FlauschEvent
         emitter.on('chat.message', this.handleEvent);
     }
 
-    private handleEvent = async (message, parts, context, origin = 'tmi', channel = null) => {
+    private handleEvent = async (message, parts, context, origin = 'twitch', channel = null) => {
         if(!this.isActive) {
             return Promise.resolve(false);
         }
 
         if(/flausch/i.test(message)) {
-            let username = (origin === 'tmi') ? context.displayName : context.userName;
+            let username = (origin === 'twitch') ? context.displayName : context.userName;
 
             if(username && username.toLowerCase() === 'flauschipandabot') {
                 return Promise.resolve(false);

@@ -20,7 +20,7 @@ class PizzaCommand extends AbstractCommand
         'Margherita', 'Prosciutto', 'Schinken', 'Vegetarisch', 'Vier Käse'
     ];
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         //const text = `###ORIGIN### spendiert ###TARGET### eine Pizza ${this.pizzaSorten[this.randomInt(0, this.pizzaSorten.length - 1)]}`
         //sayService.say(origin, context.displayName, parts.slice(1).join(' '), channel, text);
 

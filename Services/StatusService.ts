@@ -19,7 +19,7 @@ class StatusService
 
         if(diseasedFighters.length > 0) {
             const text = `Folgende Chatter nehmen durch Krankheit Schaden: ${diseasedFighters.map(elem => { return elem.name }).join(', ')}`;
-            sayService.say('tmi', '', '', null, text);
+            sayService.say('twitch', '', '', null, text);
 
             let faintedUsers = [];
 
@@ -41,7 +41,7 @@ class StatusService
 
             if(faintedUsers.length > 0) {
                 const text = `Folgende Chatter sind auf 0HP gefallen und ohnmächtig geworden: ${faintedUsers.join(', ')}`;
-                sayService.say('tmi', '', '', null, text);
+                sayService.say('twitch', '', '', null, text);
             }
         }
     }

@@ -12,7 +12,7 @@ class MigrateCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         /*let allUsers = await mongoDBClient
             .db("flauschipandabot")
             .collection("fighters")
@@ -45,7 +45,7 @@ class MigrateCommand extends AbstractCommand
                 );
         }*/
 
-        //sayService.say('tmi', '', '', null, 'Migration fertig');
+        //sayService.say('twitch', '', '', null, 'Migration fertig');
     }
 
     /*updateFighter = async (username) => {

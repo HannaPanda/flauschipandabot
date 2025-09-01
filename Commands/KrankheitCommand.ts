@@ -15,7 +15,7 @@ class KrankheitCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const target = this.getTarget(origin, parts, messageObject);
         const username = context.userName;
         const targetName = parts.slice(1).join(' ');

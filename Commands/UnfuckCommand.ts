@@ -15,7 +15,7 @@ class UnfuckCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 3;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const numberPattern = /\d+/g;
         const numbers = parts.slice(1).join(' ').match( numberPattern );
         const number = (numbers) ? numbers.join('') : '';

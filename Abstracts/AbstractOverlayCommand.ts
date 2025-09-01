@@ -28,7 +28,7 @@ abstract class AbstractOverlayCommand
         emitter.on('chat.message', this.handleEvent);
     }
 
-    protected handleEvent = async (message: string, parts: Array<string>, context: Context, origin = 'tmi', channel = null, messageObject: Message|null = null) => {
+    protected handleEvent = async (message: string, parts: Array<string>, context: Context, origin = 'twitch', channel = null, messageObject: Message|null = null) => {
         if(!this.isActive) {
             return Promise.resolve(false);
         }

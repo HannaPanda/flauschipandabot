@@ -26,9 +26,9 @@ class CharCommand extends AbstractCommand
         'krankenschwester': 'Antworte, als seist du eine super fürsorgliche Panda-Krankenschwester.',
     };
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         console.log('test');
-        let username = (origin === 'tmi') ? context.displayName : context.userName;
+        let username = (origin === 'twitch') ? context.displayName : context.userName;
 
         if(parts.length === 1) {
             sayService.say(origin, context.displayName, '', channel, `Folgende Charaktere stehen zur Auswahl: ${Object.keys(this.characters).join(', ')}. Aufruf mit !char CHARAKTERNAME TEXT`);

@@ -14,7 +14,7 @@ class BrezelCommand extends AbstractCommand
     answerNoTarget = '';
     answerTarget   = '';
     globalCooldown = 0;
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const story = await storyService.getUserStory(context.userName);
         sayService.say(origin, '', '', channel, story);
     };

@@ -13,7 +13,7 @@ class StandardOverlayCommand
         emitter.on('chat.message', this.handleEvent);
     }
 
-    protected handleEvent = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    protected handleEvent = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         try {
             var normalizedPath = require("path").join(__dirname, "..", "Config", "OverlayCommands.json");
             const data = fs.readFileSync(normalizedPath, 'utf-8');

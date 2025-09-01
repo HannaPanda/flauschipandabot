@@ -10,11 +10,11 @@ class StoryTimer extends AbstractTimer
 
     handler = async () => {
         /*const text1 = `Hier eine kleine lustige, verrückte Geschichte:`;
-        sayService.say('tmi', '', '', null, text1);*/
+        sayService.say('twitch', '', '', null, text1);*/
 
         const story = await storyService.getRandomStory();
 
-        sayService.say('tmi', '', '', null, story);
+        sayService.say('twitch', '', '', null, story);
     }
 }
 

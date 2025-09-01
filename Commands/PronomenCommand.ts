@@ -16,7 +16,7 @@ class PronomenCommand extends AbstractCommand {
     answerTarget = '';
     globalCooldown = 0;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         let user = await UserModel.findOne({ username: context.userName });
 
         if (!user) {

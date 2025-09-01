@@ -63,7 +63,7 @@ class EmoteService
 
         if(origin === 'discord' && emote in this.discordEmotes) {
             return discordClient.emojis.cache.find(emoji => emoji.name === this.discordEmotes[emote]) ?? this.discordEmotes[emote];
-        } else if (origin === 'tmi' && emote in this.twitchEmotes) {
+        } else if (origin === 'twitch' && emote in this.twitchEmotes) {
             return this.twitchEmotes[emote];
         }
 

@@ -16,7 +16,7 @@ class LiebesPfeilCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 43200;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
 
         await MiscModel.create({
             identifier: 'liebesritualUntil',

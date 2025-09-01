@@ -10,8 +10,8 @@ class QuoteTimer extends AbstractTimer
     gameName  = "";
 
     handler = () => {
-        sayService.say('tmi', null, '', null, 'Quote of the hour:');
-        emitter.emit('chat.message', '!quote', ['!quote'], {username: '', 'display-name': '', mod: false, owner: false});
+        sayService.say('twitch', null, '', null, 'Quote of the hour:');
+        emitter.emit('chat.message', '!quote', ['!quote'], {username: 'flauschipandabot', 'display-name': 'FlauschiPandaBot', mod: false, owner: false});
     }
 }
 

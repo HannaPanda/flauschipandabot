@@ -8,7 +8,7 @@ class SayEvent
 
     constructor()
     {
-        emitter.on('tmi.say', this.handleTwitchEvent);
+        emitter.on('twitch.say', this.handleTwitchEvent);
         emitter.on('discord.say', this.handleDiscordEvent);
     }
 

@@ -5,10 +5,10 @@ import { Env } from "../Config/Environment";
 
 class ChattersService
 {
-    getChattersList = async (origin = 'tmi') => {
+    getChattersList = async (origin = 'twitch') => {
         let chatters: Array<string> = [];
         console.log(origin);
-        if(origin === 'tmi') {
+        if(origin === 'twitch') {
             const fetch = require('node-fetch');
             const chatterInfo = await fetch(`https://tmi.twitch.tv/group/user/${Env.channel}/chatters`, {method: "Get"})
                 .then(res => res.json())

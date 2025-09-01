@@ -17,7 +17,7 @@ class LiebesPfeilCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 600;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
 
         const target = this.getTarget(origin, parts, messageObject);
         const username = context.userName;

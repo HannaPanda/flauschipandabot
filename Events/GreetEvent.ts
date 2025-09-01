@@ -17,7 +17,7 @@ class GreetEvent
         emitter.on('chat.message', this.handleEvent);
     }
 
-    private handleEvent = async (message, parts, context, origin = 'tmi', channel = null) => {
+    private handleEvent = async (message, parts, context, origin = 'twitch', channel = null) => {
         if (!this.isActive || origin === 'discord') {
             return Promise.resolve(false);
         }

@@ -17,7 +17,7 @@ class SchrottbotEvent
         emitter.on('chat.message', this.handleEvent);
     }
 
-    private handleEvent = async (message, parts, context, origin = 'tmi', channel = null) => {
+    private handleEvent = async (message, parts, context, origin = 'twitch', channel = null) => {
         if(!this.isActive) {
             return Promise.resolve(false);
         }
@@ -28,7 +28,7 @@ class SchrottbotEvent
             }
 
             /*const targetName = parts.slice(1).join(' ');
-            const displayName = (origin === 'tmi') ? `@${context.displayName}` : context.displayName;
+            const displayName = (origin === 'twitch') ? `@${context.displayName}` : context.displayName;
             const text = this.answers[this.randomInt(0, this.answers.length - 1)];
 
             sayService.say(origin, displayName, targetName, channel, text);*/

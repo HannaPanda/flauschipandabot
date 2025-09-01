@@ -13,7 +13,7 @@ class FrechOverlayCommand extends AbstractOverlayCommand
     mediaFile      = "";
     mediaType      = "image";
     volume         = 1;
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         server.getIO().emit('showImage', {file: 'frech.png', mediaType: 'image', duration: 2000});
         await openAiClient.botSay('Frech!');
     };

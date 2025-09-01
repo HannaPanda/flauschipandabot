@@ -10,7 +10,7 @@ class StardewTimer extends AbstractTimer
 
     handler = () => {
         const text = 'Ihr könnt 19Moon82 und mir gleichzeitig zuschauen: https://multistre.am/19moon82/hannapanda84/layout4/';
-        sayService.say('tmi', '', '', null, text);
+        sayService.say('twitch', '', '', null, text);
     }
 }
 

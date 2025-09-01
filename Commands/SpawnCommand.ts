@@ -206,7 +206,7 @@ class HypeCommand extends AbstractCommand
         return Math.max(1, Math.abs(valueInRarityRange));
     }
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         let amount = this.randomInt(0, 100);
         if(parts.length > 2) {
             amount = Math.min(100, parseInt(parts[2]));

@@ -15,7 +15,7 @@ class TraumRedenCommand extends AbstractCommand {
     answerTarget = '';
     globalCooldown = 0;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         try {
             const randomText = await notionPageService.getRandomText();
 

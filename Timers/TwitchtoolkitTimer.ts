@@ -10,7 +10,7 @@ class TwitchtoolkitTimer extends AbstractTimer
 
     handler = () => {
         const text = '!karmaround Wir spielen mit TwitchToolkit und ihr könnt mitmachen: Befehle und Items unter https://hannapanda.github.io/item-list/';
-        sayService.say('tmi', '', '', null, text);
+        sayService.say('twitch', '', '', null, text);
     }
 }
 

@@ -12,7 +12,7 @@ class FartOverlayCommand extends AbstractOverlayCommand
     mediaFile      = "fart1.mp3";
     mediaType      = "audio";
     volume         = 0.5;
-    customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler  = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const sounds = ['fart1.mp3', 'fart2.mp3', 'fart3.mp3', 'fart4.mp3',];
 
 

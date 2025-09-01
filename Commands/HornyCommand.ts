@@ -34,7 +34,7 @@ class HornyCommand extends AbstractCommand
         }, 300000);
     }
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const document = await MiscModel.findOne({ identifier: 'hornyLevel' });
 
         server.getIO().emit('showImage', { file: 'horny.png', mediaType: 'image', duration: 5000 });

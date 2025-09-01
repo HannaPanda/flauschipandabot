@@ -13,7 +13,7 @@ class AntwortEvent
         emitter.on('chat.message', this.handleEvent);
     }
 
-    private handleEvent = async (message, parts, context, origin = 'tmi', channel = null) => {
+    private handleEvent = async (message, parts, context, origin = 'twitch', channel = null) => {
         if(!this.isActive) {
             return Promise.resolve(false);
         }
@@ -25,12 +25,12 @@ class AntwortEvent
             currentScene = {currentProgramSceneName: ''}
         }
 
-        const username = (origin === 'tmi') ? context.displayName : context.userName;
+        const username = (origin === 'twitch') ? context.displayName : context.userName;
 
         if (!message.startsWith("!") &&
             (/@flauschipandabot/i.test(message) ||
                 /@950121475619323924/i.test(message) ||
-                (origin === 'tmi' &&
+                (origin === 'twitch' &&
                     (currentScene.currentProgramSceneName === 'PNGTuber' || currentScene.currentProgramSceneName === 'Coworking') &&
                     !/@/.test(message)) ||
                     'Ja' === await openAiClient.shouldRespondToChat([{text: message, username: context.userName}])
@@ -50,7 +50,7 @@ class AntwortEvent
 
             sayService.say(origin, context.displayName, '', channel, response);
 
-            if(origin === 'tmi') {
+            if(origin === 'twitch') {
                 await openAiClient.botSay(response);
             }
 

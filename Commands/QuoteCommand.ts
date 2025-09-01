@@ -14,10 +14,8 @@ class QuoteCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const isMod = context.mod || context.owner;
-
-        // https://decapi.me/twitch/followage/hannapanda84/anubisbln erlauben bei 100+ Stunden
 
         if(parts.length >= 3) {
             if(parts[1] === 'add') {

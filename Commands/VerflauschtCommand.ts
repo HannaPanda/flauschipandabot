@@ -13,7 +13,7 @@ class VerflauschtCommand extends AbstractCommand
     answerTarget   = '';
     globalCooldown = 0;
 
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         const targetName = parts.slice(1).join(' ');
         const displayName = context.displayName;
         const percentage = this.randomInt(0, 100);

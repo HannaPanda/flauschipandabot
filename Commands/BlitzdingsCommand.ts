@@ -13,7 +13,7 @@ class BlitzdingsCommand extends AbstractCommand
     answerNoTarget = '###ORIGIN### blitzdingst sich mal eben schnell selbst ins Mittelalter';
     answerTarget   = '###ORIGIN### setzt sich lässig eine Sonnenbrille auf und blitzdingst ###TARGET###\'s Verstand in\'s Gestern';
     globalCooldown = 0;
-    customHandler = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         if(context.userName === 'hannapanda84' && parts.slice(1).join(' ').toLowerCase() === '@flauschipandabot') {
             await mongoDBClient
                 .db("flauschipandabot")

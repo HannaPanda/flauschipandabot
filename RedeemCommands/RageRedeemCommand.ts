@@ -12,8 +12,8 @@ class RageRedeemCommand extends AbstractRedeemCommand
             'emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry emote_angry ' +
             'emote_angry emote_angry emote_angry emote_angry emote_angry';
         server.getIO().emit('playAudio', {file: 'fuuu.mp3', mediaType: 'audio', volume: 0.1});
-        sayService.say('tmi', '', '', null, hype);
-        sayService.say('tmi', '', '', null, hype);
+        sayService.say('twitch', '', '', null, hype);
+        sayService.say('twitch', '', '', null, hype);
     };
 }
 

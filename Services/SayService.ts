@@ -18,7 +18,7 @@ class SayService
         const emoteRegex = new RegExp(`(${emoteService.botTwitchEmotes.join('|')})`, 'gi');
         message = message.replace(emoteRegex, (match) => emoteService.botTwitchEmotes.find(emote => emote.toLowerCase() === match.toLowerCase()));
 
-        if(origin === 'tmi') {
+        if(origin === 'twitch') {
             message = message.replace(emoteRegex, ' $1 ');
         } else {
             message = message.replace(emoteRegex, '$1');

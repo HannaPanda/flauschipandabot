@@ -15,7 +15,7 @@ class LurkCommand extends AbstractCommand
     answerNoTarget = '###ORIGIN### verschwindet im Flausch 🥰';
     answerTarget   = '';
     globalCooldown = 0;
-    customHandler  = async (message, parts, context, origin = 'tmi', channel = null, messageObject = null) => {
+    customHandler  = async (message, parts, context, origin = 'twitch', channel = null, messageObject = null) => {
         server.getIO().emit('playAudio', {file: 'weird_reverse.mp3', mediaType: 'audio', volume: 0.5});
 
         const response = await openAiClient.getCustomChatGPTResponse(
